@@ -13,7 +13,7 @@ export const HeaderComp = () => {
   ]
 
   return (
-    <Navbar isBordered className='h-24 '>
+    <Navbar isBordered className='h-24 w-full' maxWidth='xl'>
       <NavbarBrand>
         <Image src={assets.lazaki} />
       </NavbarBrand>

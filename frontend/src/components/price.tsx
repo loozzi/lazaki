@@ -9,13 +9,13 @@ export const PriceComp = (props: PriceCompProps) => {
 
   const sizes = {
     sm: {
-      fontSize: 16
-    },
-    md: {
       fontSize: 20
     },
-    lg: {
+    md: {
       fontSize: 24
+    },
+    lg: {
+      fontSize: 28
     }
   }
 
@@ -27,8 +27,8 @@ export const PriceComp = (props: PriceCompProps) => {
         color: color
       }}
     >
-      <span style={{ fontSize: szConfig.fontSize - 4, color: color, textDecoration: 'underline' }}>đ</span>
-      {price}
+      <span style={{ fontSize: szConfig.fontSize - 8, color: color, textDecoration: 'underline' }}>đ</span>
+      {price.toLocaleString()}
     </span>
   )
 }

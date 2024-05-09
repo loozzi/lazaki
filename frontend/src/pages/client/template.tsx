@@ -3,9 +3,11 @@ import { HeaderComp } from '~/components/header'
 
 export const TemplateClientPage = () => {
   return (
-    <div>
+    <div className='bg-[#f5f5fa]'>
       <HeaderComp />
-      <Outlet />
+      <div className='max-w-[1280px] mx-auto'>
+        <Outlet />
+      </div>
     </div>
   )
 }

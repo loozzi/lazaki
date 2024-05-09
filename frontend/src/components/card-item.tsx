@@ -32,10 +32,20 @@ export const CardItem = (props: CardItemProps) => {
 
   const szConfig = sizes[props.size || 'md']
 
+  const handleViewDetail = () => {
+    console.log('View detail')
+  }
+
   return (
-    <Card shadow='sm' className={`w-[${szConfig.width}px] h-[${szConfig.height}px] rounded-md`}>
+    <Card
+      shadow='sm'
+      className={`w-[${szConfig.width}px] h-[${szConfig.height}px] rounded-md cursor-pointer`}
+      isPressable
+      onPress={handleViewDetail}
+    >
       <CardBody className='p-0'>
         <Image
+          isZoomed
           src={item.image}
           alt={item.title}
           radius='lg'

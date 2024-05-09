@@ -28,7 +28,7 @@ const ColComp = ({ title, items }: IFooterCol) => {
 
 export const FooterComp = () => {
   return (
-    <div className='bg-[#f1f1f1] mx-2 mt-4'>
+    <div className='bg-[#f1f1f1] mx-2 mt-4 pb-4'>
       <div className='max-w-[1280px] mx-auto py-8 grid lg:grid-cols-5 md:grid-cols-2 sm:grid-cols-1 gap-2'>
         <div>
           <Image src={assets.lazaki} width={100} /> Lazaki - ứng dụng mua sắm trực tuyến thú vị, tin cậy, an toàn và
@@ -68,6 +68,14 @@ export const FooterComp = () => {
             { title: 'Youtube', href: 'https://youtube.com/lazaki' }
           ]}
         />
+      </div>
+      <div>
+        <div className='text-center text-sm text-slate-400'>
+          © 2024 Lazaki. All rights reserved. Designed by{' '}
+          <Link href='#' color='foreground'>
+            Lazaki Team
+          </Link>
+        </div>
       </div>
     </div>
   )

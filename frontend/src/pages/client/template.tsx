@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router'
+import { FooterComp } from '~/components/footer'
 import { HeaderComp } from '~/components/header'
 
 export const TemplateClientPage = () => {
@@ -8,6 +9,7 @@ export const TemplateClientPage = () => {
       <div className='max-w-[1280px] mx-auto'>
         <Outlet />
       </div>
+      <FooterComp />
     </div>
   )
 }

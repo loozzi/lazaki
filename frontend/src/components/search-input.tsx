@@ -1,5 +1,5 @@
-import { Button, Input, Link, Popover, PopoverContent, PopoverTrigger } from '@nextui-org/react'
-import React, { useEffect, useState } from 'react'
+import { Button, Input, Link } from '@nextui-org/react'
+import { useState } from 'react'
 import { CiSearch } from 'react-icons/ci'
 
 export const SearchInputHeaderComp = () => {
@@ -11,6 +11,7 @@ export const SearchInputHeaderComp = () => {
   const handleSearch = () => {
     console.log(search)
   }
+  setHistory
 
   return (
     <div className='relative'>

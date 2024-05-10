@@ -8,16 +8,16 @@ interface ViewReviewProps {
 export const ViewReviewComp = (props: ViewReviewProps) => {
   const { review } = props
   return (
-    <div className='flex flex-col mb-4 pb-4 border-b-1 md:mr-4'>
-      <span className='font-semibold'>{review.user.name}</span>
+    <div className='flex flex-col mb-4 p-4 md:mr-4 border-solid border-black-1/10 border-1 rounded-xl'>
+      <StarComp stars={review.rating} hideNumber />
       <span className='flex items-center'>
-        <StarComp stars={review.rating} hideNumber />
+        <span className='font-semibold'>{review.user.name}</span>
         <LuDot />
-        <span>{parseDateToDMY(review.created_at)}</span>
+        <span className='text-gray-400'>{parseDateToDMY(review.created_at)}</span>
       </span>
-      <span>{review.content}</span>
+      <span className='my-2'>{review.content}</span>
       {review.images && (
-        <div className='flex'>
+        <div className='flex flex-wrap gap-2'>
           {review.images.map((image: string, index: number) => (
             <Popover key={index} showArrow offset={10} placement='bottom' backdrop='blur'>
               <PopoverTrigger>
@@ -25,11 +25,11 @@ export const ViewReviewComp = (props: ViewReviewProps) => {
                   isZoomed
                   src={image}
                   alt='review'
-                  className='object-cover overflow-hidden w-[100px] h-[100px] cursor-pointer mr-2'
+                  className='object-cover overflow-hidden w-[100px] h-[100px] cursor-pointer'
                 />
               </PopoverTrigger>
               <PopoverContent>
-                <span>Chi tiết</span>
+                <span>{review.user.name}</span>
                 <Image src={image} className='max-h-[500px]' />
               </PopoverContent>
             </Popover>

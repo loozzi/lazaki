@@ -11,7 +11,7 @@ export const ListViewReviewComp = (props: ListViewReviewProps) => {
 
   return (
     <PaneComp header='Đánh giá sản phẩm' className={className}>
-      <div className='p-4 bg-white rounded-b-lg mx-2 lg:mx-0 grid md:grid-cols-2 grid-cols-1'>
+      <div className='p-4 bg-white rounded-b-lg mx-2 lg:mx-0 grid md:grid-cols-1 grid-cols-1'>
         {reviews.map((review, index) => (
           <ViewReviewComp key={index} review={review} />
         ))}

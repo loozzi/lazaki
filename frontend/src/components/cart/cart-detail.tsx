@@ -21,35 +21,33 @@ import { PriceComp } from '../price'
 interface DetailCartCompProps {
   products: any[]
   className?: string
-  handleChangeProducts: (products: any[]) => void
+  handleChangeProducts?: (products: any[]) => void
+  viewOnly?: boolean
 }
 
-const columns = [
-  { name: 'Tên sản phẩm', uid: 'name' },
-  { name: 'Đơn giá', uid: 'price' },
-  { name: 'Số lượng', uid: 'quantity' },
-  { name: 'Thành tiền', uid: 'total_price' },
-  { name: 'Thao tác', uid: 'actions' }
-]
-
 export const DetailCartComp = (props: DetailCartCompProps) => {
-  const { products, className, handleChangeProducts } = props
+  const { products, className, handleChangeProducts, viewOnly = false } = props
+
+  const columns = [
+    { name: 'Sản phẩm', uid: 'name' },
+    { name: 'Giá', uid: 'price' },
+    { name: 'Số lượng', uid: 'quantity' },
+    { name: 'Thành tiền', uid: 'total_price' }
+  ]
+
+  if (!viewOnly) columns.push({ name: 'Thao tác', uid: 'actions' })
 
   const [totalPrice, setTotalPrice] = useState<number>(0)
 
   const handleChangeQuantity = (product: any, quantity: number) => {
     if (product.quantity + quantity <= 0) return
     const newProducts = products.map((p) => (p.id === product.id ? { ...p, quantity: p.quantity + quantity } : p))
-    handleChangeProducts(newProducts)
+    handleChangeProducts!(newProducts)
   }
 
   const handleRemoveProduct = (product: any) => {
-    handleChangeProducts(products.filter((p) => p.id !== product.id))
+    handleChangeProducts!(products.filter((p) => p.id !== product.id))
   }
-
-  useEffect(() => {
-    console.log(products)
-  }, [products])
 
   const renderCell = (product: any, columnKey: any) => {
     const cellValue = product[columnKey]
@@ -87,27 +85,31 @@ export const DetailCartComp = (props: DetailCartCompProps) => {
       case 'quantity':
         return (
           <div className='flex items-center gap-2'>
-            <Button
-              isIconOnly
-              variant='light'
-              radius='full'
-              size='sm'
-              onClick={() => handleChangeQuantity(product, -1)}
-            >
-              <FaMinus />
-            </Button>
+            {!viewOnly && (
+              <Button
+                isIconOnly
+                variant='light'
+                radius='full'
+                size='sm'
+                onClick={() => handleChangeQuantity(product, -1)}
+              >
+                <FaMinus />
+              </Button>
+            )}
             <Chip className='capitalize' size='sm' variant='flat'>
               {cellValue}
             </Chip>
-            <Button
-              isIconOnly
-              variant='light'
-              radius='full'
-              size='sm'
-              onClick={() => handleChangeQuantity(product, +1)}
-            >
-              <FaPlus />
-            </Button>
+            {!viewOnly && (
+              <Button
+                isIconOnly
+                variant='light'
+                radius='full'
+                size='sm'
+                onClick={() => handleChangeQuantity(product, +1)}
+              >
+                <FaPlus />
+              </Button>
+            )}
           </div>
         )
       case 'actions':
@@ -150,20 +152,28 @@ export const DetailCartComp = (props: DetailCartCompProps) => {
           )}
         </TableBody>
       </Table>
-      <div className='flex md:flex-row flex-col justify-between px-2 gap-4'>
-        <Button as={Link} to={routes.client.home} variant='ghost' className='mt-4'>
-          Tiếp tục mua hàng?
-        </Button>
-        <div className='flex gap-4 items-center'>
+
+      <div
+        className={'flex md:flex-row flex-col item-centers justify-between px-2 gap-4' + (viewOnly ? ' items-end' : '')}
+      >
+        {!viewOnly && (
+          <Button as={Link} to={routes.client.home} variant='ghost' className='mt-4'>
+            Tiếp tục mua hàng?
+          </Button>
+        )}
+        {viewOnly && <div></div>}
+        <div className='flex gap-4 items-center justify-between'>
           <div className='flex flex-col items-end'>
             <span>Tổng thanh toán [{products.length} sản phẩm]</span>
-            <span>
-              <PriceComp price={totalPrice} size='md' />
+            <span className='font-semibold'>
+              <PriceComp price={totalPrice} size='md' color='#338cf1' />
             </span>
           </div>
-          <Button className='mt-4' color='primary' size='lg'>
-            Thanh toán
-          </Button>
+          {!viewOnly && (
+            <Button className='mt-4' color='primary' size='lg'>
+              Đặt hàng
+            </Button>
+          )}
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ export default {
     template: '/',
     account: '/account',
     detail: '/detail/:permalink',
-    cart: '/cart'
+    cart: '/cart',
+    payment: '/payment'
   }
 }

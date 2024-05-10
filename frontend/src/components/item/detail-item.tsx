@@ -19,7 +19,7 @@ export const DetailItemComp = (props: DetailItemCompProps) => {
       setQuantitySelected(quantitySelected + value)
   }
   return (
-    <div className='flex flex-col py-4 mx-2 lg:mx-0'>
+    <div className='flex flex-col py-4 đămx-2 lg:mx-0'>
       <div className='flex md:flex-row items-center flex-col bg-white rounded-md p-4'>
         <div className='text-3xl normal-case font-medium md:hidden mx-8 mb-4'>{item.title}</div>
         <ItemImageControllerComp images={item.images} />

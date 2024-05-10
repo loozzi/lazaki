@@ -30,13 +30,13 @@ export const ItemImageControllerComp = (props: ItemImageControllerProps) => {
   const getSlicedImages = images.slice(start, end)
 
   return (
-    <div className='max-w-[450px]'>
+    <div className={'md:max-w-[450px] mx-8 md:mx-0'}>
       <div>
         <Image src={currentImage.url} alt={currentImage.alt} />
       </div>
       <div className='flex mt-2 justify-between'>
         <button onClick={handlePrev} className=''>
-          {start > 0 && <FaChevronLeft />}
+          <FaChevronLeft color={start > 0 ? '#000' : '#ccc'} />
         </button>
         <div className='grid grid-cols-5 flex-1'>
           {getSlicedImages.map((image, index) => {
@@ -48,7 +48,7 @@ export const ItemImageControllerComp = (props: ItemImageControllerProps) => {
           })}
         </div>
         <button onClick={handleNext} className=''>
-          {end < images.length && <FaChevronRight />}
+          <FaChevronRight color={end < images.length ? '#000' : '#ccc'} />
         </button>
       </div>
     </div>

@@ -5,6 +5,7 @@ export default {
     account: '/account',
     detail: '/detail/:permalink',
     cart: '/cart',
-    payment: '/payment'
+    payment: '/payment',
+    search: '/search'
   }
 }

@@ -5,6 +5,7 @@ import { TemplateClientPage } from './pages/client/template'
 import { ViewDetailPage } from './pages/client/detail'
 import { ViewCartPage } from './pages/client/cart'
 import { ViewPaymentPage } from './pages/client/payment'
+import { ViewSearchPage } from './pages/client/search'
 
 function App() {
   const location = useLocation()
@@ -15,6 +16,7 @@ function App() {
         <Route path={routes.client.detail} element={<ViewDetailPage />} />
         <Route path={routes.client.cart} element={<ViewCartPage />} />
         <Route path={routes.client.payment} element={<ViewPaymentPage />} />
+        <Route path={routes.client.search} element={<ViewSearchPage />} />
       </Route>
     </Routes>
   )

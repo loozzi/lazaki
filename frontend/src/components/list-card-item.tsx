@@ -1,4 +1,4 @@
-import { CardItem } from './card-item'
+import { CardItem } from './item/card-item'
 
 interface ListCardItemProps {
   heading: string

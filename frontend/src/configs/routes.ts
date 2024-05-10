@@ -2,6 +2,7 @@ export default {
   client: {
     home: '/',
     template: '/',
-    account: '/account'
+    account: '/account',
+    detail: '/detail/:permalink'
   }
 }

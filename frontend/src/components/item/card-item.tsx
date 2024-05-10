@@ -1,5 +1,5 @@
 import { Card, CardBody, CardFooter, Image } from '@nextui-org/react'
-import { PriceComp } from './price'
+import { PriceComp } from '../price'
 
 interface CardItemProps {
   item: any

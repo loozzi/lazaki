@@ -28,7 +28,7 @@ const ColComp = ({ title, items }: IFooterCol) => {
 
 export const FooterComp = () => {
   return (
-    <div className='bg-[#f1f1f1] mx-2 mt-4 pb-4'>
+    <div className='bg-[#f1f1f1] mt-4 pb-4'>
       <div className='max-w-[1280px] mx-auto py-8 grid lg:grid-cols-5 md:grid-cols-2 sm:grid-cols-1 gap-2'>
         <div>
           <Image src={assets.lazaki} width={100} /> Lazaki - ứng dụng mua sắm trực tuyến thú vị, tin cậy, an toàn và

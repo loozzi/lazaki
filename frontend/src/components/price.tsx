@@ -1,7 +1,7 @@
 interface PriceCompProps {
   price: number
-  size: 'sm' | 'md' | 'lg'
-  color: string
+  size?: 'sm' | 'md' | 'lg'
+  color?: string
 }
 
 export const PriceComp = (props: PriceCompProps) => {
@@ -9,7 +9,7 @@ export const PriceComp = (props: PriceCompProps) => {
 
   const sizes = {
     sm: {
-      fontSize: 20
+      fontSize: 16
     },
     md: {
       fontSize: 24

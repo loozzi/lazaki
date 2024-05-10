@@ -1,15 +1,11 @@
-import { Input, Select, SelectItem } from '@nextui-org/react'
 import { useFormik } from 'formik'
 import { useEffect, useMemo, useState } from 'react'
-import assets from '~/assets'
 import { DetailCartComp } from '~/components/cart/cart-detail'
 import { PaneComp } from '~/components/pane'
+import { PaymentInformationComp } from '~/components/payment/payment-info'
 
 export const ViewPaymentPage = () => {
   const [products, setProducts] = useState<any[]>([])
-
-  const [districts, setDistricts] = useState<{ Id: string; Name: string; Wards: any[] }[]>([])
-  const [wards, setWards] = useState<any[]>([])
 
   const initialInfomation = useMemo(
     () => ({
@@ -19,7 +15,9 @@ export const ViewPaymentPage = () => {
       province: '',
       district: '',
       ward: '',
-      address: ''
+      address: '',
+      note: '',
+      method: 'cod'
     }),
     []
   )
@@ -32,6 +30,10 @@ export const ViewPaymentPage = () => {
     validateOnBlur: true,
     validateOnChange: false
   })
+
+  const handlePay = () => {
+    console.log(payload.values)
+  }
 
   useEffect(() => {
     setProducts([
@@ -77,74 +79,13 @@ export const ViewPaymentPage = () => {
     <div>
       <PaneComp header='Thanh toán' className='mx-2 mt-4'>
         <div className='bg-white pb-4'>
-          <div className='text-2xl font-semibold p-4'>Thông tin thanh toán</div>
-
-          <div className='mx-2 grid md:grid-cols-2 gap-4 mb-8'>
-            <div className='grid gap-4'>
-              <Input label='Họ và tên' />
-              <div className='grid grid-cols-5 gap-4'>
-                <Input label='Email' type='email' className='col-span-3' />
-                <Input label='Số điện thoại' type='number' min={0} max={9999999999} className='col-span-2' />
-              </div>
-            </div>
-            <div className='grid gap-4'>
-              <div className='grid gap-4 grid-cols-3'>
-                <Select
-                  label='Tỉnh thành'
-                  onChange={(e) => {
-                    const province = assets.address.find((address) => address.Id === e.target.value)
-                    payload.setFieldValue('province', province?.Name || '')
-                    setDistricts(province?.Districts || [])
-                  }}
-                >
-                  {assets.address.map((address) => (
-                    <SelectItem key={address.Id} value={address.Id}>
-                      {address.Name}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <Select
-                  label='Quận huyện'
-                  onChange={(e) => {
-                    const district = districts.find((district) => district.Id === e.target.value)
-                    payload.setFieldValue('district', district?.Name || '')
-                    setWards(district?.Wards || [])
-                  }}
-                >
-                  {districts.map((district) => (
-                    <SelectItem key={district.Id} value={district.Id}>
-                      {district.Name}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <Select
-                  label='Phường xã'
-                  onChange={(e) => {
-                    const ward = wards.find((ward) => ward.Id === e.target.value)
-                    payload.setFieldValue('ward', ward?.Name || '')
-                  }}
-                >
-                  {wards.map((ward) => (
-                    <SelectItem key={ward.Id} value={ward.Id}>
-                      {ward.Name}
-                    </SelectItem>
-                  ))}
-                </Select>
-              </div>
-              <div>
-                <Input
-                  label='Địa chỉ'
-                  value={payload.values.address}
-                  onChange={(e) => {
-                    payload.setFieldValue('address', e.target.value)
-                  }}
-                />
-              </div>
-            </div>
+          <div>
+            <div className='text-2xl font-semibold p-4'>Thông tin thanh toán</div>
+            <PaymentInformationComp payload={payload} className='mx-2 grid md:grid-cols-2 gap-4 mb-8' />
           </div>
           <div>
             <div className='text-2xl font-semibold p-4'>Thông tin đơn hàng</div>
-            <DetailCartComp products={products} viewOnly={true} />
+            <DetailCartComp products={products} viewOnly={true} onClick={handlePay} />
           </div>
         </div>
       </PaneComp>

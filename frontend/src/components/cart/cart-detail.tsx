@@ -23,10 +23,11 @@ interface DetailCartCompProps {
   className?: string
   handleChangeProducts?: (products: any[]) => void
   viewOnly?: boolean
+  onClick?: () => void
 }
 
 export const DetailCartComp = (props: DetailCartCompProps) => {
-  const { products, className, handleChangeProducts, viewOnly = false } = props
+  const { products, className, onClick, handleChangeProducts, viewOnly = false } = props
 
   const columns = [
     { name: 'Sản phẩm', uid: 'name' },
@@ -161,16 +162,20 @@ export const DetailCartComp = (props: DetailCartCompProps) => {
             Tiếp tục mua hàng?
           </Button>
         )}
-        {viewOnly && <div></div>}
-        <div className='flex gap-4 items-center justify-between'>
-          <div className='flex flex-col items-end'>
+        {/* {viewOnly && <div></div>} */}
+        <div className={'flex flex-col md:flex-row gap-4 items-center justify-between' + (viewOnly ? ' w-full' : '')}>
+          <div className='flex flex-col items-center md:items-end'>
             <span>Tổng thanh toán [{products.length} sản phẩm]</span>
             <span className='font-semibold'>
               <PriceComp price={totalPrice} size='md' color='#338cf1' />
             </span>
           </div>
-          {!viewOnly && (
-            <Button className='mt-4' color='primary' size='lg'>
+          {viewOnly ? (
+            <Button color='primary' className='md:w-60 w-full' size='lg' onClick={onClick}>
+              Thanh toán
+            </Button>
+          ) : (
+            <Button className='mt-4' color='primary' size='lg' onClick={onClick}>
               Đặt hàng
             </Button>
           )}

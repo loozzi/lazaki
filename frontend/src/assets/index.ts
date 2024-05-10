@@ -1,3 +1,4 @@
 import lazaki from './Lazaki.png'
+import emptyCart from './empty-cart.png'
 
-export default { lazaki }
+export default { lazaki, emptyCart }

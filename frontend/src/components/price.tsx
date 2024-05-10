@@ -2,10 +2,11 @@ interface PriceCompProps {
   price: number
   size?: 'sm' | 'md' | 'lg'
   color?: string
+  fontSize?: number
 }
 
 export const PriceComp = (props: PriceCompProps) => {
-  const { price, size = 'md', color } = props
+  const { price, size = 'md', color, fontSize } = props
 
   const sizes = {
     sm: {
@@ -23,11 +24,20 @@ export const PriceComp = (props: PriceCompProps) => {
   return (
     <span
       style={{
-        fontSize: szConfig.fontSize,
+        fontSize: fontSize ? fontSize : szConfig.fontSize,
         color: color
       }}
     >
-      <span style={{ fontSize: szConfig.fontSize - 8, color: color, textDecoration: 'underline' }}>đ</span>
+      <span
+        style={{
+          fontSize: fontSize ? fontSize - 4 : szConfig.fontSize - 8,
+          color: color,
+          textDecoration: 'underline',
+          marginRight: 2
+        }}
+      >
+        đ
+      </span>
       {price.toLocaleString()}
     </span>
   )

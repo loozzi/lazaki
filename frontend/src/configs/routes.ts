@@ -3,6 +3,7 @@ export default {
     home: '/',
     template: '/',
     account: '/account',
-    detail: '/detail/:permalink'
+    detail: '/detail/:permalink',
+    cart: '/cart'
   }
 }

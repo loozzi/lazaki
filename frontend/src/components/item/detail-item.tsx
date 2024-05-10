@@ -1,126 +1,25 @@
-import { Button, ButtonGroup, Input, image } from '@nextui-org/react'
+import { Button, ButtonGroup, Input } from '@nextui-org/react'
+import { useState } from 'react'
 import { FaGift, FaMinus, FaPlus } from 'react-icons/fa'
 import { MdBikeScooter } from 'react-icons/md'
 import { PriceComp } from '../price'
-import { ListViewReviewComp } from '../review/list-review'
 import { StarComp } from '../star-field'
-import { DescriptionItemComp } from './desc-item'
 import { ItemImageControllerComp } from './image-controller'
-import { useState } from 'react'
 
 interface DetailItemCompProps {
   item: any
 }
 
 export const DetailItemComp = (props: DetailItemCompProps) => {
-  // const { item } = props
+  const { item } = props
   const [quantitySelected, setQuantitySelected] = useState<number>(1)
-  const item = {
-    images: [
-      {
-        url: 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lu8o9o1n8mxd16',
-        alt: 'Image 1',
-        isPrimary: true
-      },
-      {
-        url: 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lu8o9o1ne9754b',
-        alt: 'Image 2',
-        isPrimary: false
-      },
-      {
-        url: 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lu8o9o1na1ht2e',
-        alt: 'Image 3',
-        isPrimary: false
-      },
-      {
-        url: 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lu8o9o1nbg29de',
-        alt: 'Image 4',
-        isPrimary: false
-      },
-      {
-        url: 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lu8o9o1ncump72',
-        alt: 'Image 5',
-        isPrimary: false
-      },
-      {
-        url: 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lu8o9o1nfnrl9a',
-        alt: 'Image 6',
-        isPrimary: false
-      },
-      {
-        url: 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lu8o9o1nh2c1ce',
-        alt: 'Image 7',
-        isPrimary: false
-      }
-    ],
-    title:
-      'lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-    price: 1000000,
-    sold: 349,
-    rating: 2.5,
-    reviews: 100,
-    quantity: 129,
-    old_price: 1200000,
-    description:
-      'lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
-  }
-
-  const reviews = [
-    {
-      id: 1,
-      rating: 3,
-      content: 'Sản phẩm tốt',
-      user: {
-        id: 1,
-        name: 'Nguyễn Văn A'
-      },
-      images: [
-        'https://down-bs-vn.img.susercontent.com/vn-11134103-7r98o-lr7dmjnzzwyh06.webp',
-        'https://down-bs-vn.img.susercontent.com/vn-11134103-7r98o-lr7dmjo0fd8kd6.webp'
-      ],
-      created_at: '2021-09-01T00:00:00Z'
-    },
-    {
-      id: 2,
-      rating: 4,
-      content: 'Sản phẩm rất tốt',
-      user: {
-        id: 2,
-        name: 'Nguyễn Văn B'
-      },
-      created_at: '2021-09-02T00:00:00Z'
-    },
-    {
-      id: 3,
-      rating: 5,
-      content:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua, lorem tempor incididunt ut labore et dolore magna aliqua, lorem ',
-      user: {
-        id: 3,
-        name: 'Nguyễn Văn C'
-      },
-      images: ['https://down-bs-vn.img.susercontent.com/vn-11134103-7r98o-lunih38whb1ha8.webp'],
-      created_at: '2021-09-03T00:00:00Z'
-    },
-    {
-      id: 4,
-      rating: 4,
-      content:
-        'lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-      user: {
-        id: 4,
-        name: 'Nguyễn Văn D'
-      },
-      created_at: '2021-09-04T00:00:00Z'
-    }
-  ]
 
   const handleChangeQuantity = (value: number) => {
     if (quantitySelected + value > 0 && quantitySelected + value <= item.quantity)
       setQuantitySelected(quantitySelected + value)
   }
   return (
-    <div className='flex flex-col py-4 mt-4'>
+    <div className='flex flex-col py-4 mx-2 lg:mx-0'>
       <div className='flex md:flex-row items-center flex-col bg-white rounded-md p-4'>
         <div className='text-3xl normal-case font-medium md:hidden mx-8 mb-4'>{item.title}</div>
         <ItemImageControllerComp images={item.images} />
@@ -183,14 +82,6 @@ export const DetailItemComp = (props: DetailItemCompProps) => {
             <span className='ml-8'>{item.quantity} sản phẩm có sẵn</span>
           </div>
         </div>
-      </div>
-      <div className='mt-4'>
-        <div>
-          <DescriptionItemComp item={item} />
-
-          <ListViewReviewComp reviews={reviews} className='mt-4' />
-        </div>
-        <div>{/* Suggestion list */}</div>
       </div>
     </div>
   )

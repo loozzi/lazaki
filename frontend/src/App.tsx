@@ -1,34 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Route, Routes, useLocation } from 'react-router'
+import routes from './configs/routes'
+import { HomePage } from './pages/client/home'
+import { TemplateClientPage } from './pages/client/template'
+import { ViewDetailPage } from './pages/client/detail'
+import { ViewCartPage } from './pages/client/cart'
+import { ViewPurchasePage } from './pages/client/payment'
+import { ViewSearchPage } from './pages/client/search'
+import { ViewAuthPage } from './pages/client/auth'
+import { ViewAccountPage } from './pages/client/account'
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const location = useLocation()
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Routes location={location}>
+      <Route path={routes.client.template} element={<TemplateClientPage />}>
+        <Route path={routes.client.home} element={<HomePage />} />
+        <Route path={routes.client.detail} element={<ViewDetailPage />} />
+        <Route path={routes.client.cart} element={<ViewCartPage />} />
+        <Route path={routes.client.purchase} element={<ViewPurchasePage />} />
+        <Route path={routes.client.search} element={<ViewSearchPage />} />
+        <Route path={routes.client.auth} element={<ViewAuthPage />} />
+        <Route path={routes.client.account} element={<ViewAccountPage />} />
+      </Route>
+    </Routes>
   )
 }
 

@@ -27,10 +27,11 @@ export const PriceComp = (props: PriceCompProps) => {
         fontSize: fontSize ? fontSize : szConfig.fontSize,
         color: color
       }}
+      className='flex items-start'
     >
       <span
         style={{
-          fontSize: fontSize ? fontSize - 4 : szConfig.fontSize - 8,
+          fontSize: fontSize ? fontSize - 4 : size === 'sm' ? szConfig.fontSize - 4 : szConfig.fontSize - 8,
           color: color,
           textDecoration: 'underline',
           marginRight: 2

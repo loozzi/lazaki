@@ -1,7 +1,7 @@
-import { Input, Select, SelectItem } from '@nextui-org/react'
+import { DatePicker, Input, Select, SelectItem } from '@nextui-org/react'
+import { HistoryPurchaseComp } from '../history/history-purchase'
 import { PaneComp } from '../pane'
 import { SelectAddressComp } from '../select-address'
-import { HistoryPurchaseComp } from './history-purchase'
 
 interface UserInformationCompProps {
   className?: string
@@ -16,8 +16,8 @@ export const UserInformationComp = (props: UserInformationCompProps) => {
           <div className='p-4 flex flex-col gap-4'>
             <div className='grid grid-cols-2 lg:grid-cols-7 gap-4'>
               <Input className='col-span-2 lg:col-span-3' label='Họ và tên' placeholder='Nhập họ và tên' />
-              <Input className='col-span-1 lg:col-span-3' label='Ngày sinh' type='date' placeholder='' />
-              <Select label='Giới tính' placeholder='Chọn giới tính'>
+              <DatePicker className='col-span-1 lg:col-span-2' label='Ngày sinh' />
+              <Select label='Giới tính' placeholder='Chọn giới tính' className='col-span-1 lg:col-span-2'>
                 <SelectItem key='male' value='male'>
                   Nam
                 </SelectItem>

@@ -16,11 +16,11 @@ export const HeaderComp = () => {
   ]
 
   return (
-    <Navbar isBordered className='h-24 w-full' maxWidth='xl'>
+    <Navbar isBordered className='h-24 w-full justify-center' maxWidth='xl'>
       <NavbarBrand onClick={() => history.push(routes.client.home)} className='cursor-pointer'>
-        <Image src={assets.lazaki} />
+        <Image src={assets.lazaki} className='min-w-36 max-w-36' />
       </NavbarBrand>
-      <NavbarContent className='hidden sm:flex gap-6 w-full max-w-[520px]' justify='center'>
+      <NavbarContent className='hidden sm:flex gap-6' justify='center'>
         <NavbarItem className='w-full'>
           <SearchInputHeaderComp />
           <NavbarItem className='hidden md:flex mt-2'>
@@ -33,7 +33,7 @@ export const HeaderComp = () => {
           </NavbarItem>
         </NavbarItem>
       </NavbarContent>
-      <NavbarContent justify='end' className='flex-col'>
+      <NavbarContent className='flex-col justify-end'>
         <NavbarItem className='lg:flex'>
           <Button
             as={Link}

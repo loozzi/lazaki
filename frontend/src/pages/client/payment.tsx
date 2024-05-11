@@ -2,9 +2,9 @@ import { useFormik } from 'formik'
 import { useEffect, useMemo, useState } from 'react'
 import { DetailCartComp } from '~/components/cart/cart-detail'
 import { PaneComp } from '~/components/pane'
-import { PaymentInformationComp } from '~/components/payment/payment-info'
+import { PurchaseInformationComp } from '~/components/purchase/purchase-info'
 
-export const ViewPaymentPage = () => {
+export const ViewPurchasePage = () => {
   const [products, setProducts] = useState<any[]>([])
 
   const initialInfomation = useMemo(
@@ -81,7 +81,7 @@ export const ViewPaymentPage = () => {
         <div className='bg-white pb-4'>
           <div>
             <div className='text-2xl font-semibold p-4'>Thông tin thanh toán</div>
-            <PaymentInformationComp payload={payload} className='mx-2 grid md:grid-cols-2 gap-4 mb-8' />
+            <PurchaseInformationComp payload={payload} className='mx-2 grid md:grid-cols-2 gap-4 mb-8' />
           </div>
           <div>
             <div className='text-2xl font-semibold p-4'>Thông tin đơn hàng</div>

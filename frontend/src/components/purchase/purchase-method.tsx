@@ -1,11 +1,11 @@
 import { Select, SelectItem, Textarea } from '@nextui-org/react'
 
-interface PaymentMethodCompProps {
+interface PurchaseMethodCompProps {
   className?: string
   payload: any
 }
 
-export const PaymentMethodComp = (props: PaymentMethodCompProps) => {
+export const PurchaseMethodComp = (props: PurchaseMethodCompProps) => {
   const { className, payload } = props
 
   return (
@@ -24,6 +24,7 @@ export const PaymentMethodComp = (props: PaymentMethodCompProps) => {
         </SelectItem>
       </Select>
       <Textarea
+        className='row-auto'
         label='Ghi chú'
         type='text'
         minRows={8}

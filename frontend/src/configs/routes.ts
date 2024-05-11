@@ -5,7 +5,7 @@ export default {
     account: '/account',
     detail: '/detail/:permalink',
     cart: '/cart',
-    payment: '/payment',
+    purchase: '/purchase',
     search: '/search',
     auth: '/auth'
   }

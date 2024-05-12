@@ -2,7 +2,6 @@ from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from src.config import _config, envConfig
-from src.models import *
 from src.utils import api
 
 app = Flask(__name__)
@@ -15,5 +14,7 @@ migrate = Migrate(app, db)
 
 config = _config.getDevConfig()
 app.env = config.ENV
+
+from src.models.Address import Address
 
 app.register_blueprint(api, url_prefix="/api")

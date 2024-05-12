@@ -2,7 +2,7 @@ from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from src.config import _config, envConfig
-from src.utils import api
+from src.routes import api
 
 app = Flask(__name__)
 

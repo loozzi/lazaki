@@ -3,6 +3,8 @@ from src.models.Admin import Admin
 from src.models.Category import Category
 from src.models.CategoryProduct import CategoryProduct
 from src.models.Customer import Customer
+from src.models.Order import Order
+from src.models.OrderDetail import OrderDetail
 from src.models.Product import Product
 from src.models.ProductImage import ProductImage
 from src.models.ProductProperty import ProductProperty

@@ -16,5 +16,6 @@ config = _config.getDevConfig()
 app.env = config.ENV
 
 from src.models.Address import Address
+from src.models.Customer import Customer
 
 app.register_blueprint(api, url_prefix="/api")

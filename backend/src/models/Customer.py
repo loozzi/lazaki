@@ -1,0 +1,22 @@
+import datetime
+
+from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from src.utils.enums import CustomerStatusEnum, GenderEnum
+
+from . import Base
+from .Address import Address
+
+
+class Customer(Base):
+    __tablename__ = "customer"
+    id: Mapped[int] = mapped_column(
+        Integer, primary_key=True, nullable=False, autoincrement=True
+    )
+    email: Mapped[str] = mapped_column(String(256), nullable=False, unique=True)
+    status: Mapped[str] = mapped_column(Enum(CustomerStatusEnum), nullable=False)
+    fullName: Mapped[str] = mapped_column(String(256), nullable=True)
+    birthday: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=True)
+    gender: Mapped[str] = mapped_column(Enum(GenderEnum), nullable=True)
+    address_id: Mapped[int] = mapped_column(ForeignKey("address.id"), nullable=True)
+    address: Mapped["Address"] = relationship("Address", backref="customers")

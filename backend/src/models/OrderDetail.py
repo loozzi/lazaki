@@ -15,3 +15,11 @@ class OrderDetail(Base):
     quantity: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     price: Mapped[int] = mapped_column(Integer, nullable=False)
     oldPrice: Mapped[int] = mapped_column(Integer, nullable=False)
+
+
+    def getProductDetail(self):
+        pass
+
+    
+    def setQuantity(self, quantity):
+        pass

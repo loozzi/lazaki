@@ -17,3 +17,8 @@ class Base(db.Model):
         onupdate=func.current_timestamp(),
         default=func.current_timestamp(),
     )
+
+    def delete(self):
+        self.isDeleted = True
+        db.session.commit()
+        return self

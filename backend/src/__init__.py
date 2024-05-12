@@ -15,8 +15,6 @@ migrate = Migrate(app, db)
 config = _config.getDevConfig()
 app.env = config.ENV
 
-from src.models.Address import Address
-from src.models.Admin import Admin
-from src.models.Customer import Customer
+from src.models import *
 
 app.register_blueprint(api, url_prefix="/api")

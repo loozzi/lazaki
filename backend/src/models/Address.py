@@ -1,7 +1,6 @@
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
-
-from . import Base
+from src.models.Base import Base
 
 
 class Address(Base):

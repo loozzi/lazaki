@@ -9,6 +9,6 @@ class RatingImage(Image):
     id: Mapped[int] = mapped_column(
         Integer, primary_key=True, nullable=False, autoincrement=True
     )
-    rating_id: Mapped[int] = mapped_column(
+    ratingId: Mapped[int] = mapped_column(
         Integer, ForeignKey("rating.id"), nullable=False
     )

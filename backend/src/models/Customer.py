@@ -14,7 +14,9 @@ class Customer(Base):
         Integer, primary_key=True, nullable=False, autoincrement=True
     )
     email: Mapped[str] = mapped_column(String(256), nullable=False, unique=True)
-    status: Mapped[str] = mapped_column(Enum(CustomerStatusEnum), nullable=False)
+    status: Mapped[str] = mapped_column(
+        Enum(CustomerStatusEnum), nullable=False, default=CustomerStatusEnum.ACTIVE
+    )
     fullName: Mapped[str] = mapped_column(String(256), nullable=True)
     birthday: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=True)
     gender: Mapped[str] = mapped_column(Enum(GenderEnum), nullable=True)

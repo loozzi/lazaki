@@ -9,5 +9,5 @@ class ProductImage(Image):
     id: Mapped[int] = mapped_column(
         Integer, primary_key=True, nullable=False, autoincrement=True
     )
-    product_id = Column(Integer, ForeignKey("product.id"), nullable=False)
+    productId = Column(Integer, ForeignKey("product.id"), nullable=False)
     isPrimary: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)

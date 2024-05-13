@@ -1,80 +1,67 @@
-import { parseDate } from '@internationalized/date'
-import { Button, Chip, DateInput, Image, Snippet } from '@nextui-org/react'
+import { Button, Chip, Image, Snippet } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 import { FaStar } from 'react-icons/fa'
+import { CartItem, OrderHistoryResponse, OrderStatusType } from '~/models/order'
+import { ImageResponse, ProductDetailResponse } from '~/models/product'
+import { OrderStatusName, PaymentMethodName, PaymentStatusName } from '~/utils'
 import { PriceComp } from '../price'
 import { StarComp } from '../star-field'
 interface HistoryDetailCompProps {
   className?: string
-  history: any
+  history: OrderHistoryResponse
 }
 
 export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
   const { className, history } = props
+  const [reviews, setReviews] = useState<any[]>([])
 
   const [userInfor, setUserInfor] = useState<any>([])
-  const [historyDetail, setHistoryDetail] = useState<any>({
-    id: 1,
-    date: '2021-10-10',
-    total: 2000000,
-    status: 'Đã giao hàng',
-    items: [
-      {
-        id: 1,
-        name: 'Áo thun nam',
-        price: 100000,
-        old_price: 120000,
-        quantity: 10,
-        image: 'https://via.placeholder.com/150',
-        permalink: '/ao-thun-nam',
-        reviewed: { id: 1, content: 'Sản phẩm tốt', rating: 5 }
-      },
-      {
-        id: 2,
-        name: 'Áo thun nữ',
-        price: 100000,
-        old_price: 120000,
-        quantity: 10,
-        image: 'https://via.placeholder.com/150',
-        permalink: '/ao-thun-nu'
-      }
-    ],
-    info: {
-      address: '123 Xuân Thủy, Cầu Giấy, Hà Nội',
-      phone: '0987654321',
-      email: 'aichusad@gmail.com',
-      name: 'Nguyễn Văn A'
-    },
-    note: 'Giao hàng giờ hành chính',
-    shippingInfo: {
-      name: 'Giao hàng tiết kiệm',
-      code: 'GH0011231234'
-    },
-    payment: {
-      status: false,
-      method: 'Thanh toán khi nhận hàng'
-    },
-    orderDate: '2021-10-10',
-    deliveryDate: '2021-10-11'
-  })
+
+  const getVariations = (item: ProductDetailResponse, variationId: number) => {
+    const variation = item.variations.filter((v) => v.id === variationId)[0]
+    return {
+      type: variation.type,
+      option: variation.option
+    }
+  }
 
   const handleRating = (item: any) => {
     // Call API to rate product
   }
 
-  useEffect(() => {
-    setUserInfor([
-      { label: 'Họ tên', value: historyDetail.info.name },
-      { label: 'SĐT', value: historyDetail.info.phone },
-      { label: 'Email', value: historyDetail.info.email },
-      { label: 'Địa chỉ', value: historyDetail.info.address },
-      { label: 'Phương thức thanh toán', value: historyDetail.payment.method },
-      { label: 'Ghi chú', value: historyDetail.note }
-    ])
-  }, [historyDetail])
+  const colorOrderStatus = (status: OrderStatusType) => {
+    switch (status) {
+      case 'success':
+        return 'success'
+      case 'order':
+        return 'warning'
+      case 'cancel':
+        return 'danger'
+      case 'shipping':
+        return 'secondary'
+      case 'preparing':
+        return 'warning'
+      default:
+        return 'default'
+    }
+  }
 
   useEffect(() => {
-    // Call API to get history detail
+    setUserInfor([
+      { label: 'Họ tên', value: history.fullName },
+      { label: 'SĐT', value: history.address.phoneNumber },
+      { label: 'Email', value: history.email },
+      {
+        label: 'Địa chỉ',
+        value: `${history.address.street}, ${history.address.ward}, ${history.address.district}, ${history.address.province}`
+      },
+      { label: 'Phương thức thanh toán', value: PaymentMethodName(history.paymentMethod) },
+      { label: 'Ghi chú', value: history.note }
+    ])
+  }, [history])
+
+  useEffect(() => {
+    // Call API to get reviews
   }, [history])
 
   return (
@@ -96,56 +83,60 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
           <div className='flex flex-col gap-2'>
             <span className='grid grid-cols-3 gap-1'>
               <span className='font-semibold'>Trạng thái</span>{' '}
-              <Chip className='col-span-2' color='success'>
-                {historyDetail.status}
+              <Chip className='col-span-2' color={colorOrderStatus(history.status) as any}>
+                {OrderStatusName(history.status)}
               </Chip>
             </span>
             <span className='grid grid-cols-3 gap-1'>
               <span className='font-semibold'>Trạng thái thanh toán</span>{' '}
-              <Chip className='col-span-2' color={historyDetail.payment.status ? 'success' : 'warning'}>
-                {historyDetail.payment.status ? 'Đã thanh toán' : 'Chưa thanh toán'}
+              <Chip className='col-span-2' color={history.paymentStatus === 'paid' ? 'success' : 'danger'}>
+                {PaymentStatusName(history.paymentStatus)}
               </Chip>
             </span>
             <span className='grid grid-cols-3 gap-1'>
               <span className='font-semibold'>Đơn vị vận chuyển</span>{' '}
-              <span className='col-span-2'>{historyDetail.shippingInfo.name}</span>
+              <span className='col-span-2'>{history.shippingName}</span>
             </span>
             <span className='grid grid-cols-3 gap-1'>
               <span className='font-semibold mr-2'>Mã vận đơn</span>
               <Snippet className='col-span-2' symbol='' color='success'>
-                {historyDetail.shippingInfo.code}
+                {history.shippingCode}
               </Snippet>
             </span>
             <span className='grid grid-cols-2 gap-1'>
-              <DateInput label={'Ngày đặt hàng'} isDisabled defaultValue={parseDate(historyDetail.orderDate)} />
-              {historyDetail.deliveryDate && (
-                <DateInput label={'Ngày nhận hàng'} isDisabled defaultValue={parseDate(historyDetail.deliveryDate)} />
-              )}
+              {/* <DateInput label={'Ngày đặt hàng'} isDisabled defaultValue={parseDate(history.createdAt) || ''} /> */}
             </span>
           </div>
         </div>
       </div>
       <div className='flex flex-col gap-4'>
         <span className='font-semibold text-2xl text-gray-500'>Thông tin đơn hàng</span>
-        {historyDetail.items.map((item: any) => (
+        {history.orderDetails.map((item: CartItem) => (
           <div className='grid grid-cols-1 lg:grid-cols-2 border-1 p-4 rounded-md gap-2'>
             <div className='flex gap-2 items-center'>
-              <Image src={item.image} alt={item.name} className='w-24 h-24 object-cover' />
+              <Image
+                src={item.images.filter((e: ImageResponse) => e.isPrimary === true)[0].link}
+                alt={'Hình ảnh sản phẩm'}
+                className='w-24 h-24 object-cover'
+              />
               <div className='flex flex-col gap-2'>
                 <span className='font-semibold'>{item.name}</span>
-                <span className='text-gray-500'>Số lượng: {item.quantity}</span>
+                <span className='text-gray-500'>
+                  Số lượng: {item.quantity} | {getVariations(item as any, item.variationId).type}:{' '}
+                  {getVariations(item as any, item.variationId).option}
+                </span>
                 <div className='flex gap-2 items-center'>
                   <div className='text-sm text-blue-500'>
                     <PriceComp price={item.price} size='sm' />
                   </div>
                   <div className='text-sm text-gray-500  line-through'>
-                    <PriceComp price={item.old_price} size='sm' />
+                    <PriceComp price={item.oldPrice} size='sm' />
                   </div>
                 </div>
               </div>
             </div>
-            <div className='flex :lgjustify-end'>
-              {!!item.reviewed ? (
+            <div className='flex lg:justify-end'>
+              {!!reviews.map((r) => r.variationId).includes(item.variationId) ? (
                 <div>
                   <StarComp stars={item.reviewed.rating} />{' '}
                   <span className='line-clamp-3'>
@@ -172,7 +163,7 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
       </div>
       <div className='flex justify-end gap-4 mt-4'>
         <div className='text-lg font-semibold flex gap-2'>
-          Thành tiền: <PriceComp price={historyDetail.total} color='#3b82f6' />
+          Thành tiền: <PriceComp price={history.totalAmount || 0} color='#3b82f6' />
         </div>
       </div>
     </div>

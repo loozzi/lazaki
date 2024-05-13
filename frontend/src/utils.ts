@@ -9,3 +9,48 @@ export function parseDateToDMY(dateString: string) {
   // Trả về chuỗi theo định dạng dd/mm/yyyy
   return `${day}/${month}/${year}`
 }
+
+export function PaymentMethodName(method: string) {
+  switch (method) {
+    case 'cod':
+      return 'Thanh toán khi nhận hàng'
+    case 'momo':
+      return 'Ví MoMo'
+    case 'zalopay':
+      return 'Ví ZaloPay'
+    case 'visa':
+      return 'Thẻ Visa/MasterCard'
+    case 'banking':
+      return 'Thanh toán online'
+    default:
+      return 'Thanh toán khi nhận hàng'
+  }
+}
+
+export function PaymentStatusName(status: string) {
+  switch (status) {
+    case 'unpaid':
+      return 'Chưa thanh toán'
+    case 'paid':
+      return 'Đã thanh toán'
+    default:
+      return 'Chưa thanh toán'
+  }
+}
+
+export function OrderStatusName(status: string) {
+  switch (status) {
+    case 'order':
+      return 'Giỏ hàng'
+    case 'cancel':
+      return 'Đã hủy'
+    case 'shipping':
+      return 'Đang giao hàng'
+    case 'preparing':
+      return 'Đang chuẩn bị'
+    case 'success':
+      return 'Thành công'
+    default:
+      return 'Đã đặt hàng'
+  }
+}

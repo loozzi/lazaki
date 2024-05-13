@@ -12,6 +12,8 @@ export default {
   admin: {
     home: '/admin',
     login: '/admin/login',
-    order: '/admin/order'
+    order: '/admin/order',
+    overview: '/admin/overview',
+    logout: '/admin/logout'
   }
 }

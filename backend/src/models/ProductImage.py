@@ -12,10 +12,8 @@ class ProductImage(Image):
     productId = Column(Integer, ForeignKey("product.id"), nullable=False)
     isPrimary: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
-
     def setPrimary(self):
-        pass
+        self.isPrimary = True
 
-    
     def setVariation(self, variationId):
         pass

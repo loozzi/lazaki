@@ -20,26 +20,20 @@ class Variation(Base):
     quantity: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     sold: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
-
     def getVariation(self):
         pass
-    
 
     def setSold(self, soldNumber):
         self.sold = soldNumber
 
-
     def setImage(self, image: str):
         self.image = image
-
 
     def setQuantity(self, quantity):
         self.quantity = quantity
 
-
     def setOldPrice(self, oldPrice):
         self.oldPrice = oldPrice
-
 
     def setPrice(self, price):
         self.price = price

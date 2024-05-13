@@ -1,7 +1,8 @@
+import bcrypt
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 from src.models.Base import Base
-import bcrypt
+
 
 class Admin(Base):
     __tablename__ = "admin"
@@ -12,14 +13,11 @@ class Admin(Base):
     passwordHash: Mapped[str] = mapped_column(String(512), nullable=False)
     username: Mapped[str] = mapped_column(String(256), nullable=False, unique=True)
 
-
     def setUserName(self, username: str):
         self.username = username
 
-
     def setPassword(self, password: str):
         pass
-
 
     def setEmail(self, email: str):
         self.email = email

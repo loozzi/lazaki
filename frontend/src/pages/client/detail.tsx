@@ -1,58 +1,15 @@
+import { Skeleton } from '@nextui-org/react'
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router'
 import { DescriptionItemComp } from '~/components/item/desc-item'
 import { DetailItemComp } from '~/components/item/detail-item'
 import { ListCardItemComp } from '~/components/list-card-item'
 import { ListViewReviewComp } from '~/components/review/list-review'
+import { ProductDetailResponse } from '~/models/product'
 
 export const ViewDetailPage = () => {
-  const item = {
-    images: [
-      {
-        url: 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lu8o9o1n8mxd16',
-        alt: 'Image 1',
-        isPrimary: true
-      },
-      {
-        url: 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lu8o9o1ne9754b',
-        alt: 'Image 2',
-        isPrimary: false
-      },
-      {
-        url: 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lu8o9o1na1ht2e',
-        alt: 'Image 3',
-        isPrimary: false
-      },
-      {
-        url: 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lu8o9o1nbg29de',
-        alt: 'Image 4',
-        isPrimary: false
-      },
-      {
-        url: 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lu8o9o1ncump72',
-        alt: 'Image 5',
-        isPrimary: false
-      },
-      {
-        url: 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lu8o9o1nfnrl9a',
-        alt: 'Image 6',
-        isPrimary: false
-      },
-      {
-        url: 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lu8o9o1nh2c1ce',
-        alt: 'Image 7',
-        isPrimary: false
-      }
-    ],
-    title:
-      'lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-    price: 1000000,
-    sold: 349,
-    rating: 2.5,
-    reviews: 100,
-    quantity: 129,
-    old_price: 1200000,
-    description:
-      'lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
-  }
+  const params = useParams()
+  const [product, setProduct] = useState<ProductDetailResponse | undefined>(undefined)
 
   const reviews = [
     {
@@ -107,12 +64,147 @@ export const ViewDetailPage = () => {
     }
   ]
 
+  useEffect(() => {
+    // call api get product detail
+    // set item
+    setProduct({
+      id: 1,
+      name: 'Sản phẩm này là sản phẩm có tên là sản phẩm',
+      description: 'Mô tả sản phẩm',
+      properties: [
+        {
+          name: 'Màu sắc',
+          value: 'Đen'
+        },
+        {
+          name: 'Chất liệu',
+          value: 'Cotton'
+        }
+      ],
+      variations: [
+        {
+          id: 1,
+          type: 'Màu + Size',
+          name: 'Đen, XL',
+          option: 'Đen, XL',
+          image: 'https://via.placeholder.com/450',
+          price: 100000,
+          oldPrice: 450000,
+          quantity: 10,
+          sold: 10
+        },
+        {
+          id: 2,
+          type: 'Màu + Size',
+          name: 'Đen, L',
+          option: 'Đen, L',
+          image: 'https://via.placeholder.com/450',
+          price: 90000,
+          oldPrice: 140000,
+          quantity: 20,
+          sold: 20
+        },
+        {
+          id: 3,
+          type: 'Màu + Size',
+          name: 'Đen, M',
+          option: 'Đen, M',
+          image: 'https://via.placeholder.com/450',
+          price: 80000,
+          oldPrice: 130000,
+          quantity: 30,
+          sold: 30
+        },
+        {
+          id: 4,
+          type: 'Màu + Size',
+          name: 'Trắng, XL',
+          option: 'Trắng, XL',
+          image: 'https://via.placeholder.com/450',
+          price: 100000,
+          oldPrice: 450000,
+          quantity: 10,
+          sold: 10
+        },
+        {
+          id: 5,
+          type: 'Màu + Size',
+          name: 'Trắng, L',
+          option: 'Trắng, L',
+          image: 'https://via.placeholder.com/450',
+          price: 90000,
+          oldPrice: 140000,
+          quantity: 20,
+          sold: 20
+        },
+        {
+          id: 6,
+          type: 'Màu + Size',
+          name: 'Trắng, M',
+          option: 'Trắng, M',
+          image: 'https://via.placeholder.com/450',
+          price: 80000,
+          oldPrice: 130000,
+          quantity: 30,
+          sold: 30
+        },
+        {
+          id: 7,
+          type: 'Màu + Size',
+          name: 'Trắng, XL',
+          option: 'Trắng, XL',
+          image: 'https://via.placeholder.com/450',
+          price: 100000,
+          oldPrice: 450000,
+          quantity: 10,
+          sold: 10
+        },
+        {
+          id: 8,
+          type: 'Màu + Size',
+          name: 'Trắng, L',
+          option: 'Trắng, L',
+          image: 'https://via.placeholder.com/450',
+          price: 90000,
+          oldPrice: 140000,
+          quantity: 20,
+          sold: 20
+        }
+      ],
+      images: [
+        {
+          link: 'https://via.placeholder.com/450',
+          variationId: 1,
+          isPrimary: true
+        },
+        {
+          link: 'https://via.placeholder.com/450',
+          variationId: 2,
+          isPrimary: false
+        },
+        {
+          link: 'https://via.placeholder.com/450',
+          variationId: 3,
+          isPrimary: false
+        }
+      ],
+      categories: [
+        {
+          id: 1,
+          name: 'Áo thun',
+          slug: 'ao-thun',
+          description: 'Áo thun nam'
+        }
+      ]
+    })
+  }, [params])
+
   return (
     <div>
-      <DetailItemComp item={item} />
+      {product ? <DetailItemComp product={product} /> : <Skeleton></Skeleton>}
       <div className='mt-2 grid grid-cols-10 gap-2 lg:gap-4'>
         <div className='flex flex-col lg:col-span-8 md:col-span-6 col-span-10'>
-          <DescriptionItemComp item={item} />
+          {product && <DescriptionItemComp product={product} />}
           <ListViewReviewComp reviews={reviews} className='mt-4' />
         </div>
         <div className='lg:col-span-2 md:col-span-4 col-span-10'>

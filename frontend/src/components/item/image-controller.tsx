@@ -1,9 +1,10 @@
 import { Image } from '@nextui-org/react'
 import { useState } from 'react'
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
+import { ImageResponse } from '~/models/product'
 
 interface ItemImageControllerProps {
-  images: any[]
+  images: ImageResponse[]
 }
 
 export const ItemImageControllerComp = (props: ItemImageControllerProps) => {
@@ -30,9 +31,9 @@ export const ItemImageControllerComp = (props: ItemImageControllerProps) => {
   const getSlicedImages = images.slice(start, end)
 
   return (
-    <div className={'md:max-w-[450px] mx-8 md:mx-0'}>
+    <div className={'md:max-w-[450px] w-full mx-2 md:mx-0'}>
       <div>
-        <Image src={currentImage.url} alt={currentImage.alt} />
+        <Image src={currentImage.link} alt={'Hình ảnh sản phẩm'} />
       </div>
       <div className='flex mt-2 justify-between'>
         <button onClick={handlePrev} className=''>
@@ -42,7 +43,7 @@ export const ItemImageControllerComp = (props: ItemImageControllerProps) => {
           {getSlicedImages.map((image, index) => {
             return (
               <div key={index} onClick={() => setCurrentImage(image)}>
-                <Image src={image.url} alt={image.alt} width={76} height={140} className='cursor-pointer' />
+                <Image src={image.link} alt={'Hình ảnh sản phẩm'} width={76} height={140} className='cursor-pointer' />
               </div>
             )
           })}

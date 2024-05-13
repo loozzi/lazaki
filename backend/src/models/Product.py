@@ -30,3 +30,15 @@ class Product(Base):
     variations: Mapped[list["Variation"]] = relationship(
         "Variation", backref="products", uselist=True
     )
+
+
+    def getInfomation(self):
+        pass
+
+    
+    def update(self, name: str, description: str, properties: list["ProductProperty"],
+               variations: list["Variation"], images: list["ProductImage"], categories: list["Category"]):
+        pass
+
+    def remove(self):
+        pass

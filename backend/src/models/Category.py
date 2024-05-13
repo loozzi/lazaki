@@ -19,3 +19,19 @@ class Category(Base):
         "Product", secondary="category_product", backref="categorys", uselist=True
     )
     description: Mapped[str] = mapped_column(String(256), nullable=True)
+
+
+    def getInfo(self) -> dict:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "slug": self.slug,
+            "description": self.description,
+        }
+    
+
+    def edit(self, name: str,  slug: str , description: str):
+        self.name = name
+        self.slug = slug
+        self.description = description
+    

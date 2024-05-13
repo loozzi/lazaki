@@ -22,3 +22,11 @@ class Customer(Base):
     gender: Mapped[str] = mapped_column(Enum(GenderEnum), nullable=True)
     addressId: Mapped[int] = mapped_column(ForeignKey("address.id"), nullable=True)
     address: Mapped["Address"] = relationship("Address", backref="customer")
+
+
+    def setStatus(self, status: CustomerStatusEnum):
+        self.status = status
+
+
+    def setAddress(self, address: Address):
+        pass

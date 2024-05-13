@@ -10,3 +10,15 @@ class ProductProperty(Base):
     )
     name: Mapped[str] = mapped_column(String(255), primary_key=True)
     value: Mapped[str] = mapped_column(String(1024), nullable=False)
+
+
+    def getProperty(self):
+        pass
+
+
+    def setName(self):
+        return self.name
+    
+    
+    def setValue(self):
+        return self.value

@@ -38,3 +38,39 @@ class Order(Base):
         "OrderDetail", backref="order", uselist=True
     )
     totalAmount: Mapped[int] = mapped_column(Integer, nullable=False)
+
+
+    def setListOrderDetail(self, orderDetails):
+        pass
+
+    
+    def setCustomerId(self, customerId):
+        self.customerId = customerId
+
+    
+    def setTotalAmount(self, totalAmount):
+        self.totalAmount = totalAmount
+
+    
+    def setAddress(self, phoneNumber, province, district, ward, street):
+        pass
+
+
+    def setConfirm(self, confirm):
+        pass
+
+
+    def showDetail(self):
+        pass
+
+
+    def cancelOrder(self):
+        pass
+
+
+    def getOrderDetail(self, variationId):
+        pass
+
+
+    def removeOrderDetail(self, variationId):
+        pass

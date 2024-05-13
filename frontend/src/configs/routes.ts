@@ -12,8 +12,11 @@ export default {
   admin: {
     home: '/admin',
     login: '/admin/login',
-    order: '/admin/order',
+    order: '/admin/orders',
     overview: '/admin/overview',
+    users: '/admin/users',
+    product: '/admin/products',
+    category: '/admin/categories',
     logout: '/admin/logout'
   }
 }

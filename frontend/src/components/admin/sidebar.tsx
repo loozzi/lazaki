@@ -38,24 +38,24 @@ export const AdminSidebarComp = (props: AdminSidebarCompProps) => {
           <SidebarItemComp
             title='Người dùng'
             icon={<FaUsers />}
-            to={routes.admin.order}
-            isActive={window.location.href.includes(routes.admin.order)}
+            to={routes.admin.users}
+            isActive={window.location.href.includes(routes.admin.users)}
             setCollapsed={setCollapsed}
             collapsed={collapsed}
           />
           <SidebarItemComp
             title='Sản phẩm'
             icon={<AiFillProduct />}
-            to={routes.admin.order}
-            isActive={window.location.href.includes(routes.admin.order)}
+            to={routes.admin.product}
+            isActive={window.location.href.includes(routes.admin.product)}
             setCollapsed={setCollapsed}
             collapsed={collapsed}
           />
           <SidebarItemComp
             title='Danh mục'
             icon={<BiSolidCategory />}
-            to={routes.admin.order}
-            isActive={window.location.href.includes(routes.admin.order)}
+            to={routes.admin.category}
+            isActive={window.location.href.includes(routes.admin.category)}
             setCollapsed={setCollapsed}
             collapsed={collapsed}
           />

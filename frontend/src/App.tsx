@@ -11,6 +11,10 @@ import { HomePage } from './pages/client/home'
 import { ViewPurchasePage } from './pages/client/payment'
 import { ViewSearchPage } from './pages/client/search'
 import { TemplateClientPage } from './pages/client/template'
+import { ViewAdminOrderPage } from './pages/admin/order'
+import { ViewAdminManageUserPage } from './pages/admin/users'
+import { ViewAdminManageProductPage } from './pages/admin/product'
+import { ViewAdminManageCategoryPage } from './pages/admin/category'
 
 function App() {
   const location = useLocation()
@@ -28,6 +32,11 @@ function App() {
       <Route path={routes.admin.login} element={<ViewAdminLoginPage />} />
       <Route path={routes.admin.home} element={<AdminTemplate />}>
         <Route path={routes.admin.overview} element={<ViewOverviewPage />} />
+        <Route path={routes.admin.order} element={<ViewAdminOrderPage />} />
+        <Route path={routes.admin.users} element={<ViewAdminManageUserPage />} />
+        <Route path={routes.admin.product} element={<ViewAdminManageProductPage />} />
+        <Route path={routes.admin.category} element={<ViewAdminManageCategoryPage />} />
+        <Route path={routes.admin.logout} element={<ViewOverviewPage />} />
       </Route>
     </Routes>
   )

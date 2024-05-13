@@ -1,14 +1,14 @@
 class OrderService:
     # Tạo order
-    def addOrder(customerID):
+    def addOrder(customerId):
         pass
 
     # Xác nhận Order
-    def confirmOrder(orderID):
+    def confirmOrder(orderId):
         pass
 
     # Lấy lịch sử order của khách hàng
-    def getOrderHistory(customerID):
+    def getOrderHistory(customerId):
         pass
 
     # calculate
@@ -16,7 +16,7 @@ class OrderService:
         pass
 
     # Lấy thông tin 1 order
-    def getOrder(orderID):
+    def getOrder(orderId):
         pass
 
     # Lấy toàn bộ lịch sử order trên hệ thống

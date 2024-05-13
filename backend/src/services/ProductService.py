@@ -8,7 +8,7 @@ class ProductService:
         pass
 
     # Lấy chi tiết của sản phẩm
-    def getDetailProduct(productID):
+    def getDetailProduct(productId):
         pass
 
     # Thêm sản phẩm vào database
@@ -16,5 +16,5 @@ class ProductService:
         pass
 
     # Xoá sản phẩm khỏi database
-    def removeProduct(productID):
+    def removeProduct(productId):
         pass

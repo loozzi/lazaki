@@ -4,7 +4,7 @@ class CustomerService:
         pass
 
     # Lấy thông tin khách hàng
-    def getCustomer(customerID):
+    def getCustomer(customerId):
         pass
 
     # Lấy danh sách khách hàng
@@ -12,5 +12,5 @@ class CustomerService:
         pass
 
     # Cập nhật thông tin khách hàng
-    def update(customerID):
+    def update(customerId):
         pass

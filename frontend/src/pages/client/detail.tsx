@@ -167,7 +167,7 @@ export const ViewDetailPage = () => {
           image: 'https://via.placeholder.com/450',
           price: 90000,
           oldPrice: 140000,
-          quantity: 20,
+          quantity: 0,
           sold: 20
         }
       ],

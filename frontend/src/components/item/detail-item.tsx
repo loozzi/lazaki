@@ -9,6 +9,8 @@ import { ProductDetailResponse, VariationResponse } from '~/models/product'
 import { PriceComp } from '../price'
 import { StarComp } from '../star-field'
 import { ItemImageControllerComp } from './image-controller'
+import { history } from '~/configs/history'
+import routes from '~/configs/routes'
 
 interface DetailItemCompProps {
   product: ProductDetailResponse
@@ -44,6 +46,11 @@ export const DetailItemComp = (props: DetailItemCompProps) => {
     dispatch({ type: orderActions.addToCart.type, payload: cartItem })
   }
 
+  const handleBuyNow = () => {
+    handleAddToCart()
+    history.push(routes.client.cart)
+  }
+
   return (
     <div className='flex flex-col py-4 đămx-2 lg:mx-0'>
       <div className='flex md:flex-row items-start flex-col bg-white rounded-md p-4'>
@@ -60,7 +67,9 @@ export const DetailItemComp = (props: DetailItemCompProps) => {
               Đánh giá
             </a>
             <div>
-              <span className='mr-1 underline text-sm font-semibold'>{selectedVariation.sold}</span>
+              <span className='mr-1 underline text-sm font-semibold'>
+                {product.variations.reduce((pre, cur) => pre + cur.sold, 0)}
+              </span>
               Đã bán
             </div>
           </div>
@@ -122,7 +131,7 @@ export const DetailItemComp = (props: DetailItemCompProps) => {
                       <Button
                         key={index}
                         variant={variation.id === selectedVariation.id ? 'solid' : 'ghost'}
-                        color='primary'
+                        color={variation.quantity > 0 ? 'primary' : 'warning'}
                         onClick={() => handleChangeVariation(variation)}
                       >
                         {variation.option}
@@ -133,10 +142,22 @@ export const DetailItemComp = (props: DetailItemCompProps) => {
             </div>
           ))}
           <div className='mt-8 flex justify-start gap-2'>
-            <Button variant='ghost' color='primary' startContent={<FaCartPlus size={24} />} onClick={handleAddToCart}>
+            <Button
+              variant='ghost'
+              color='primary'
+              startContent={<FaCartPlus size={24} />}
+              onClick={handleAddToCart}
+              disabled={selectedVariation.quantity === 0}
+            >
               Thêm vào giỏ hàng
             </Button>
-            <Button variant='solid' color='primary' className='w-48'>
+            <Button
+              variant='solid'
+              color='primary'
+              className='w-48'
+              onClick={handleBuyNow}
+              disabled={selectedVariation.quantity === 0}
+            >
               Mua ngay
             </Button>
           </div>

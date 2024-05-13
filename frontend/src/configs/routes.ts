@@ -8,5 +8,15 @@ export default {
     purchase: '/purchase',
     search: '/search',
     auth: '/auth'
+  },
+  admin: {
+    home: '/admin',
+    login: '/admin/login',
+    order: '/admin/orders',
+    overview: '/admin/overview',
+    users: '/admin/users',
+    product: '/admin/products',
+    category: '/admin/categories',
+    logout: '/admin/logout'
   }
 }

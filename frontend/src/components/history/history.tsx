@@ -1,5 +1,6 @@
 import {
   Button,
+  Chip,
   Image,
   Modal,
   ModalBody,
@@ -9,17 +10,28 @@ import {
   useDisclosure
 } from '@nextui-org/react'
 import { MdOutlinePreview } from 'react-icons/md'
+import { OrderHistoryResponse } from '~/models/order'
+import { ImageResponse, ProductDetailResponse } from '~/models/product'
 import { PriceComp } from '../price'
 import { HistoryDetailComp } from './history-detail'
+import { OrderStatusColor, OrderStatusName } from '~/utils'
 
 interface HistoryCompProps {
-  history: any
+  history: OrderHistoryResponse
   className?: string
 }
 
 export const HistoryComp = (props: HistoryCompProps) => {
   const { history, className } = props
   const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const getVariations = (item: ProductDetailResponse, variationId: number) => {
+    const variation = item.variations.filter((v) => v.id === variationId)[0]
+    return {
+      type: variation.type,
+      option: variation.option
+    }
+  }
 
   const handleOpen = () => {
     onOpen()
@@ -33,27 +45,40 @@ export const HistoryComp = (props: HistoryCompProps) => {
     <div className={className}>
       <div className='p-4 bg-white rounded-md border-1 border-gray-200'>
         <div className='flex justify-between gap-4 items-center border-b-1 border-gray-200 pb-2'>
-          <div className='text-gray-400'>{history.date}</div>
-          <div className='text-lg font-semibold capitalize'>{history.status}</div>
+          <div className='text-gray-400'>{history.createdAt}</div>
+          <div className='text-lg font-semibold capitalize'>
+            <Chip color={OrderStatusColor(history.status)} size='sm'>
+              {OrderStatusName(history.status)}
+            </Chip>
+          </div>
         </div>
         <div className='flex flex-col gap-4 mt-4'>
-          {history.items.map((item: any) => (
+          {history.orderDetails.map((item: any) => (
             <div key={item.id} className='flex justify-between gap-4 border-b-1 border-gray-200 pb-2'>
               <div className='flex gap-4 items-center'>
-                <Image src={item.image} alt={item.name} className='w-20 h-20 object-cover' />
+                <Image
+                  src={item.images.filter((e: ImageResponse) => e.isPrimary === true)[0].link}
+                  alt={item.name}
+                  className='w-20 h-20 object-cover'
+                />
                 <div className='flex flex-col gap-2'>
                   <div className='text-lg font-semibold'>{item.name}</div>
                   <div className='flex gap-4'>
                     <div className='text-sm text-gray-500'>Số lượng: {item.quantity}</div>
                   </div>
+                  <div className='flex gap-4'>
+                    <div className='text-sm text-gray-500 capitalize'>
+                      {getVariations(item, item.variationId).type}: {getVariations(item, item.variationId).option}
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className='flex gap-4 items-center'>
                 <div className='text-sm text-blue-500'>
-                  <PriceComp price={item.price} size='sm' />
+                  <PriceComp price={item.price || '0'} size='sm' />
                 </div>
                 <div className='text-sm text-gray-500  line-through'>
-                  <PriceComp price={item.old_price} size='sm' />
+                  <PriceComp price={item.oldPrice || '0'} size='sm' />
                 </div>
               </div>
             </div>
@@ -71,7 +96,7 @@ export const HistoryComp = (props: HistoryCompProps) => {
               </Button>
             </div>
             <div className='text-lg font-semibold flex gap-2'>
-              Thành tiền: <PriceComp price={history.total} color='#3b82f6' />
+              Thành tiền: <PriceComp price={history.totalAmount || 0} color='#3b82f6' />
             </div>
           </div>
         </div>

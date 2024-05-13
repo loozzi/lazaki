@@ -1,5 +1,6 @@
 import {
   Button,
+  Chip,
   Image,
   Modal,
   ModalBody,
@@ -13,6 +14,7 @@ import { OrderHistoryResponse } from '~/models/order'
 import { ImageResponse, ProductDetailResponse } from '~/models/product'
 import { PriceComp } from '../price'
 import { HistoryDetailComp } from './history-detail'
+import { OrderStatusColor, OrderStatusName } from '~/utils'
 
 interface HistoryCompProps {
   history: OrderHistoryResponse
@@ -44,7 +46,11 @@ export const HistoryComp = (props: HistoryCompProps) => {
       <div className='p-4 bg-white rounded-md border-1 border-gray-200'>
         <div className='flex justify-between gap-4 items-center border-b-1 border-gray-200 pb-2'>
           <div className='text-gray-400'>{history.createdAt}</div>
-          <div className='text-lg font-semibold capitalize'>{history.status}</div>
+          <div className='text-lg font-semibold capitalize'>
+            <Chip color={OrderStatusColor(history.status)} size='sm'>
+              {OrderStatusName(history.status)}
+            </Chip>
+          </div>
         </div>
         <div className='flex flex-col gap-4 mt-4'>
           {history.orderDetails.map((item: any) => (

@@ -1,3 +1,5 @@
+import { OrderStatusType, PaymentMethodType, PaymentStatusType } from './models/order'
+
 export function parseDateToDMY(dateString: string) {
   const date = new Date(dateString)
 
@@ -10,16 +12,10 @@ export function parseDateToDMY(dateString: string) {
   return `${day}/${month}/${year}`
 }
 
-export function PaymentMethodName(method: string) {
+export function PaymentMethodName(method: PaymentMethodType) {
   switch (method) {
     case 'cod':
       return 'Thanh toán khi nhận hàng'
-    case 'momo':
-      return 'Ví MoMo'
-    case 'zalopay':
-      return 'Ví ZaloPay'
-    case 'visa':
-      return 'Thẻ Visa/MasterCard'
     case 'banking':
       return 'Thanh toán online'
     default:
@@ -27,7 +23,7 @@ export function PaymentMethodName(method: string) {
   }
 }
 
-export function PaymentStatusName(status: string) {
+export function PaymentStatusName(status: PaymentStatusType) {
   switch (status) {
     case 'unpaid':
       return 'Chưa thanh toán'
@@ -38,7 +34,7 @@ export function PaymentStatusName(status: string) {
   }
 }
 
-export function OrderStatusName(status: string) {
+export function OrderStatusName(status: OrderStatusType) {
   switch (status) {
     case 'order':
       return 'Giỏ hàng'
@@ -52,5 +48,22 @@ export function OrderStatusName(status: string) {
       return 'Thành công'
     default:
       return 'Đã đặt hàng'
+  }
+}
+
+export const OrderStatusColor = (status: OrderStatusType) => {
+  switch (status) {
+    case 'success':
+      return 'success'
+    case 'order':
+      return 'warning'
+    case 'cancel':
+      return 'danger'
+    case 'shipping':
+      return 'secondary'
+    case 'preparing':
+      return 'warning'
+    default:
+      return 'default'
   }
 }

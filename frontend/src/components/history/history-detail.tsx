@@ -1,10 +1,11 @@
 import { Button, Chip, Image, Snippet } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 import { FaStar } from 'react-icons/fa'
-import { CartItem, OrderHistoryResponse, OrderStatusType } from '~/models/order'
+import { CartItem, OrderHistoryResponse } from '~/models/order'
 import { ImageResponse, ProductDetailResponse } from '~/models/product'
-import { OrderStatusName, PaymentMethodName, PaymentStatusName } from '~/utils'
+import { OrderStatusColor, OrderStatusName, PaymentMethodName, PaymentStatusName } from '~/utils'
 import { PriceComp } from '../price'
+import { RatingComp } from '../review/rating'
 import { StarComp } from '../star-field'
 interface HistoryDetailCompProps {
   className?: string
@@ -13,6 +14,7 @@ interface HistoryDetailCompProps {
 
 export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
   const { className, history } = props
+  const [selectedReview, setSelectedReview] = useState<number>(-1)
   const [reviews, setReviews] = useState<any[]>([])
 
   const [userInfor, setUserInfor] = useState<any>([])
@@ -27,23 +29,6 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
 
   const handleRating = (item: any) => {
     // Call API to rate product
-  }
-
-  const colorOrderStatus = (status: OrderStatusType) => {
-    switch (status) {
-      case 'success':
-        return 'success'
-      case 'order':
-        return 'warning'
-      case 'cancel':
-        return 'danger'
-      case 'shipping':
-        return 'secondary'
-      case 'preparing':
-        return 'warning'
-      default:
-        return 'default'
-    }
   }
 
   useEffect(() => {
@@ -83,7 +68,7 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
           <div className='flex flex-col gap-2'>
             <span className='grid grid-cols-3 gap-1'>
               <span className='font-semibold'>Trạng thái</span>{' '}
-              <Chip className='col-span-2' color={colorOrderStatus(history.status) as any}>
+              <Chip className='col-span-2' color={OrderStatusColor(history.status) as any}>
                 {OrderStatusName(history.status)}
               </Chip>
             </span>
@@ -139,23 +124,23 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
               {!!reviews.map((r) => r.variationId).includes(item.variationId) ? (
                 <div>
                   <StarComp stars={item.reviewed.rating} />{' '}
-                  <span className='line-clamp-3'>
-                    Lorem, ipsum dolor sit amet consectetur adipisicing elit. Temporibus non in deserunt possimus
-                    sapiente nostrum velit placeat nesciunt reprehenderit itaque, vero dicta tenetur mollitia beatae
-                    architecto impedit. Officia, aut adipisci.
-                  </span>
+                  <span className='line-clamp-3'>{item.reviewed.comment || 'Không có đánh giá nào từ khách hàng'}</span>
                 </div>
-              ) : (
+              ) : selectedReview !== item.id ? (
                 <Button
                   color='primary'
                   variant='ghost'
                   size='sm'
                   className='w-24'
                   startContent={<FaStar />}
-                  onClick={() => handleRating(item)}
+                  onClick={() => setSelectedReview(item.id || 0)}
                 >
                   Đánh giá
                 </Button>
+              ) : (
+                <div className='w-full'>
+                  <RatingComp handleCancel={() => setSelectedReview(0)} />
+                </div>
               )}
             </div>
           </div>

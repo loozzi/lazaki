@@ -17,17 +17,18 @@ import { FaDeleteLeft } from 'react-icons/fa6'
 import { Link } from 'react-router-dom'
 import routes from '~/configs/routes'
 import { PriceComp } from '../price'
+import { useAppDispatch } from '~/app/hook'
+import { orderActions } from '~/hooks/order/order.slice'
 
 interface DetailCartCompProps {
   products: any[]
   className?: string
-  handleChangeProducts?: (products: any[]) => void
   viewOnly?: boolean
   onClick?: () => void
 }
 
 export const DetailCartComp = (props: DetailCartCompProps) => {
-  const { products, className, onClick, handleChangeProducts, viewOnly = false } = props
+  const { products, className, onClick, viewOnly = false } = props
 
   const columns = [
     { name: 'Sản phẩm', uid: 'name' },
@@ -39,15 +40,20 @@ export const DetailCartComp = (props: DetailCartCompProps) => {
   if (!viewOnly) columns.push({ name: 'Thao tác', uid: 'actions' })
 
   const [totalPrice, setTotalPrice] = useState<number>(0)
+  const dispatch = useAppDispatch()
 
   const handleChangeQuantity = (product: any, quantity: number) => {
-    if (product.quantity + quantity <= 0) return
-    const newProducts = products.map((p) => (p.id === product.id ? { ...p, quantity: p.quantity + quantity } : p))
-    handleChangeProducts!(newProducts)
+    dispatch({
+      type: orderActions.changeQuantity.type,
+      payload: { variationId: product.variationId, quantity }
+    })
   }
 
   const handleRemoveProduct = (product: any) => {
-    handleChangeProducts!(products.filter((p) => p.id !== product.id))
+    dispatch({
+      type: orderActions.removeFromCart.type,
+      payload: product.variationId
+    })
   }
 
   const renderCell = (product: any, columnKey: any) => {

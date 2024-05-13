@@ -1,4 +1,4 @@
-import { Card, CardBody, CardFooter, Image } from '@nextui-org/react'
+import { Card, CardBody, CardFooter, Image, Skeleton } from '@nextui-org/react'
 import { PriceComp } from '../price'
 
 interface CardItemProps {
@@ -39,7 +39,7 @@ export const CardItem = (props: CardItemProps) => {
   return (
     <Card
       shadow='sm'
-      className={`w-[${szConfig.width}px] h-[${szConfig.height}px] rounded-md cursor-pointer`}
+      className={`w-[${szConfig.width}px] h-[${szConfig.height}px] rounded-md cursor-pointer shadow-lg`}
       isPressable
       onPress={handleViewDetail}
     >

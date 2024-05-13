@@ -1,50 +1,87 @@
 import { Button, ButtonGroup, Input } from '@nextui-org/react'
 import { useState } from 'react'
-import { FaGift, FaMinus, FaPlus } from 'react-icons/fa'
+import { FaCartPlus, FaGift, FaMinus, FaPlus } from 'react-icons/fa'
 import { MdBikeScooter } from 'react-icons/md'
+import { useAppDispatch } from '~/app/hook'
+import { orderActions } from '~/hooks/order/order.slice'
+import { CartItem } from '~/models/order'
+import { ProductDetailResponse, VariationResponse } from '~/models/product'
 import { PriceComp } from '../price'
 import { StarComp } from '../star-field'
 import { ItemImageControllerComp } from './image-controller'
+import { history } from '~/configs/history'
+import routes from '~/configs/routes'
 
 interface DetailItemCompProps {
-  item: any
+  product: ProductDetailResponse
 }
 
 export const DetailItemComp = (props: DetailItemCompProps) => {
-  const { item } = props
+  const { product } = props
   const [quantitySelected, setQuantitySelected] = useState<number>(1)
+  const [selectedVariation, setSelectedVariation] = useState<VariationResponse>(product.variations[0])
+
+  const dispatch = useAppDispatch()
+
+  const variationTypes = new Set(product.variations.map((variation) => variation.type))
 
   const handleChangeQuantity = (value: number) => {
-    if (quantitySelected + value > 0 && quantitySelected + value <= item.quantity)
+    if (quantitySelected + value > 0 && quantitySelected + value <= selectedVariation.quantity)
       setQuantitySelected(quantitySelected + value)
   }
+
+  const handleChangeVariation = (variation: VariationResponse) => {
+    setSelectedVariation(variation)
+    if (variation.quantity < quantitySelected) setQuantitySelected(variation.quantity)
+  }
+
+  const handleAddToCart = () => {
+    const cartItem: CartItem = {
+      variationId: selectedVariation.id,
+      productId: product.id,
+      quantity: quantitySelected,
+      price: selectedVariation.price,
+      oldePrice: selectedVariation.oldPrice
+    }
+    dispatch({ type: orderActions.addToCart.type, payload: cartItem })
+  }
+
+  const handleBuyNow = () => {
+    handleAddToCart()
+    history.push(routes.client.cart)
+  }
+
   return (
     <div className='flex flex-col py-4 đămx-2 lg:mx-0'>
-      <div className='flex md:flex-row items-center flex-col bg-white rounded-md p-4'>
-        <div className='text-3xl normal-case font-medium md:hidden mx-8 mb-4'>{item.title}</div>
-        <ItemImageControllerComp images={item.images} />
+      <div className='flex md:flex-row items-start flex-col bg-white rounded-md p-4'>
+        <div className='text-3xl normal-case font-medium md:hidden mx-2 mb-4'>{product.name}</div>
+        <ItemImageControllerComp images={product.images} />
         <div className='md:ml-4 pl-4 w-full mt-8 md:mt-0'>
-          <div className='text-3xl normal-case font-medium md:block hidden'>{item.title}</div>
+          <div className='text-3xl normal-case font-medium md:block hidden'>{product.name}</div>
           <div className='flex mt-4'>
             <div className='mr-8'>
-              <StarComp stars={item.rating} />
+              <StarComp stars={0} />
             </div>
             <a href='#review' className='mr-8'>
-              <span className='mr-1 underline text-sm font-semibold'>{item.reviews}</span>
+              <span className='mr-1 underline text-sm font-semibold'>{0}</span>
               Đánh giá
             </a>
             <div>
-              <span className='mr-1 underline text-sm font-semibold'>{item.sold}</span>
+              <span className='mr-1 underline text-sm font-semibold'>
+                {product.variations.reduce((pre, cur) => pre + cur.sold, 0)}
+              </span>
               Đã bán
             </div>
           </div>
           <div className='bg-slate-200 py-2 px-8 flex items-center mt-16 rounded-md'>
-            <span className='line-through text-gray-400'>{<PriceComp price={item.old_price} size={'sm'} />}</span>
+            <span className='line-through text-gray-400'>
+              {<PriceComp price={selectedVariation.oldPrice} size={'sm'} />}
+            </span>
             <span className='font-bold text-4xl ml-8'>
-              {<PriceComp price={item.price} size='lg' color='#328bf1' />}
+              {<PriceComp price={selectedVariation.price} size='lg' color='#328bf1' />}
             </span>
           </div>
-          <div className='mt-16 md:flex text-gray-400 hidden'>
+          <div className='mt-8 md:flex text-gray-400 hidden'>
             <span className='w-32'>Vận chuyển</span>
             <div className='flex flex-col'>
               <span className='flex items-center'>
@@ -57,8 +94,8 @@ export const DetailItemComp = (props: DetailItemCompProps) => {
               </span>
             </div>
           </div>
-          <div className='mt-20 flex items-center'>
-            <span className='w-32'>Số lượng</span>
+          <div className='mt-8 flex items-center'>
+            <span className='w-32 text-gray-400'>Số lượng</span>
 
             <ButtonGroup className='border rounded-xl overflow-hidden'>
               <Button isIconOnly variant='light' radius='none' onClick={() => handleChangeQuantity(-1)}>
@@ -72,14 +109,57 @@ export const DetailItemComp = (props: DetailItemCompProps) => {
                   width={12}
                   radius='none'
                   min={1}
-                  max={item.quantity}
+                  max={selectedVariation.quantity}
                 />
               </span>
               <Button isIconOnly variant='light' radius='none' onClick={() => handleChangeQuantity(1)}>
                 <FaPlus />
               </Button>
             </ButtonGroup>
-            <span className='ml-8'>{item.quantity} sản phẩm có sẵn</span>
+            <span className='ml-8'>{selectedVariation.quantity} sản phẩm có sẵn</span>
+          </div>
+
+          {[...variationTypes].map((type) => (
+            <div key={type} className='mt-8 flex items-center'>
+              <span className='min-w-32 text-gray-400'>{type}</span>
+
+              <div className='flex flex-wrap gap-2 max-h-48 overflow-auto'>
+                {product.variations
+                  .filter((variation) => variation.type === type)
+                  .map((variation, index) => {
+                    return (
+                      <Button
+                        key={index}
+                        variant={variation.id === selectedVariation.id ? 'solid' : 'ghost'}
+                        color={variation.quantity > 0 ? 'primary' : 'warning'}
+                        onClick={() => handleChangeVariation(variation)}
+                      >
+                        {variation.option}
+                      </Button>
+                    )
+                  })}
+              </div>
+            </div>
+          ))}
+          <div className='mt-8 flex justify-start gap-2'>
+            <Button
+              variant='ghost'
+              color='primary'
+              startContent={<FaCartPlus size={24} />}
+              onClick={handleAddToCart}
+              disabled={selectedVariation.quantity === 0}
+            >
+              Thêm vào giỏ hàng
+            </Button>
+            <Button
+              variant='solid'
+              color='primary'
+              className='w-48'
+              onClick={handleBuyNow}
+              disabled={selectedVariation.quantity === 0}
+            >
+              Mua ngay
+            </Button>
           </div>
         </div>
       </div>

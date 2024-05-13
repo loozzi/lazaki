@@ -1,4 +1,4 @@
-import { Button, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@nextui-org/react'
+import { Badge, Button, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@nextui-org/react'
 import { CiShoppingCart, CiUser } from 'react-icons/ci'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
@@ -6,6 +6,9 @@ import assets from '~/assets'
 import { history } from '~/configs/history'
 import routes from '~/configs/routes'
 import { SearchInputHeaderComp } from './search-input'
+import { useAppSelector } from '~/app/hook'
+import { selectCart } from '~/hooks/order/order.slice'
+import { useEffect } from 'react'
 
 export const HeaderComp = () => {
   const suggestions = [
@@ -14,6 +17,12 @@ export const HeaderComp = () => {
     { label: 'Laptop', slug: '#' },
     { label: 'Điều hòa', slug: '#' }
   ]
+
+  const cart = useAppSelector(selectCart)
+
+  useEffect(() => {
+    console.log(cart)
+  }, [cart])
 
   return (
     <Navbar isBordered className='h-24 w-full justify-center' maxWidth='xl'>
@@ -50,7 +59,11 @@ export const HeaderComp = () => {
             color='primary'
             to={routes.client.cart}
             variant='light'
-            startContent={<CiShoppingCart size={24} />}
+            startContent={
+              <Badge content={cart.cartItems.length.toString()} size='md' color='danger'>
+                <CiShoppingCart size={24} />
+              </Badge>
+            }
           >
             Giỏ hàng
           </Button>

@@ -1,11 +1,12 @@
 import createSagaMiddleware from '@redux-saga/core'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import rootSaga from './rootSaga'
+import orderReducer from '~/hooks/order/order.slice'
 
 const sagaMiddleware = createSagaMiddleware()
 
 const rootReducer = combineReducers({
-  // Add reducers here
+  order: orderReducer
 })
 
 export const store = configureStore({

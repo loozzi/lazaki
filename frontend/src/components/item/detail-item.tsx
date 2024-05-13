@@ -2,10 +2,13 @@ import { Button, ButtonGroup, Input } from '@nextui-org/react'
 import { useState } from 'react'
 import { FaCartPlus, FaGift, FaMinus, FaPlus } from 'react-icons/fa'
 import { MdBikeScooter } from 'react-icons/md'
+import { useAppDispatch } from '~/app/hook'
+import { orderActions } from '~/hooks/order/order.slice'
+import { CartItem } from '~/models/order'
+import { ProductDetailResponse, VariationResponse } from '~/models/product'
 import { PriceComp } from '../price'
 import { StarComp } from '../star-field'
 import { ItemImageControllerComp } from './image-controller'
-import { ProductDetailResponse, VariationResponse } from '~/models/product'
 
 interface DetailItemCompProps {
   product: ProductDetailResponse
@@ -15,6 +18,8 @@ export const DetailItemComp = (props: DetailItemCompProps) => {
   const { product } = props
   const [quantitySelected, setQuantitySelected] = useState<number>(1)
   const [selectedVariation, setSelectedVariation] = useState<VariationResponse>(product.variations[0])
+
+  const dispatch = useAppDispatch()
 
   const variationTypes = new Set(product.variations.map((variation) => variation.type))
 
@@ -29,7 +34,14 @@ export const DetailItemComp = (props: DetailItemCompProps) => {
   }
 
   const handleAddToCart = () => {
-    console.log('Add to cart')
+    const cartItem: CartItem = {
+      variationId: selectedVariation.id,
+      productId: product.id,
+      quantity: quantitySelected,
+      price: selectedVariation.price,
+      oldePrice: selectedVariation.oldPrice
+    }
+    dispatch({ type: orderActions.addToCart.type, payload: cartItem })
   }
 
   return (

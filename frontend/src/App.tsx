@@ -8,6 +8,7 @@ import { ViewPurchasePage } from './pages/client/payment'
 import { ViewSearchPage } from './pages/client/search'
 import { ViewAuthPage } from './pages/client/auth'
 import { ViewAccountPage } from './pages/client/account'
+import { ViewAdminLoginPage } from './pages/admin/login'
 
 function App() {
   const location = useLocation()
@@ -22,6 +23,7 @@ function App() {
         <Route path={routes.client.auth} element={<ViewAuthPage />} />
         <Route path={routes.client.account} element={<ViewAccountPage />} />
       </Route>
+      <Route path={routes.admin.login} element={<ViewAdminLoginPage />} />
     </Routes>
   )
 }

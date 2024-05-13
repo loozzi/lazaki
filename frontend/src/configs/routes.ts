@@ -8,5 +8,10 @@ export default {
     purchase: '/purchase',
     search: '/search',
     auth: '/auth'
+  },
+  admin: {
+    home: '/admin',
+    login: '/admin/login',
+    order: '/admin/order'
   }
 }

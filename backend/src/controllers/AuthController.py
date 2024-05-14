@@ -1,6 +1,6 @@
 class AuthController:
     # Đăng nhập với Google
-    def loginWithGoogle(token: str):
+    def login(token: str):
         pass
 
     # Refresh token

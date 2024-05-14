@@ -8,15 +8,15 @@ class OrderController:
         pass
 
     # Xem lịch sử đơn hàng
-    def viewOrderHistory(customerId: int):
+    def viewOrderHistory():
         pass
 
     # Xem giỏ hàng
-    def viewCart(customerId: int):
+    def viewCart():
         pass
 
     # Thêm vào giỏ hàng
-    def addToShopCart(customerId: int, variationId: int, quantity: int):
+    def addToShopCart(productId: int, variationId: int, quantity: int):
         pass
 
     # Xóa khỏi giỏ hàng
@@ -24,9 +24,5 @@ class OrderController:
         pass
 
     # Cập nhật giỏ hàng
-    def updateCurrentOrder(customerId, variationId: int, quantity: int):
-        pass
-
-    # Tính tổng tiền
-    def total(customerId: int, phone: str, address: str):
+    def updateCurrentOrder(orderDetailId: int, quantity: int):
         pass

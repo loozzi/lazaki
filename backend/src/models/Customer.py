@@ -13,7 +13,8 @@ class Customer(Base):
     id: Mapped[int] = mapped_column(
         Integer, primary_key=True, nullable=False, autoincrement=True
     )
-    email: Mapped[str] = mapped_column(String(256), nullable=False, unique=True)
+    uid: Mapped[str] = mapped_column(String(256), nullable=False, unique=True)
+    email: Mapped[str] = mapped_column(String(256), nullable=False)
     status: Mapped[str] = mapped_column(
         Enum(CustomerStatusEnum), nullable=False, default=CustomerStatusEnum.ACTIVE
     )

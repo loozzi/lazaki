@@ -1,8 +1,4 @@
 class AuthService:
-    # Token
-    def getToken(token):
-        pass
-
-    # Tạo token
-    def generate(token):
+    # Xác thực token
+    def verify(token: str):
         pass

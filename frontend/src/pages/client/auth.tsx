@@ -2,12 +2,44 @@ import { Button, Image } from '@nextui-org/react'
 import { FaFacebook, FaGithub, FaGoogle } from 'react-icons/fa'
 import assets from '~/assets'
 
+import { FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+import { auth, facebookProvider, githubProvider, googleProvider } from '~/services/firebase.service'
+
 export const ViewAuthPage = () => {
-  const handleLoginByGoogle = () => {}
+  const handleLoginByGoogle = () => {
+    signInWithPopup(auth, googleProvider)
+      .then((data) => {
+        const credential = GoogleAuthProvider.credentialFromResult(data)
+        console.log(credential)
+        console.log(data)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
 
-  const handleLoginByFacebook = () => {}
+  const handleLoginByFacebook = () => {
+    signInWithPopup(auth, facebookProvider)
+      .then((data) => {
+        const credential = FacebookAuthProvider.credentialFromResult(data)
+        console.log(credential?.accessToken)
+        console.log(data)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
 
-  const handleLoginByGithub = () => {}
+  const handleLoginByGithub = () => {
+    signInWithPopup(auth, githubProvider)
+      .then((data) => {
+        const credential = GithubAuthProvider.credentialFromResult(data)
+        console.log(data)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
 
   return (
     <div className='flex justify-center mt-4'>

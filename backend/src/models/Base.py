@@ -22,3 +22,27 @@ class Base(db.Model):
         self.isDeleted = True
         db.session.commit()
         return self
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
+
+    def update(self):
+        db.session.commit()
+        return self
+
+    def remove(self):
+        db.session.delete(self)
+        db.session.commit()
+        return self
+
+    def serialize(self):
+        return {
+            c.name: (
+                getattr(self, c.name).value
+                if hasattr(getattr(self, c.name), "value")
+                else getattr(self, c.name)
+            )
+            for c in self.__table__.columns
+        }

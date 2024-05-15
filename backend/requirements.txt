@@ -2,3 +2,9 @@ flask
 python-dotenv
 flask_sqlalchemy
 flask_migrate
+flask_cors
+pyjwt
+gunicorn
+requests
+google-cloud-datastore==2.15.1
+google-auth==2.17.3

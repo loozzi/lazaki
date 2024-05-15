@@ -10,4 +10,5 @@ from src.models.ProductImage import ProductImage
 from src.models.ProductProperty import ProductProperty
 from src.models.Rating import Rating
 from src.models.RatingImage import RatingImage
+from src.models.Token import Token
 from src.models.Variation import Variation

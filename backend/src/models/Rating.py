@@ -16,11 +16,8 @@ class Rating(Base):
     customerId: Mapped[int] = mapped_column(
         Integer, ForeignKey("customer.id"), nullable=False
     )
-    productId: Mapped[int] = mapped_column(
-        Integer, ForeignKey("product.id"), nullable=False
-    )
-    variationId: Mapped[int] = mapped_column(
-        Integer, ForeignKey("variation.id"), nullable=True
+    orderDetailId: Mapped[int] = mapped_column(
+        Integer, ForeignKey("order_detail.id"), nullable=True
     )
     value: Mapped[int] = mapped_column(Integer, nullable=False)
     content: Mapped[str] = mapped_column(String(1024), nullable=True)

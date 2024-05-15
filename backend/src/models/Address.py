@@ -8,11 +8,11 @@ class Address(Base):
     id: Mapped[int] = mapped_column(
         Integer, primary_key=True, nullable=False, autoincrement=True
     )
-    phoneNumber: Mapped[str] = mapped_column(String(15), nullable=False)
-    province: Mapped[str] = mapped_column(String(256), nullable=False)
-    district: Mapped[str] = mapped_column(String(256), nullable=False)
-    ward: Mapped[str] = mapped_column(String(256), nullable=False)
-    street: Mapped[str] = mapped_column(String(256), nullable=False)
+    phoneNumber: Mapped[str] = mapped_column(String(15), nullable=False, default="")
+    province: Mapped[str] = mapped_column(String(256), nullable=False, default="")
+    district: Mapped[str] = mapped_column(String(256), nullable=False, default="")
+    ward: Mapped[str] = mapped_column(String(256), nullable=False, default="")
+    street: Mapped[str] = mapped_column(String(256), nullable=False, default="")
 
     def setPhoneNumber(self, phoneNumber: str):
         self.phoneNumber = phoneNumber

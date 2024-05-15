@@ -31,15 +31,13 @@ class AuthController:
             OrderService.createCart(customer.id)
             cart = OrderService.getCart(customer.id)
 
-        print(cart)
-
         return Response(
             200,
             "Success",
             {
                 "accessToken": accessToken,
                 "refreshToken": refreshToken,
-                "cart": {},
+                "cart": cart.serialize(),
             },
         )
 

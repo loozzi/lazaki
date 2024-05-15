@@ -22,3 +22,12 @@ class Base(db.Model):
         self.isDeleted = True
         db.session.commit()
         return self
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
+
+    def update(self):
+        db.session.commit()
+        return self

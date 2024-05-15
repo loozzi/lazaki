@@ -3,7 +3,6 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from src.config import _config, envConfig
-from src.routes import api
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -18,5 +17,6 @@ config = _config.getDevConfig()
 app.env = config.ENV
 
 from src.models import *
+from src.routes import api
 
 app.register_blueprint(api, url_prefix="/api")

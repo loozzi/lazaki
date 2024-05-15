@@ -1,7 +1,24 @@
+from src.models import Address, Order
+from src.utils.enums import OrderStatusEnum
+
+
 class OrderService:
     # Tạo order
-    def addOrder(customerId: int):
-        pass
+    def createCart(customerId: int):
+        address = Address()
+        address.save()
+        newCart = Order(
+            customerId=customerId,
+            status=OrderStatusEnum.ORDER,
+            addressId=address.id,
+            fullName="",
+        )
+        newCart.save()
+
+    def getCart(customerId: int):
+        return Order.query.filter_by(
+            customerId=customerId, status=OrderStatusEnum.ORDER
+        ).first()
 
     # Xác nhận Order
     def confirmOrder(

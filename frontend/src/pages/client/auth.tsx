@@ -34,6 +34,7 @@ export const ViewAuthPage = () => {
         .catch((error) => {
           console.error(error)
         })
+      setProvider(undefined)
     }
   }, [provider])
 

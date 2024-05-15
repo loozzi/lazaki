@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class Order(Base):
-    __tablename__ = "order"
+    __tablename__ = "orders"
     id: Mapped[int] = mapped_column(
         Integer, primary_key=True, nullable=False, autoincrement=True
     )
@@ -35,7 +35,7 @@ class Order(Base):
     shippingName: Mapped[str] = mapped_column(String(256), nullable=False, default="")
     shippingCode: Mapped[str] = mapped_column(String(256), nullable=False, default="")
     orderDetails: Mapped[list["OrderDetail"]] = relationship(
-        "OrderDetail", backref="order", uselist=True
+        "OrderDetail", backref="orders", uselist=True
     )
     totalAmount: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 

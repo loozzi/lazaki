@@ -14,6 +14,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 config = _config.getDevConfig()
+
 app.env = config.ENV
 
 from src.models import *

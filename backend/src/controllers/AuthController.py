@@ -1,5 +1,6 @@
 from src.services.AuthService import AuthService
 from src.services.CustomerService import CustomerService
+from src.services.OrderService import OrderService
 from src.services.TokenService import TokenService
 from src.utils.response import Response
 
@@ -24,8 +25,22 @@ class AuthController:
             customer = CustomerService.getCustomer(claims["user_id"])
 
         accessToken, refreshToken = TokenService.generate(customer)
+
+        cart = OrderService.getCart(customer.id)
+        if not cart:
+            OrderService.createCart(customer.id)
+            cart = OrderService.getCart(customer.id)
+
+        print(cart)
+
         return Response(
-            200, "Success", {"accessToken": accessToken, "refreshToken": refreshToken}
+            200,
+            "Success",
+            {
+                "accessToken": accessToken,
+                "refreshToken": refreshToken,
+                "cart": {},
+            },
         )
 
     # Refresh token

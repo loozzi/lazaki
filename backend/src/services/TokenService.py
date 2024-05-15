@@ -52,6 +52,12 @@ class TokenService:
                 algorithm="HS256",
             )
 
+            try:
+                oldToken = Token.query.filter_by(uid=data.uid).first()
+                oldToken.remove()
+            except Exception as e:
+                print(e)
+
             token = Token(
                 uid=data.uid,
                 token=refreshToken,

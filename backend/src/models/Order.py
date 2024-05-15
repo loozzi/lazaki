@@ -1,6 +1,7 @@
+import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Enum, ForeignKey, Integer, String
+from sqlalchemy import TIMESTAMP, Enum, ForeignKey, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.utils.enums import OrderStatusEnum, PaymentMethodEnum, PaymentStatusEnum
 
@@ -38,6 +39,10 @@ class Order(Base):
         "OrderDetail", backref="orders", uselist=True
     )
     totalAmount: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    orderDate: Mapped[datetime.datetime] = mapped_column(
+        TIMESTAMP(timezone=True),
+        default=func.current_timestamp(),
+    )
 
     def setListOrderDetail(self, orderDetails):
         pass

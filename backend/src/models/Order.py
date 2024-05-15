@@ -19,7 +19,7 @@ class Order(Base):
     )
     customerId: Mapped[int] = mapped_column(ForeignKey("customer.id"), nullable=False)
     customer: Mapped["Customer"] = relationship("Customer", backref="orders")
-    fullName: Mapped[str] = mapped_column(String(256), nullable=False)
+    fullName: Mapped[str] = mapped_column(String(256), nullable=False, default="")
     addressId: Mapped[int] = mapped_column(ForeignKey("address.id"), nullable=False)
     address: Mapped["Address"] = relationship("Address", backref="orders")
     paymentMethod: Mapped[str] = mapped_column(
@@ -30,14 +30,14 @@ class Order(Base):
     )
     note: Mapped[str] = mapped_column(String(256), nullable=True)
     status: Mapped[str] = mapped_column(
-        Enum(PaymentStatusEnum), nullable=False, default=OrderStatusEnum.ORDER
+        Enum(OrderStatusEnum), nullable=False, default=OrderStatusEnum.ORDER
     )
-    shippingName: Mapped[str] = mapped_column(String(256), nullable=False)
-    shippingCode: Mapped[str] = mapped_column(String(256), nullable=False)
+    shippingName: Mapped[str] = mapped_column(String(256), nullable=False, default="")
+    shippingCode: Mapped[str] = mapped_column(String(256), nullable=False, default="")
     orderDetails: Mapped[list["OrderDetail"]] = relationship(
         "OrderDetail", backref="order", uselist=True
     )
-    totalAmount: Mapped[int] = mapped_column(Integer, nullable=False)
+    totalAmount: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
     def setListOrderDetail(self, orderDetails):
         pass

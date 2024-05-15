@@ -31,6 +31,9 @@ const orderSlice = createSlice({
       if (index !== -1) {
         state.cart.cartItems[index].quantity = action.payload.quantity
       }
+    },
+    setCart: (state, action: PayloadAction<Cart>) => {
+      state.cart = action.payload
     }
   }
 })

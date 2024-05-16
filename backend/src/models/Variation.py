@@ -21,7 +21,18 @@ class Variation(Base):
     sold: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
     def getVariation(self):
-        pass
+        data = {
+            "id": self.id,
+            "type": self.type,
+            "name": self.name,
+            "option": self.option,
+            "image": self.image,
+            "price": self.price,
+            "oldPrice": self.oldPrice,
+            "quantity": self.quantity,
+            "sold": self.sold,
+        }
+        return data
 
     def setSold(self, soldNumber):
         self.sold = soldNumber

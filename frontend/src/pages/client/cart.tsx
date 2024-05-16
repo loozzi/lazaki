@@ -1,27 +1,45 @@
 import { useEffect, useState } from 'react'
 import { PaneComp } from '~/components/pane'
 
-import { ListCardItemComp } from '~/components/list-card-item'
-import { EmptyCartComp } from '~/components/cart/empty'
-import { DetailCartComp } from '~/components/cart/cart-detail'
 import { useAppSelector } from '~/app/hook'
+import { DetailCartComp } from '~/components/cart/cart-detail'
+import { EmptyCartComp } from '~/components/cart/empty'
+import { ListCardItemComp } from '~/components/list-card-item'
 import { selectCart } from '~/hooks/order/order.slice'
-import { ProductDetailResponse } from '~/models/product'
+import { ProductResponse } from '~/models/product'
+import { history } from '~/configs/history'
+import routes from '~/configs/routes'
 
 export const ViewCartPage = () => {
-  const [products, setProducts] = useState<ProductDetailResponse[]>([])
+  const [suggestProducts, setSuggestProducts] = useState<ProductResponse[]>([])
   const cart = useAppSelector(selectCart)
 
   useEffect(() => {
-    setProducts([])
+    const item: ProductResponse = {
+      image: 'https://down-vn.img.susercontent.com/file/sg-11134201-22100-g0vtmbg1llive9',
+      name: 'Sản phẩm có tên là giống với tên của sản phẩm ở chỗ bán sản phẩm',
+      price: 100000,
+      sold: 592,
+      slug: 'san-pham-co-ten-la-giong-voi-ten-cua-san-pham-o-cho-ban-san-pham',
+      rating: 4.5
+    }
+    setSuggestProducts([item, item, item, item, item])
   }, [cart])
 
   return (
     <div className='mt-4'>
       <PaneComp header='Giỏ hàng' className='mx-2'>
-        {products.length === 0 ? <EmptyCartComp /> : <DetailCartComp products={products} className='bg-white pb-4' />}
+        {cart?.orderDetails.length === 0 ? (
+          <EmptyCartComp />
+        ) : (
+          <DetailCartComp
+            products={cart?.orderDetails || []}
+            className='bg-white pb-4'
+            onClick={() => history.push(routes.client.purchase)}
+          />
+        )}
       </PaneComp>
-      <ListCardItemComp className='mx-2 mt-4' heading='Sản phẩm gợi ý' items={[1, 2, 3, 4, 5, 6, 7]} />
+      <ListCardItemComp className='mx-2 mt-4' heading='Sản phẩm gợi ý' items={suggestProducts} />
     </div>
   )
 }

@@ -30,13 +30,13 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
   useEffect(() => {
     setUserInfor([
       { label: 'Họ tên', value: history.fullName },
-      { label: 'SĐT', value: history.address.phoneNumber },
+      { label: 'SĐT', value: history.address!.phoneNumber },
       { label: 'Email', value: history.email },
       {
         label: 'Địa chỉ',
-        value: `${history.address.street}, ${history.address.ward}, ${history.address.district}, ${history.address.province}`
+        value: `${history.address!.street}, ${history.address!.ward}, ${history.address!.district}, ${history.address!.province}`
       },
-      { label: 'Phương thức thanh toán', value: PaymentMethodName(history.paymentMethod) },
+      { label: 'Phương thức thanh toán', value: PaymentMethodName(history.paymentMethod!) },
       { label: 'Ghi chú', value: history.note }
     ])
   }, [history])
@@ -71,7 +71,7 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
             <span className='grid grid-cols-3 gap-1'>
               <span className='font-semibold'>Trạng thái thanh toán</span>{' '}
               <Chip className='col-span-2' color={history.paymentStatus === 'paid' ? 'success' : 'danger'}>
-                {PaymentStatusName(history.paymentStatus)}
+                {PaymentStatusName(history.paymentStatus!)}
               </Chip>
             </span>
             <span className='grid grid-cols-3 gap-1'>
@@ -103,8 +103,8 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
               <div className='flex flex-col gap-2'>
                 <span className='font-semibold'>{item.name}</span>
                 <span className='text-gray-500'>
-                  Số lượng: {item.quantity} | {getVariations(item as any, item.variationId).type}:{' '}
-                  {getVariations(item as any, item.variationId).option}
+                  Số lượng: {item.quantity} | {getVariations(item as any, item.variationId!).type}:{' '}
+                  {getVariations(item as any, item.variationId!).option}
                 </span>
                 <div className='flex gap-2 items-center'>
                   <div className='text-sm text-blue-500'>

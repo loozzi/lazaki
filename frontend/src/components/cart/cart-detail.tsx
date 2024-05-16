@@ -1,6 +1,5 @@
 import {
   Button,
-  Checkbox,
   Chip,
   Image,
   Table,
@@ -15,13 +14,14 @@ import { useEffect, useState } from 'react'
 import { FaMinus, FaPlus } from 'react-icons/fa'
 import { FaDeleteLeft } from 'react-icons/fa6'
 import { Link } from 'react-router-dom'
-import routes from '~/configs/routes'
-import { PriceComp } from '../price'
 import { useAppDispatch } from '~/app/hook'
+import routes from '~/configs/routes'
 import { orderActions } from '~/hooks/order/order.slice'
+import { CartItem } from '~/models/order'
+import { PriceComp } from '../price'
 
 interface DetailCartCompProps {
-  products: any[]
+  products: CartItem[]
   className?: string
   viewOnly?: boolean
   onClick?: () => void
@@ -56,12 +56,10 @@ export const DetailCartComp = (props: DetailCartCompProps) => {
     })
   }
 
-  const renderCell = (product: any, columnKey: any) => {
+  const renderCell = (product: CartItem, columnKey: any) => {
     const cellValue = product[columnKey]
 
     switch (columnKey) {
-      case 'checked':
-        return <Checkbox checked={cellValue}></Checkbox>
       case 'name':
         return (
           <div className='flex gap-2 items-center'>
@@ -76,7 +74,7 @@ export const DetailCartComp = (props: DetailCartCompProps) => {
               <PriceComp price={product.price} size='sm' />
             </p>
             <p className='text-bold text-sm text-default-400 line-through'>
-              <PriceComp price={product.old_price} fontSize={12} />
+              <PriceComp price={product.oldPrice} fontSize={12} />
             </p>
           </div>
         )
@@ -139,6 +137,10 @@ export const DetailCartComp = (props: DetailCartCompProps) => {
     setTotalPrice(products.reduce((total, product) => total + product.price * product.quantity, 0))
   }, [products])
 
+  useEffect(() => {
+    console.log(products)
+  }, [products])
+
   return (
     <div className={className}>
       <Table isStriped className='p-2'>
@@ -151,7 +153,7 @@ export const DetailCartComp = (props: DetailCartCompProps) => {
         </TableHeader>
         <TableBody items={products}>
           {(item) => (
-            <TableRow key={item.id}>
+            <TableRow key={item.variationId}>
               {(columnKey) => (
                 <TableCell className={columnKey == 'name' ? 'w-3/5' : ''}>{renderCell(item, columnKey)}</TableCell>
               )}
@@ -177,7 +179,13 @@ export const DetailCartComp = (props: DetailCartCompProps) => {
             </span>
           </div>
           {viewOnly ? (
-            <Button color='primary' className='md:w-60 w-full' size='lg' onClick={onClick}>
+            <Button
+              color='primary'
+              className='md:w-60 w-full'
+              size='lg'
+              onClick={onClick}
+              disabled={products.length === 0}
+            >
               Thanh toán
             </Button>
           ) : (

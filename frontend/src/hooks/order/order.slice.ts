@@ -1,13 +1,16 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { Cart, CartItem } from '~/models/order'
+import { CartItem, OrderHistoryResponse } from '~/models/order'
 
 interface OrderState {
-  cart: Cart
+  cart: OrderHistoryResponse | undefined
 }
 
 const initialState: OrderState = {
   cart: {
-    cartItems: []
+    id: 0,
+    customerId: 0,
+    status: 'order',
+    orderDetails: []
   }
 }
 
@@ -16,23 +19,24 @@ const orderSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action: PayloadAction<CartItem>) => {
-      const index = state.cart.cartItems.findIndex((item) => item.variationId === action.payload.variationId)
+      const index = state.cart!.orderDetails.findIndex((item) => item.variationId === action.payload.variationId)
       if (index !== -1) {
-        state.cart.cartItems[index].quantity += action.payload.quantity
+        state.cart!.orderDetails[index].quantity += action.payload.quantity
       } else {
-        state.cart.cartItems.push(action.payload)
+        state.cart!.orderDetails.push(action.payload)
       }
     },
     removeFromCart: (state, action: PayloadAction<number>) => {
-      state.cart.cartItems = state.cart.cartItems.filter((item) => item.variationId !== action.payload)
+      state.cart!.orderDetails = state.cart!.orderDetails.filter((item) => item.variationId !== action.payload)
     },
     changeQuantity: (state, action: PayloadAction<{ variationId: number; quantity: number }>) => {
-      const index = state.cart.cartItems.findIndex((item) => item.variationId === action.payload.variationId)
+      const index = state.cart!.orderDetails.findIndex((item) => item.variationId === action.payload.variationId)
       if (index !== -1) {
-        state.cart.cartItems[index].quantity = action.payload.quantity
+        const tmpQuantity = state.cart!.orderDetails[index].quantity + action.payload.quantity
+        if (tmpQuantity > 0) state.cart!.orderDetails[index].quantity = tmpQuantity
       }
     },
-    setCart: (state, action: PayloadAction<Cart>) => {
+    setCart: (state, action: PayloadAction<OrderHistoryResponse>) => {
       state.cart = action.payload
     }
   }

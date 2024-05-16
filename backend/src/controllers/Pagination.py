@@ -7,3 +7,11 @@ class Pagination:
         self.perPage = perPage
         self.total = total
         self.data = data
+
+    def serialize(self):
+        return {
+            "currentPage": self.currentPage,
+            "perPage": self.perPage,
+            "total": self.total,
+            "data": self.data,
+        }

@@ -3,6 +3,8 @@ from src.services.CustomerService import CustomerService
 from src.services.OrderService import OrderService
 from src.services.TokenService import TokenService
 from src.utils.response import Response
+from datetime import datetime
+from flask import request
 
 
 class AuthController:
@@ -44,3 +46,28 @@ class AuthController:
     # Refresh token
     def refeshToken(refreshToken: str):
         pass
+
+    def updateInformation(
+        fullName: str,
+        birthday: datetime,
+        gender: str,
+        email: str,
+        phoneNumber: str,
+        province: str,
+        district: str,
+        ward: str,
+        street: str,
+    ):
+        curr_user = request.user
+        return AuthService.updateInformation(
+            curr_user,
+            fullName,
+            birthday,
+            gender,
+            email,
+            phoneNumber,
+            province,
+            district,
+            ward,
+            street,
+        )

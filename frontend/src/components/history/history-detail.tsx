@@ -27,10 +27,6 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
     }
   }
 
-  const handleRating = (item: any) => {
-    // Call API to rate product
-  }
-
   useEffect(() => {
     setUserInfor([
       { label: 'Họ tên', value: history.fullName },
@@ -139,7 +135,7 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
                 </Button>
               ) : (
                 <div className='w-full'>
-                  <RatingComp handleCancel={() => setSelectedReview(0)} />
+                  <RatingComp handleCancel={() => setSelectedReview(0)} item={item} orderId={history.id} />
                 </div>
               )}
             </div>

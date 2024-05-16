@@ -5,13 +5,14 @@ import { DescriptionItemComp } from '~/components/item/desc-item'
 import { DetailItemComp } from '~/components/item/detail-item'
 import { ListCardItemComp } from '~/components/list-card-item'
 import { ListViewReviewComp } from '~/components/review/list-review'
-import { ProductDetailResponse } from '~/models/product'
+import { ProductDetailResponse, ProductResponse } from '~/models/product'
 import { ReviewResponse } from '~/models/review'
 
 export const ViewDetailPage = () => {
   const params = useParams()
   const [product, setProduct] = useState<ProductDetailResponse | undefined>(undefined)
   const [reviews, setReviews] = useState<ReviewResponse[]>([])
+  const [suggestProducts, setSuggestProducts] = useState<ProductResponse[]>([])
 
   useEffect(() => {
     // call api get product detail
@@ -210,6 +211,18 @@ export const ViewDetailPage = () => {
         created_at: '2021-09-04T00:00:00Z'
       }
     ])
+
+    // call api get suggest products
+    // set suggest products
+    const item: ProductResponse = {
+      image: 'https://down-vn.img.susercontent.com/file/sg-11134201-22100-g0vtmbg1llive9',
+      name: 'Sản phẩm có tên là giống với tên của sản phẩm ở chỗ bán sản phẩm',
+      price: 100000,
+      sold: 592,
+      slug: 'san-pham-co-ten-la-giong-voi-ten-cua-san-pham-o-cho-ban-san-pham',
+      rating: 4.5
+    }
+    setSuggestProducts([item, item, item, item, item])
   }, [params])
 
   return (
@@ -221,7 +234,7 @@ export const ViewDetailPage = () => {
           <ListViewReviewComp reviews={reviews} className='mt-4' />
         </div>
         <div className='lg:col-span-2 md:col-span-4 col-span-10'>
-          <ListCardItemComp heading='Sản phẩm tương tự' items={[1, 2, 3, 4, 5, 6]} isColumn />
+          <ListCardItemComp heading='Sản phẩm tương tự' items={suggestProducts} isColumn />
         </div>
       </div>
     </div>

@@ -1,9 +1,10 @@
+import { ProductResponse } from '~/models/product'
 import { CardItem } from './item/card-item'
 import { PaneComp } from './pane'
 
 interface ListCardItemProps {
   heading: string
-  items: any[]
+  items: ProductResponse[]
   className?: string
   isColumn?: boolean
 }

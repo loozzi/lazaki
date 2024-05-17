@@ -37,4 +37,11 @@ export interface ProductDetailResponse {
   [key: string]: any
 }
 
-export interface ProductResponse {}
+export interface ProductResponse {
+  name: string
+  slug: string
+  price: number
+  sold: number
+  image: string
+  rating: number
+}

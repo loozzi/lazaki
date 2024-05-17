@@ -32,14 +32,20 @@ export const HistoryPurchaseComp = (props: HistoryPurchaseProps) => {
         paymentStatus: 'unpaid',
         note: 'Giao hàng vào buổi sáng',
         status: 'preparing',
-        // shippingName: 'Giao hàng tiết kiệm',
-        // shippingCode: 'GHTK',
+        shippingName: 'Giao hàng tiết kiệm',
+        shippingCode: 'GHTK',
         orderDetails: [
           {
             id: 1,
-            orderId: 1,
-            variationId: 1,
             productId: 1,
+            name: 'Áo thun nam',
+            image: 'https://via.placeholder.com/150',
+            variationId: 1,
+            variation: {
+              type: 'size',
+              name: 'Size',
+              option: 'M'
+            },
             quantity: 1,
             price: 100000,
             oldPrice: 120000

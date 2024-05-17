@@ -2,16 +2,17 @@ import { Image, Popover, PopoverContent, PopoverTrigger } from '@nextui-org/reac
 import { StarComp } from '../star-field'
 import { LuDot } from 'react-icons/lu'
 import { parseDateToDMY } from '~/utils'
+import { ReviewResponse } from '~/models/review'
 interface ViewReviewProps {
-  review: any
+  review: ReviewResponse
 }
 export const ViewReviewComp = (props: ViewReviewProps) => {
   const { review } = props
   return (
     <div className='flex flex-col mb-4 p-4 md:mr-4 border-solid border-black-1/10 border-1 rounded-xl'>
-      <StarComp stars={review.rating} hideNumber />
+      <StarComp stars={review.value} hideNumber />
       <span className='flex items-center'>
-        <span className='font-semibold'>{review.user.name}</span>
+        <span className='font-semibold'>{review.fullName}</span>
         <LuDot />
         <span className='text-gray-400'>{parseDateToDMY(review.created_at)}</span>
       </span>
@@ -29,7 +30,7 @@ export const ViewReviewComp = (props: ViewReviewProps) => {
                 />
               </PopoverTrigger>
               <PopoverContent>
-                <span>{review.user.name}</span>
+                <span>{review.fullName}</span>
                 <Image src={image} className='max-h-[500px]' />
               </PopoverContent>
             </Popover>

@@ -9,7 +9,10 @@ class PaymentController:
         payment = Order.query.filter_by(id=orderId).first()
         if payment is None:
             return Response(404, "Thanh toán không tồn tại")
-        return OnlinePaymentService.getPaymentQR()
+        return OnlinePaymentService.getPaymentQR(payment)
 
-    def confirmPayment():
-        pass
+    def confirmPayment(orderId: int):
+        payment = Order.query.filter_by(id=orderId).first()
+        if payment is None:
+            return Response(404, "Thanh toán không tồn tại")
+        return OnlinePaymentService.confirmPayment(payment)

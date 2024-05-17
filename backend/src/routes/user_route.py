@@ -2,14 +2,20 @@ from flask import Blueprint, request
 from src.middlewares.AuthMiddleware import customer_middleware
 from src.utils.response import Response
 from src.controllers.AuthController import AuthController
-from datetime import datetime, timezone
+from datetime import datetime
 
 user = Blueprint("user", __name__)
 
 
 @user.route("/", methods=["GET"])
 @customer_middleware
-def updateUserInfo():
+def getInformation():
+    return AuthController.getInformation()
+
+
+@user.route("/", methods=["PUT"])
+@customer_middleware
+def updateInformation():
     fullName = request.form.get("fullName", "")
     birthday = request.form.get("birthday")
     if birthday:

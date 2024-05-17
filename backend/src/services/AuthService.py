@@ -1,7 +1,7 @@
 import google.oauth2.id_token
 from google.auth.transport import requests
 from datetime import datetime
-from src.models import Customer, Address, Base
+from src.models import Customer, Address
 from src.utils.response import Response
 from src import db
 
@@ -17,6 +17,18 @@ class AuthService:
         if not claims:
             return None
         return claims
+
+    def getInformation(user):
+        customer = Customer.query.filter_by(id=user.id).first()
+        if not customer:
+            return Response(404, "Người dùng không tồn tại")
+        return_customer = customer.serialize()
+        return_customer["address"] = return_customer["address"].serialize()
+        del return_customer["id"]
+        del return_customer["uid"]
+        del return_customer["status"]
+        del return_customer["addressId"]
+        return Response(200, "Truy xuất thành công", return_customer)
 
     def updateInformation(
         user,

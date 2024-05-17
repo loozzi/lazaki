@@ -1,7 +1,7 @@
 from typing import List
-from src.models import Product
-from src.models import Category
-from src.models import ProductProperty, ProductImage, Variation, Address, Customer
+from src.controllers.RevenueController import RevenueController
+from src.services.OrderService import OrderService
+from src.models import Variation, Address, Customer
 from src.controllers.Pagination import Pagination
 from src.utils.enums import CustomerStatusEnum
 from src.services.CustomerService import CustomerService
@@ -135,5 +135,13 @@ class AdminController:
         return Response(200, "Success")
 
     # Doanh thu
-    def getRevenue():
-        pass
+    def getRevenue(time: str, type: str, slug: str):
+        orders = OrderService.getAllOrderHistory(time)
+        if orders is None:
+            return Response(404, "Orders not found")
+        if type == "all":
+            return RevenueController.getTotalRevenue(orders)
+        elif type == "category":
+            return RevenueController.calculateCategoryRevenue(orders, slug)
+        elif type == "product":
+            return RevenueController.calculateProductRevenue(orders, slug)

@@ -21,3 +21,6 @@ class OrderDetail(Base):
 
     def setQuantity(self, quantity):
         pass
+
+    def getPrice(self):
+        return self.price

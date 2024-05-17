@@ -1,5 +1,6 @@
 import ast
 from flask import Blueprint, json, request
+from src.controllers.RevenueController import RevenueController
 from src.utils.response import Response
 from src.controllers.AdminController import AdminController
 from src.middlewares.AuthMiddleware import admin_middleware
@@ -106,3 +107,16 @@ def addProduct():
 # @admin_middleware
 def removeProduct(slug):
     return AdminController.removeProduct(slug)
+
+
+@admin.route("/overview", methods=["GET"])
+# @admin_middleware
+def getOverview():
+    type = request.args.get("type", None)
+    time = request.args.get("time", None)
+    slug = request.args.get("slug", None)
+    if type not in ["all", "category", "product"]:
+        return Response(400, "Invalid type")
+    if time not in ["week", "month"]:
+        return Response(400, "Invalid time")
+    return AdminController.getRevenue(time, type, slug)

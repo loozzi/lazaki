@@ -1,3 +1,4 @@
+import datetime
 from src.models import Address, Order
 from src.utils.enums import OrderStatusEnum
 
@@ -49,9 +50,20 @@ class OrderService:
     def getOrderDetail(orderDetailId: int):
         pass
 
-    # Lấy toàn bộ lịch sử order trên hệ thống
-    def getAllOrderHistory():
-        pass
+    # Lấy lịch sử order trên hệ thống theo khoảng thời gian
+    def getAllOrderHistory(time: str):
+        end_date = datetime.datetime.now()
+        if time == "week":
+            start_date = end_date - datetime.timedelta(days=7)
+        if time == "month":
+            start_date = end_date - datetime.timedelta(days=30)
+
+        # Truy vấn toàn bộ order đã hoàn thành trong khoảng thời gian
+        orders = Order.query.filter(
+            Order.createdAt >= start_date,
+            Order.createdAt <= end_date,
+        ).all()
+        return orders
 
     # Lấy order hiện tại của khách hàng
     def getCurrentOrder(customerId: int):

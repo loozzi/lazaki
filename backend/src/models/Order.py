@@ -70,3 +70,6 @@ class Order(Base):
 
     def removeOrderDetail(self, variationId):
         pass
+
+    def getStatus(self):
+        return self.status

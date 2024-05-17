@@ -38,10 +38,18 @@ export interface ProductDetailResponse {
 }
 
 export interface ProductResponse {
+  id?: number
   name: string
   slug: string
   price: number
   sold: number
   image: string
   rating: number
+
+  [key: string]: any
+}
+
+export interface ProductAdminResponse extends ProductResponse {
+  quantity: number
+  categories: string[]
 }

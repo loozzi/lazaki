@@ -16,6 +16,7 @@ export default {
     overview: '/admin/overview',
     users: '/admin/users',
     product: '/admin/products',
+    productDetail: '/admin/products/:slug',
     category: '/admin/categories',
     logout: '/admin/logout'
   }

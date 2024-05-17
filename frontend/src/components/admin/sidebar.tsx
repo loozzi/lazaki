@@ -17,7 +17,7 @@ export const AdminSidebarComp = (props: AdminSidebarCompProps) => {
 
   return (
     <div className={className}>
-      <div className='p-4'>
+      <div className='p-2 md:p-4'>
         <SidebarItemComp
           title='Tổng quan'
           icon={<FaHome />}

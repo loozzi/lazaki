@@ -72,13 +72,13 @@ class Product(Base):
         return link
 
 
-    def getInfomation(self):
+    def serialize(self):
         id = self.id
         name = self.name
         description = self.description
-        property = [prop.getProperty() for prop in self.properties]
-        categories = [category.getInfo() for category in self.categories]
-        variations = [variation.getVariation() for variation in self.variations]
+        property = [prop.serialize() for prop in self.properties]
+        categories = [category.serialize() for category in self.categories]
+        variations = [variation.serialize() for variation in self.variations]
         variations = sorted(variations, key=lambda x: x["price"])
         images = []
         for i in variations:

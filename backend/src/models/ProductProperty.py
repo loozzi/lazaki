@@ -19,3 +19,6 @@ class ProductProperty(Base):
 
     def setValue(self, value):
         self.value = value
+
+    def serialize(self):
+        return {"name": self.name, "value": self.value}

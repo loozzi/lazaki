@@ -2,8 +2,9 @@ import { Button, Chip, Image, Snippet } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 import { FaStar } from 'react-icons/fa'
 import { CartItem, OrderHistoryResponse } from '~/models/order'
-import { ImageResponse, ProductDetailResponse } from '~/models/product'
-import { OrderStatusColor, OrderStatusName, PaymentMethodName, PaymentStatusName } from '~/utils'
+import { ImageResponse } from '~/models/product'
+import { ReviewResponse } from '~/models/review'
+import { OrderStatusColor, OrderStatusName, PaymentMethodName, PaymentStatusName, parseDateToDMY } from '~/utils'
 import { PriceComp } from '../price'
 import { RatingComp } from '../review/rating'
 import { StarComp } from '../star-field'
@@ -15,17 +16,9 @@ interface HistoryDetailCompProps {
 export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
   const { className, history } = props
   const [selectedReview, setSelectedReview] = useState<number>(-1)
-  const [reviews, setReviews] = useState<any[]>([])
+  const [reviews, setReviews] = useState<ReviewResponse[]>([])
 
-  const [userInfor, setUserInfor] = useState<any>([])
-
-  const getVariations = (item: ProductDetailResponse, variationId: number) => {
-    const variation = item.variations.filter((v) => v.id === variationId)[0]
-    return {
-      type: variation.type,
-      option: variation.option
-    }
-  }
+  const [userInfor, setUserInfor] = useState<{ label: string; value: any }[]>([])
 
   useEffect(() => {
     setUserInfor([
@@ -43,6 +36,22 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
 
   useEffect(() => {
     // Call API to get reviews
+    setReviews([
+      {
+        id: 1,
+        fullName: 'Nguyễn Văn A',
+        variation: {
+          type: 'size',
+          name: 'Size',
+          option: 'M'
+        },
+        value: 5,
+        content: 'Sản phẩm rất tốt',
+        created_at: '2021-09-01T00:00:00.000Z',
+        variationId: 0,
+        productId: 0
+      }
+    ])
   }, [history])
 
   return (
@@ -51,7 +60,7 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
         <div className='flex flex-col gap-2'>
           <span className='font-semibold text-2xl text-gray-500'>Thông tin nhận hàng</span>
           <div className='flex flex-col gap-2'>
-            {userInfor.map((item: any) => (
+            {userInfor.map((item: { label: string; value: any }) => (
               <span className='grid grid-cols-3 gap-1'>
                 <span className='font-semibold'>{item.label} </span>
                 <span className='col-span-2'>{item.value}</span>
@@ -103,8 +112,7 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
               <div className='flex flex-col gap-2'>
                 <span className='font-semibold'>{item.name}</span>
                 <span className='text-gray-500'>
-                  Số lượng: {item.quantity} | {getVariations(item as any, item.variationId!).type}:{' '}
-                  {getVariations(item as any, item.variationId!).option}
+                  Số lượng: {item.quantity} | {item.variation.type}: {item.variation.option}
                 </span>
                 <div className='flex gap-2 items-center'>
                   <div className='text-sm text-blue-500'>
@@ -116,23 +124,32 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
                 </div>
               </div>
             </div>
-            <div className='flex lg:justify-end'>
-              {!!reviews.map((r) => r.variationId).includes(item.variationId) ? (
+            <div className='flex lg:justify-start'>
+              {!!reviews.map((r) => r.variationId).includes(item.variationId || 0) ? (
                 <div>
-                  <StarComp stars={item.reviewed.rating} />{' '}
-                  <span className='line-clamp-3'>{item.reviewed.comment || 'Không có đánh giá nào từ khách hàng'}</span>
+                  <span className='text-xs flex gap-4'>
+                    <StarComp stars={reviews.filter((r) => r.variationId === item.variationId)[0].value} />{' '}
+                    {parseDateToDMY(reviews.filter((r) => r.variationId === item.variationId)[0].created_at)}
+                  </span>
+                  <span className='line-clamp-3'>
+                    {reviews.filter((r) => r.variationId === item.variationId)[0].content ||
+                      'Không có đánh giá nào từ khách hàng'}
+                  </span>
                 </div>
               ) : selectedReview !== item.id ? (
-                <Button
-                  color='primary'
-                  variant='ghost'
-                  size='sm'
-                  className='w-24'
-                  startContent={<FaStar />}
-                  onClick={() => setSelectedReview(item.id || 0)}
-                >
-                  Đánh giá
-                </Button>
+                <div className='w-full flex justify-end items-end'>
+                  <Button
+                    color='primary'
+                    variant='ghost'
+                    size='sm'
+                    className='w-24'
+                    startContent={<FaStar />}
+                    onClick={() => setSelectedReview(item.id || 0)}
+                    disabled={history.status !== 'success'}
+                  >
+                    Đánh giá
+                  </Button>
+                </div>
               ) : (
                 <div className='w-full'>
                   <RatingComp handleCancel={() => setSelectedReview(0)} item={item} orderId={history.id} />

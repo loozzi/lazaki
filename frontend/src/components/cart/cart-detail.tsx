@@ -42,14 +42,14 @@ export const DetailCartComp = (props: DetailCartCompProps) => {
   const [totalPrice, setTotalPrice] = useState<number>(0)
   const dispatch = useAppDispatch()
 
-  const handleChangeQuantity = (product: any, quantity: number) => {
+  const handleChangeQuantity = (product: CartItem, quantity: number) => {
     dispatch({
       type: orderActions.changeQuantity.type,
       payload: { variationId: product.variationId, quantity }
     })
   }
 
-  const handleRemoveProduct = (product: any) => {
+  const handleRemoveProduct = (product: CartItem) => {
     dispatch({
       type: orderActions.removeFromCart.type,
       payload: product.variationId

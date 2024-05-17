@@ -89,8 +89,16 @@ export const ViewAdminManageDetailProductPage = () => {
       ],
       images: [
         {
-          link: '',
+          link: 'https://via.placeholder.com/150',
           isPrimary: true
+        },
+        {
+          link: 'https://via.placeholder.com/250',
+          isPrimary: false
+        },
+        {
+          link: 'https://via.placeholder.com/152',
+          isPrimary: false
         }
       ]
     }
@@ -135,7 +143,7 @@ export const ViewAdminManageDetailProductPage = () => {
               </div>
             }
           >
-            <AdminProductImageComp images={product?.images || []} />
+            <AdminProductImageComp payload={payload} />
           </Tab>
           <Tab
             key='variations'

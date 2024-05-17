@@ -146,7 +146,7 @@ export const AdminProductInfoComp = (props: AdminProductInfoCompProps) => {
                 </div>
               )}
               onChange={(keys) => handleChangeCategories(keys.target.value)}
-              value={payload.values.categories.map((i) => i.toString())}
+              defaultSelectedKeys={payload.values.categories.map((i) => i.toString())}
             >
               {(category) => (
                 <SelectItem key={category.id} value={category.id}>

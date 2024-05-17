@@ -1,20 +1,43 @@
-import { Button, Chip, Input, Select, SelectItem, Textarea, Tooltip, divider } from '@nextui-org/react'
+import {
+  Button,
+  Chip,
+  Input,
+  Select,
+  SelectItem,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
+  Textarea,
+  Tooltip
+} from '@nextui-org/react'
 import { useEffect, useState } from 'react'
-import { FaPlus } from 'react-icons/fa'
+import { FaPlus, FaTrash } from 'react-icons/fa'
 import { Category } from '~/models/category'
-import { ProductDetailResponse } from '~/models/product'
+import { ProductCreatePayload } from '~/models/product'
 
 interface AdminProductInfoCompProps {
   className?: string
-  product: ProductDetailResponse
+  payload: {
+    values: ProductCreatePayload
+    setFieldValue: (field: string, value: any) => void
+    [key: string]: any
+  }
 }
 
 export const AdminProductInfoComp = (props: AdminProductInfoCompProps) => {
-  const { className, product } = props
+  const { className, payload } = props
 
   const [categories, setCategories] = useState<Category[]>([])
-
   const [selectedCategories, setSelectedCategories] = useState<number[]>([])
+
+  const columns = [
+    { name: 'Tên', uid: 'name' },
+    { name: 'Giá trị', uid: 'value' },
+    { name: 'Hành động', uid: 'action' }
+  ]
 
   const handleChangeCategories = (keys: string) => {
     const lastKey = keys.split(',').pop()
@@ -26,7 +49,29 @@ export const AdminProductInfoComp = (props: AdminProductInfoCompProps) => {
         return [...prev, lastCategoryId]
       }
     })
-    console.log(keys)
+  }
+
+  const handleAddProperty = () => {
+    payload.setFieldValue('properties', [...payload.values.properties, { name: '', value: '' }])
+  }
+
+  const handleRemoveProperty = (index: number) => {
+    payload.setFieldValue(
+      'properties',
+      payload.values.properties.filter((_, i) => i !== index)
+    )
+  }
+
+  const handleEditProperty = (index: number, field: string, value: string) => {
+    payload.setFieldValue(
+      'properties',
+      payload.values.properties.map((item, i) => {
+        if (i === index) {
+          return { ...item, [field]: value }
+        }
+        return item
+      })
+    )
   }
 
   useEffect(() => {
@@ -58,11 +103,23 @@ export const AdminProductInfoComp = (props: AdminProductInfoCompProps) => {
     ])
   }, [])
 
+  useEffect(() => {
+    payload.setFieldValue('categories', selectedCategories)
+  }, [selectedCategories])
+
   return (
     <div className={className}>
       <div className='flex flex-col gap-4'>
-        <Input label='Tên sản phẩm' value={product.name} />
-        <Textarea label='Mô tả' value={product.description} />
+        <Input
+          label='Tên sản phẩm'
+          value={payload.values.productName}
+          onChange={(e) => payload.setFieldValue('productName', e.target.value)}
+        />
+        <Textarea
+          label='Mô tả'
+          value={payload.values.description}
+          onChange={(e) => payload.setFieldValue('description', e.target.value)}
+        />
 
         <div className='grid grid-cols-3 gap-4'>
           {/* Category */}
@@ -71,11 +128,10 @@ export const AdminProductInfoComp = (props: AdminProductInfoCompProps) => {
             <Select
               items={categories}
               label='Danh mục'
-              variant='bordered'
               isMultiline={true}
               selectionMode='multiple'
               placeholder='Chọn danh mục'
-              labelPlacement='outside'
+              labelPlacement='inside'
               classNames={{
                 base: 'max-w',
                 trigger: 'min-h-12 py-2'
@@ -89,8 +145,8 @@ export const AdminProductInfoComp = (props: AdminProductInfoCompProps) => {
                   ))}
                 </div>
               )}
-              defaultSelectedKeys={selectedCategories}
               onChange={(keys) => handleChangeCategories(keys.target.value)}
+              value={payload.values.categories.map((i) => i.toString())}
             >
               {(category) => (
                 <SelectItem key={category.id} value={category.id}>
@@ -103,19 +159,48 @@ export const AdminProductInfoComp = (props: AdminProductInfoCompProps) => {
           {/* Property */}
           <div className='col-span-2'>
             <div className='font-semibold'>Thuộc tính</div>
-            <div className='grid grid-cols-1 gap-4'>
-              {product.properties.map((property, index) => (
-                <div key={index} className='grid grid-cols-2 gap-2'>
-                  <Input label='Tên' value={property.value} />
-                  <Input label='Giá trị' value={property.value} />
-                </div>
-              ))}
-            </div>
-            <div className='mt-4 flex justify-end'>
-              <Button startContent={<FaPlus />} color='primary' variant='ghost'>
-                Thêm thuộc tính
-              </Button>
-            </div>
+            <Table
+              isStriped
+              removeWrapper
+              bottomContent={
+                <Button color='primary' startContent={<FaPlus size={16} />} onClick={handleAddProperty}>
+                  Thêm thuộc tính
+                </Button>
+              }
+            >
+              <TableHeader columns={columns}>
+                {(column) => (
+                  <TableColumn key={column.uid} align='center'>
+                    {column.name}
+                  </TableColumn>
+                )}
+              </TableHeader>
+              <TableBody>
+                {payload.values.properties.map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell>
+                      <Input value={item.name} onChange={(e) => handleEditProperty(index, 'name', e.target.value)} />
+                    </TableCell>
+                    <TableCell>
+                      <Input value={item.value} onChange={(e) => handleEditProperty(index, 'value', e.target.value)} />
+                    </TableCell>
+                    <TableCell width={120}>
+                      <div className='flex justify-center'>
+                        <Button
+                          color='danger'
+                          size='sm'
+                          isIconOnly
+                          variant='ghost'
+                          onClick={() => handleRemoveProperty(index)}
+                        >
+                          <FaTrash />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         </div>
       </div>

@@ -5,30 +5,46 @@ import { useParams } from 'react-router'
 import { AdminProductImageComp } from '~/components/admin/product/image'
 import { AdminProductInfoComp } from '~/components/admin/product/AdminProductInfoComp'
 import { AdminProductVariationComp } from '~/components/admin/product/variation'
-import { ProductDetailResponse, ProductPayload } from '~/models/product'
+import { ProductDetailResponse, ProductCreatePayload } from '~/models/product'
 import { FaEdit } from 'react-icons/fa'
+import { useFormik } from 'formik'
 
 export const ViewAdminManageDetailProductPage = () => {
   const params = useParams()
   const [product, setProduct] = useState<ProductDetailResponse | null>(null)
 
-  const initialPayload: ProductPayload = useMemo(
+  const inititalPayload: ProductCreatePayload = useMemo(
     () => ({
-      name: '',
+      productId: 0,
+      productName: '',
+      slug: '',
       description: '',
-      categories: [],
       properties: [],
-      variations: [],
-      images: []
+      addVariations: [],
+      removeVariations: [],
+      editVariations: [],
+      images: [],
+      categories: []
     }),
     []
   )
+
+  const payload = useFormik({
+    initialValues: inititalPayload,
+    onSubmit: (value) => {
+      console.log(value)
+    }
+  })
+
+  const handleUpdateProduct = () => {
+    console.log(payload.values)
+  }
 
   useEffect(() => {
     const { slug } = params
     console.log(slug)
 
-    setProduct({
+    const product = {
       id: 1,
       name: 'Product 1',
       slug: 'sample-product-1',
@@ -77,6 +93,20 @@ export const ViewAdminManageDetailProductPage = () => {
           isPrimary: true
         }
       ]
+    }
+
+    setProduct(product)
+    payload.setValues({
+      productId: product.id,
+      productName: product.name,
+      slug: product.slug,
+      description: product.description,
+      properties: product.properties,
+      addVariations: [],
+      removeVariations: [],
+      editVariations: [],
+      images: product.images,
+      categories: product.categories.map((e) => e.id)
     })
   }, [params])
 
@@ -94,7 +124,7 @@ export const ViewAdminManageDetailProductPage = () => {
               </div>
             }
           >
-            {product && <AdminProductInfoComp product={product} />}
+            {product && <AdminProductInfoComp payload={payload} />}
           </Tab>
           <Tab
             key='properties'
@@ -120,7 +150,12 @@ export const ViewAdminManageDetailProductPage = () => {
           </Tab>
         </Tabs>
       </div>
-      <Button color='primary' className='fixed bottom-4 right-4' startContent={<FaEdit />}>
+      <Button
+        color='primary'
+        className='fixed bottom-4 right-4'
+        startContent={<FaEdit />}
+        onClick={handleUpdateProduct}
+      >
         Cập nhật thông tin
       </Button>
     </div>

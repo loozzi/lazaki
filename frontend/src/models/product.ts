@@ -54,7 +54,6 @@ export interface ProductAdminResponse extends ProductResponse {
 }
 
 export interface PropertyPayload {
-  id?: number
   name: string
   value: string
 }
@@ -71,15 +70,22 @@ export interface VariationPayload {
   sold: number
 }
 
-export interface ImagePayload {}
+export interface ImagePayload {
+  link: string
+  isPrimary: boolean
+}
 
 export interface CategoryPayload {}
 
-export interface ProductPayload {
-  name: string
+export interface ProductCreatePayload {
+  productId: number
+  productName: string
+  slug: string
   description: string
   properties: PropertyPayload[]
-  variations: VariationPayload[]
+  addVariations: VariationPayload[]
+  removeVariations: number[]
+  editVariations: VariationPayload[]
   images: ImagePayload[]
-  categories: CategoryPayload[]
+  categories: number[]
 }

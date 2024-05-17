@@ -10,11 +10,11 @@ import {
   useDisclosure
 } from '@nextui-org/react'
 import { MdOutlinePreview } from 'react-icons/md'
-import { OrderHistoryResponse } from '~/models/order'
-import { ImageResponse, ProductDetailResponse } from '~/models/product'
+import { CartItem, OrderHistoryResponse } from '~/models/order'
+import { ImageResponse } from '~/models/product'
+import { OrderStatusColor, OrderStatusName } from '~/utils'
 import { PriceComp } from '../price'
 import { HistoryDetailComp } from './history-detail'
-import { OrderStatusColor, OrderStatusName } from '~/utils'
 
 interface HistoryCompProps {
   history: OrderHistoryResponse
@@ -24,14 +24,6 @@ interface HistoryCompProps {
 export const HistoryComp = (props: HistoryCompProps) => {
   const { history, className } = props
   const { isOpen, onOpen, onClose } = useDisclosure()
-
-  const getVariations = (item: ProductDetailResponse, variationId: number) => {
-    const variation = item.variations.filter((v) => v.id === variationId)[0]
-    return {
-      type: variation.type,
-      option: variation.option
-    }
-  }
 
   const handleOpen = () => {
     onOpen()
@@ -53,7 +45,7 @@ export const HistoryComp = (props: HistoryCompProps) => {
           </div>
         </div>
         <div className='flex flex-col gap-4 mt-4'>
-          {history.orderDetails.map((item: any) => (
+          {history.orderDetails.map((item: CartItem) => (
             <div key={item.id} className='flex justify-between gap-4 border-b-1 border-gray-200 pb-2'>
               <div className='flex gap-4 items-center'>
                 <Image
@@ -68,17 +60,17 @@ export const HistoryComp = (props: HistoryCompProps) => {
                   </div>
                   <div className='flex gap-4'>
                     <div className='text-sm text-gray-500 capitalize'>
-                      {getVariations(item, item.variationId).type}: {getVariations(item, item.variationId).option}
+                      {item.variation.type}: {item.variation.option}
                     </div>
                   </div>
                 </div>
               </div>
               <div className='flex gap-4 items-center'>
                 <div className='text-sm text-blue-500'>
-                  <PriceComp price={item.price || '0'} size='sm' />
+                  <PriceComp price={item.price || 0} size='sm' />
                 </div>
                 <div className='text-sm text-gray-500  line-through'>
-                  <PriceComp price={item.oldPrice || '0'} size='sm' />
+                  <PriceComp price={item.oldPrice || 0} size='sm' />
                 </div>
               </div>
             </div>

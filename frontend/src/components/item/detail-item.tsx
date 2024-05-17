@@ -2,15 +2,15 @@ import { Button, ButtonGroup, Input } from '@nextui-org/react'
 import { useState } from 'react'
 import { FaCartPlus, FaGift, FaMinus, FaPlus } from 'react-icons/fa'
 import { MdBikeScooter } from 'react-icons/md'
-import { useAppDispatch } from '~/app/hook'
-import { orderActions } from '~/hooks/order/order.slice'
+import { useAppDispatch, useAppSelector } from '~/app/hook'
+import { history } from '~/configs/history'
+import routes from '~/configs/routes'
+import { orderActions, selectCart } from '~/hooks/order/order.slice'
 import { CartItem } from '~/models/order'
 import { ProductDetailResponse, VariationResponse } from '~/models/product'
 import { PriceComp } from '../price'
 import { StarComp } from '../star-field'
 import { ItemImageControllerComp } from './image-controller'
-import { history } from '~/configs/history'
-import routes from '~/configs/routes'
 
 interface DetailItemCompProps {
   product: ProductDetailResponse
@@ -18,6 +18,7 @@ interface DetailItemCompProps {
 
 export const DetailItemComp = (props: DetailItemCompProps) => {
   const { product } = props
+  const cart = useAppSelector(selectCart)
   const [quantitySelected, setQuantitySelected] = useState<number>(1)
   const [selectedVariation, setSelectedVariation] = useState<VariationResponse>(product.variations[0])
 
@@ -37,11 +38,19 @@ export const DetailItemComp = (props: DetailItemCompProps) => {
 
   const handleAddToCart = () => {
     const cartItem: CartItem = {
+      orderId: cart?.id || 0,
+      productId: product?.id,
       variationId: selectedVariation.id,
-      productId: product.id,
+      name: product.name,
+      image: selectedVariation.image,
+      variation: {
+        type: selectedVariation.type,
+        name: selectedVariation.name,
+        option: selectedVariation.option
+      },
       quantity: quantitySelected,
       price: selectedVariation.price,
-      oldePrice: selectedVariation.oldPrice
+      oldPrice: selectedVariation.oldPrice
     }
     dispatch({ type: orderActions.addToCart.type, payload: cartItem })
   }

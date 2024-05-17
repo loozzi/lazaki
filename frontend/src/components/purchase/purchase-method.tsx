@@ -14,7 +14,7 @@ export const PurchaseMethodComp = (props: PurchaseMethodCompProps) => {
         label='Chọn phương thức thanh toán'
         required
         onChange={(e) => payload.setFieldValue('method', e.target.value)}
-        selectedKeys={[payload.values.method]}
+        selectedKeys={[payload.values.paymentMethod]}
       >
         <SelectItem key='cod' value='cod'>
           Thanh toán khi nhận hàng

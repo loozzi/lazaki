@@ -106,6 +106,7 @@ class ProductService:
 
         # Cập nhật properties
         existing_properties = {prop.name: prop for prop in product.properties}
+        new_property_names = set(prop["name"] for prop in properties)
         for prop in properties:
             if prop["name"] in existing_properties:
                 existing_properties[prop["name"]].value = prop["value"]
@@ -117,12 +118,24 @@ class ProductService:
                 )
                 product.properties.append(property_obj)
 
+        # Xóa các properties không còn tồn tại
+        for prop_name, prop_obj in existing_properties.items():
+            if prop_name not in new_property_names:
+                db.session.delete(prop_obj)
+
         # Cập nhật categories
+        existing_categories = {cat.id: cat for cat in product.categories}
+        new_category_ids = set(cat["id"] for cat in categories)
         product.categories = []
         for cat in categories:
             category_obj = Category.query.get(cat["id"])
             if category_obj:
                 product.categories.append(category_obj)
+
+        # Xóa các categories không còn tồn tại
+        for cat_id, cat_obj in existing_categories.items():
+            if cat_id not in new_category_ids:
+                db.session.delete(cat_obj)
 
         # Cập nhật variations
         existing_variations = {var.id: var for var in product.variations}

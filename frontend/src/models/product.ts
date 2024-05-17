@@ -21,7 +21,6 @@ export interface VariationResponse {
 
 export interface ImageResponse {
   link: string
-  variationId: number
   isPrimary: boolean
   [key: string]: any
 }
@@ -52,4 +51,35 @@ export interface ProductResponse {
 export interface ProductAdminResponse extends ProductResponse {
   quantity: number
   categories: string[]
+}
+
+export interface PropertyPayload {
+  id?: number
+  name: string
+  value: string
+}
+
+export interface VariationPayload {
+  id?: number
+  type: string
+  name: string
+  option: string
+  image: string
+  price: number
+  oldPrice: number
+  quantity: number
+  sold: number
+}
+
+export interface ImagePayload {}
+
+export interface CategoryPayload {}
+
+export interface ProductPayload {
+  name: string
+  description: string
+  properties: PropertyPayload[]
+  variations: VariationPayload[]
+  images: ImagePayload[]
+  categories: CategoryPayload[]
 }

@@ -39,15 +39,19 @@ def editProduct():
     description = request.form.get("description", None)
     try:
         properties_str = request.form.get("properties", "[]")
-        categories_str = request.form.get("categories", "[]")
-        variations_str = request.form.get("variations", "[]")
+        add_variations_str = request.form.get("addVariations", "[]")
+        remove_variations_str = request.form.get("removeVariations", "[]")
+        edit_variations_str = request.form.get("editVariations", "[]")
         images_str = request.form.get("images", "[]")
+        categories_str = request.form.get("categories", "[]")
 
-        # Sử dụng json.loads để chuyển đổi chuỗi JSON thành đối tượng Python
         properties = json.loads(properties_str)
-        categories = json.loads(categories_str)
-        variations = json.loads(variations_str)
+        add_variations = json.loads(add_variations_str)
+        edit_variations = json.loads(edit_variations_str)
         images = json.loads(images_str)
+
+        categories = eval(categories_str)
+        remove_variations = eval(remove_variations_str)
     except Exception:
         return Response(400, "Invalid format")
     return AdminController.editProduct(
@@ -56,9 +60,11 @@ def editProduct():
         slug,
         description,
         properties,
-        categories,
-        variations,
+        add_variations,
+        remove_variations,
+        edit_variations,
         images,
+        categories,
     )
 
 
@@ -94,3 +100,9 @@ def addProduct():
     return AdminController.addProduct(
         product_name, description, slug, properties, categories, variations, images
     )
+
+
+@admin.route("/product/<string:slug>", methods=["DELETE"])
+# @admin_middleware
+def removeProduct(slug):
+    return AdminController.removeProduct(slug)

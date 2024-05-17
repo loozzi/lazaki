@@ -29,21 +29,33 @@ class AdminController:
         slug: str,
         description: str,
         properties: List[object],
-        categories: List[object],
-        variations: List[object],
-        images: List[str],
+        add_variations: List[object],
+        remove_variations: List[int],
+        edit_variations: List[object],
+        images: List[object],
+        categories: List[int],
     ):
+        product = ProductService.getDetailProduct(productId)
+        if product is None:
+            return Response(404, "Product not found")
+
+        # Kiểm tra list remove_variations có chứa id không thuộc product không
+        for varId in remove_variations:
+            if Variation.query.get(varId).productId != productId:
+                return Response(400, "Invalid remove_variations")
+
         product = ProductService.editProduct(
             productId,
             productName,
             slug,
             description,
             properties,
-            categories,
-            variations,
+            add_variations,
+            remove_variations,
+            edit_variations,
             images,
+            categories,
         )
-
         return Response(200, "Success", product.serialize())
 
     # Thêm sản phẩm
@@ -62,8 +74,9 @@ class AdminController:
         return Response(200, "Success", data=product.serialize())
 
     # Xóa sản phẩm
-    def removeProduct(productId: int):
-        pass
+    def removeProduct(slug: str):
+        ProductService.removeProduct(slug)
+        return Response(200, "Success")
 
     # Lấy danh sách đơn hàng
     def getOrders(page: int, limit: int, sort: str):

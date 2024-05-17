@@ -93,13 +93,14 @@ class ProductService:
         slug: str,
         description: str,
         properties: List[object],
-        categories: List[object],
-        variations: List[object],
-        images: List[str],
+        add_variations: List[object],
+        remove_variations: List[int],
+        edit_variations: List[object],
+        images: List[object],
+        categories: List[int],
     ):
         product = ProductService.getDetailProduct(productId)
-        if product is None:
-            return Response(404, "Product not found")
+            
         product.name = productName
         product.slug = slug
         product.description = description
@@ -123,52 +124,44 @@ class ProductService:
             if prop_name not in new_property_names:
                 db.session.delete(prop_obj)
 
-        # Cập nhật categories
-        existing_categories = {cat.id: cat for cat in product.categories}
-        new_category_ids = set(cat["id"] for cat in categories)
-        product.categories = []
-        for cat in categories:
-            category_obj = Category.query.get(cat["id"])
-            if category_obj:
-                product.categories.append(category_obj)
+        # Thêm variations
+        existing_variations = {(var.type, var.name, var.option, var.image, var.price, var.oldPrice, var.quantity, var.sold) for var in product.variations}
+        for var in add_variations:
+            var_tuple = (var["type"], var["name"], var["option"], var["image"], var["price"], var["oldPrice"], var["quantity"], var["sold"])
+            if var_tuple in existing_variations:
+                continue
+            variation_obj = Variation(
+                type=var["type"],
+                name=var["name"],
+                option=var["option"],
+                image=var["image"],
+                price=var["price"],
+                oldPrice=var["oldPrice"],
+                quantity=var["quantity"],
+                sold=var["sold"],
+                productId=product.id,
+            )
+            db.session.add(variation_obj)
 
-        # Xóa các categories không còn tồn tại
-        for cat_id, cat_obj in existing_categories.items():
-            if cat_id not in new_category_ids:
-                db.session.delete(cat_obj)
+        # Xóa variations (xoá các variations có id trong remove_variations và productId = product.id)
+        for varId in remove_variations:
+            variation_obj = Variation.query.get(varId)
+            if variation_obj and variation_obj.productId == product.id:
+                db.session.delete(variation_obj)
 
-        # Cập nhật variations
-        existing_variations = {var.id: var for var in product.variations}
-        new_variation_ids = set(var["id"] for var in variations)
-        for var in variations:
-            if var["id"] in existing_variations:
-                existing_variations[var["id"]].setType(var["type"])
-                existing_variations[var["id"]].setName(var["name"])
-                existing_variations[var["id"]].setOption(var["option"])
-                existing_variations[var["id"]].setImage(var["image"])
-                existing_variations[var["id"]].setPrice(var["price"])
-                existing_variations[var["id"]].setOldPrice(var["oldPrice"])
-                existing_variations[var["id"]].setQuantity(var["quantity"])
-                existing_variations[var["id"]].setSold(var["sold"])
-            else:
-                variation_obj = Variation(
-                    id=var["id"],
-                    type=var["type"],
-                    name=var["name"],
-                    option=var["option"],
-                    image=var["image"],
-                    price=var["price"],
-                    oldPrice=var["oldPrice"],
-                    quantity=var["quantity"],
-                    sold=var["sold"],
-                    productId=product.id,
-                )
-                product.variations.append(variation_obj)
-
-        # Xóa các variation không còn tồn tại
-        for var_id, var_obj in existing_variations.items():
-            if var_id not in new_variation_ids:
-                db.session.delete(var_obj)
+        # Sửa variations
+        for var in edit_variations:
+            variation_obj = Variation.query.get(var["id"])
+            if not variation_obj:
+                continue
+            variation_obj.type = var["type"]
+            variation_obj.name = var["name"]
+            variation_obj.option = var["option"]
+            variation_obj.image = var["image"]
+            variation_obj.price = var["price"]
+            variation_obj.oldPrice = var["oldPrice"]
+            variation_obj.quantity = var["quantity"]
+            variation_obj.sold = var["sold"]
 
         # Cập nhật images
         existing_images = {img.link: img for img in product.images}
@@ -189,13 +182,34 @@ class ProductService:
             if link not in new_image_links:
                 db.session.delete(img_obj)
 
+        # Cập nhật categories
+        product.categories.clear()
+        for cat_id in categories:
+            category_obj = Category.query.get(cat_id)
+            if category_obj:
+                product.categories.append(category_obj)
+
         db.session.commit()
 
         return product
 
     # Xoá sản phẩm khỏi database
-    def removeProduct(productId: int):
-        pass
+    def removeProduct(slug: str):
+        product = Product.query.filter_by(slug=slug).first()
+        if not product:
+            return Response(404, "Product not found")
+
+        # Xóa các variations liên quan
+        Variation.query.filter_by(productId=product.id).delete()
+        # Xóa các images liên quan
+        ProductImage.query.filter_by(productId=product.id).delete()
+        # Xóa các properties liên quan
+        ProductProperty.query.filter_by(productId=product.id).delete()
+        # Xóa các categories liên quan
+        product.categories.clear()
+        # Xóa sản phẩm
+        db.session.delete(product)
+        db.session.commit()
 
     def generateProducts():
         pass

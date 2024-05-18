@@ -1,15 +1,15 @@
 from typing import List
 
-from sqlalchemy import and_, asc, desc, or_
-from src import db
-from src.controllers.Pagination import Pagination
-from src.models.Category import Category
-from src.models.CategoryProduct import CategoryProduct
-from src.models.OrderDetail import OrderDetail
-from src.models.Product import Product
 from src.models.ProductImage import ProductImage
 from src.models.ProductProperty import ProductProperty
+from src import db
+from src.models.Product import Product
 from src.models.Variation import Variation
+from src.models.OrderDetail import OrderDetail
+from src.models.Category import Category
+from src.models.CategoryProduct import CategoryProduct
+from sqlalchemy import or_, and_, desc, asc
+from src.controllers.Pagination import Pagination
 from src.utils.response import Response
 
 

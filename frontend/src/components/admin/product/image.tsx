@@ -20,6 +20,7 @@ export const AdminProductImageComp = (props: AdminProductImageProps) => {
   const [newImage, setNewImage] = useState<string>('')
 
   const handleAddImage = () => {
+    if (!newImage) return
     payload.setFieldValue('images', [...payload.values.images, { link: newImage, isPrimary: false }])
     setNewImage('')
   }

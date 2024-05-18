@@ -150,7 +150,7 @@ export const ViewAdminManageCategoryPage = () => {
                 <TableCell>{item.description}</TableCell>
                 <TableCell width={120}>
                   <div className='flex gap-2'>
-                    <Button isIconOnly variant='ghost'>
+                    <Button isIconOnly variant='ghost' color='secondary'>
                       <FaEye />
                     </Button>
                     <Button
@@ -160,10 +160,11 @@ export const ViewAdminManageCategoryPage = () => {
                         setSelectedCategory(item)
                         handleOpenModal()
                       }}
+                      color='warning'
                     >
                       <FaEdit />
                     </Button>
-                    <Button isIconOnly variant='ghost' onClick={() => handleRemoveCategory(item.id)}>
+                    <Button isIconOnly variant='ghost' onClick={() => handleRemoveCategory(item.id)} color='danger'>
                       <FaTrash />
                     </Button>
                   </div>

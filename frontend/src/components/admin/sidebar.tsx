@@ -59,15 +59,15 @@ export const AdminSidebarComp = (props: AdminSidebarCompProps) => {
             setCollapsed={setCollapsed}
             collapsed={collapsed}
           />
+          <SidebarItemComp
+            title='Đăng xuất'
+            icon={<FaSignOutAlt />}
+            to={routes.admin.logout}
+            isActive={window.location.href.includes(routes.admin.logout)}
+            setCollapsed={setCollapsed}
+            collapsed={collapsed}
+          />
         </SidebarMenu>
-        <SidebarItemComp
-          title='Đăng xuất'
-          icon={<FaSignOutAlt />}
-          to={routes.admin.logout}
-          isActive={window.location.href.includes(routes.admin.logout)}
-          setCollapsed={setCollapsed}
-          collapsed={collapsed}
-        />
       </div>
     </div>
   )

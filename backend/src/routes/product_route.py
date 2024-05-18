@@ -1,11 +1,7 @@
-from flask import Blueprint
-from flask import request
-from src.models.Product import Product
+from flask import Blueprint, request
+from src.controllers.ProductController import ProductController
 from src.middlewares.AuthMiddleware import customer_middleware
 from src.middlewares.PaginationMiddleware import request_pagination
-from src.services.ProductService import ProductService
-from src.controllers.ProductController import ProductController
-from math import ceil
 from src.utils.response import Response
 
 product = Blueprint("product", __name__)
@@ -20,24 +16,20 @@ def get_products():
     product_controller = ProductController()
     data = product_controller.getProducts(page, limit, sort)
     return Response(status=200, message="Success", data=data)
-    
 
 
 @product.route("/search", methods=["GET"])
 @request_pagination
 def search_products():
-    keyword = request.args.get("keyword", 
-                               default="").strip()
-    minPrice = request.args.get("minPrice", 
-                                default="").strip()
-    maxPrice = request.args.get("maxPrice",
-                                default="").strip()
-    categories = request.args.get("categories",
-                                  default="").strip()
+    keyword = request.args.get("keyword", default="").strip()
+    minPrice = request.args.get("minPrice", default="").strip()
+    maxPrice = request.args.get("maxPrice", default="").strip()
+    categories = request.args.get("categories", default="").strip()
     if categories != "":
         try:
             categories = eval(categories)
         except Exception as e:
+            print(e)
             categories = []
     else:
         categories = []
@@ -45,12 +37,13 @@ def search_products():
     limit = request.args.get("limit", default=10, type=int)
     sort = request.args.get("sort", default="asc").strip()
     product_controller = ProductController()
-    data = product_controller.searchProducts(keyword, categories, minPrice,
-                                            maxPrice, page, limit, sort)
+    data = product_controller.searchProducts(
+        keyword, categories, minPrice, maxPrice, page, limit, sort
+    )
     return Response(status=200, message="Success", data=data)
 
 
-@product.route("/:<string:slug>", methods=["GET"])
+@product.route("/detail/<string:slug>", methods=["GET"])
 def detail_product(slug):
     product_controller = ProductController()
     data = product_controller.getDetailProduct(slug)

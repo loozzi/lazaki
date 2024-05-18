@@ -77,7 +77,7 @@ export interface ImagePayload {
 
 export interface CategoryPayload {}
 
-export interface ProductCreatePayload {
+export interface ProductUpdatePayload {
   productId: number
   productName: string
   slug: string
@@ -86,6 +86,16 @@ export interface ProductCreatePayload {
   addVariations: VariationPayload[]
   removeVariations: number[]
   editVariations: VariationPayload[]
+  images: ImagePayload[]
+  categories: number[]
+}
+
+export interface ProductCreatePayload {
+  productName: string
+  slug: string
+  description: string
+  properties: PropertyPayload[]
+  variations: VariationPayload[]
   images: ImagePayload[]
   categories: number[]
 }

@@ -5,7 +5,7 @@ import { useParams } from 'react-router'
 import { AdminProductImageComp } from '~/components/admin/product/image'
 import { AdminProductInfoComp } from '~/components/admin/product/AdminProductInfoComp'
 import { AdminProductVariationComp } from '~/components/admin/product/variation'
-import { ProductDetailResponse, ProductCreatePayload } from '~/models/product'
+import { ProductDetailResponse, ProductUpdatePayload } from '~/models/product'
 import { FaEdit } from 'react-icons/fa'
 import { useFormik } from 'formik'
 
@@ -13,7 +13,7 @@ export const ViewAdminManageDetailProductPage = () => {
   const params = useParams()
   const [product, setProduct] = useState<ProductDetailResponse | null>(null)
 
-  const inititalPayload: ProductCreatePayload = useMemo(
+  const inititalPayload: ProductUpdatePayload = useMemo(
     () => ({
       productId: 0,
       productName: '',

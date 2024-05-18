@@ -94,7 +94,7 @@ export const ViewAdminManageProductPage = () => {
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
         />
-        <Button color='primary' variant='light' startContent={<FaEdit />}>
+        <Button as={Link} to={routes.admin.productCreate} color='primary' variant='light' startContent={<FaEdit />}>
           Thêm sản phẩm
         </Button>
       </div>

@@ -16,12 +16,12 @@ import {
 import { useEffect, useState } from 'react'
 import { FaPlus, FaTrash } from 'react-icons/fa'
 import { Category } from '~/models/category'
-import { ProductCreatePayload } from '~/models/product'
+import { ProductCreatePayload, ProductUpdatePayload } from '~/models/product'
 
 interface AdminProductInfoCompProps {
   className?: string
   payload: {
-    values: ProductCreatePayload
+    values: ProductUpdatePayload | ProductCreatePayload
     setFieldValue: (field: string, value: any) => void
     [key: string]: any
   }

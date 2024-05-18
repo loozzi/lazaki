@@ -14,32 +14,26 @@ import {
   TableRow,
   useDisclosure
 } from '@nextui-org/react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { FaEdit, FaTrash } from 'react-icons/fa'
-import { ImageResponse, VariationPayload, VariationResponse } from '~/models/product'
+import { ProductCreatePayload, VariationPayload } from '~/models/product'
 
-interface AdminProductVariationProps {
+interface AdminCreateVariationCompProps {
   className?: string
   payload: {
-    values: {
-      addVariations: VariationPayload[]
-      removeVariations: number[]
-      editVariations: VariationPayload[]
-      images: ImageResponse[]
-    }
+    values: ProductCreatePayload
     setFieldValue: (field: string, value: any) => void
     [key: string]: any
   }
-  variations: VariationResponse[]
 }
 
-export const AdminProductVariationComp = (props: AdminProductVariationProps) => {
-  const { className, payload, variations } = props
+export const AdminCreateVariationComp = (props: AdminCreateVariationCompProps) => {
+  const { className, payload } = props
 
   const [selectedVariation, setSelectedVariation] = useState<VariationPayload | null>(null)
   const [selectedVariationIndex, setSelectedVariationIndex] = useState<number>(-1)
   const [newVariation, setNewVariation] = useState<VariationPayload | null>(null)
-  const [currentVariations, setCurrentVariations] = useState<VariationResponse[]>(variations)
+
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const columns = [
@@ -57,46 +51,7 @@ export const AdminProductVariationComp = (props: AdminProductVariationProps) => 
   const handleCloseModal = () => {
     onClose()
     setSelectedVariation(null)
-  }
-
-  const handleUpdateVariation = () => {
-    if (!selectedVariation) return
-
-    if (selectedVariation.price < 0) {
-      selectedVariation.price = 0
-    }
-
-    if (selectedVariation.oldPrice < 0) {
-      selectedVariation.oldPrice = 0
-    }
-
-    if (selectedVariation.quantity < 0) {
-      selectedVariation.quantity = 0
-    }
-
-    if (selectedVariation.sold < 0) {
-      selectedVariation.sold = 0
-    }
-
-    if (
-      selectedVariation.type === '' ||
-      selectedVariation.name === '' ||
-      selectedVariation.option === '' ||
-      selectedVariation.price === 0 ||
-      selectedVariation.quantity === 0
-    ) {
-      return
-    }
-
-    if (selectedVariation?.id || 0 !== 0) {
-      payload.setFieldValue('editVariations', [...payload.values.editVariations, selectedVariation])
-    }
-    setCurrentVariations(
-      currentVariations.map((variation, index) =>
-        index === selectedVariationIndex ? (selectedVariation! as VariationResponse) : variation
-      )
-    )
-    onClose()
+    setNewVariation(null)
   }
 
   const handleCreateVariation = () => {
@@ -128,33 +83,51 @@ export const AdminProductVariationComp = (props: AdminProductVariationProps) => 
       return
     }
 
-    payload.setFieldValue('addVariations', [...payload.values.addVariations, newVariation])
-    setCurrentVariations([...currentVariations, newVariation! as VariationResponse])
+    payload.values.variations.push(newVariation)
+
+    onClose()
+  }
+
+  const handleUpdateVariation = () => {
+    if (!selectedVariation) return
+
+    if (selectedVariation.price < 0) {
+      selectedVariation.price = 0
+    }
+
+    if (selectedVariation.oldPrice < 0) {
+      selectedVariation.oldPrice = 0
+    }
+
+    if (selectedVariation.quantity < 0) {
+      selectedVariation.quantity = 0
+    }
+
+    if (selectedVariation.sold < 0) {
+      selectedVariation.sold = 0
+    }
+
+    if (
+      selectedVariation.type === '' ||
+      selectedVariation.name === '' ||
+      selectedVariation.option === '' ||
+      selectedVariation.price === 0 ||
+      selectedVariation.quantity === 0
+    ) {
+      return
+    }
+
+    payload.values.variations[selectedVariationIndex] = selectedVariation
+
     onClose()
   }
 
   const handleRemoveVariation = (index: number) => {
-    // Kiểm tra xem đấy có phải variation đã được thêm vào db chưa
-    if (variations[index]?.id || 0 !== 0) {
-      payload.setFieldValue('removeVariations', [...payload.values.removeVariations, variations[index].id])
-      payload.setFieldValue(
-        'editVariations',
-        payload.values.editVariations.filter((item) => item.id !== variations[index].id)
-      )
-    } else
-      payload.setFieldValue(
-        'addVariations',
-        payload.values.addVariations.filter((_, i) => i !== index)
-      )
-    setCurrentVariations(currentVariations.filter((_, i) => i !== index))
-  }
-
-  useEffect(() => {
     payload.setFieldValue(
-      'addVariations',
-      currentVariations.filter((item) => (item?.id || 0) === 0)
+      'variations',
+      payload.values.variations.filter((_, i) => i !== index)
     )
-  }, [currentVariations])
+  }
 
   return (
     <div className={className}>
@@ -164,7 +137,6 @@ export const AdminProductVariationComp = (props: AdminProductVariationProps) => 
           <Button
             onClick={() => {
               setSelectedVariation(null)
-              setSelectedVariationIndex(-1)
               setNewVariation({
                 type: '',
                 name: '',
@@ -194,7 +166,7 @@ export const AdminProductVariationComp = (props: AdminProductVariationProps) => 
               )}
             </TableHeader>
             <TableBody>
-              {currentVariations.map((variation, index) => (
+              {payload.values.variations.map((variation, index) => (
                 <TableRow key={index}>
                   <TableCell align='center'>{variation.type}</TableCell>
                   <TableCell align='center'>{variation.name}</TableCell>
@@ -210,6 +182,7 @@ export const AdminProductVariationComp = (props: AdminProductVariationProps) => 
                         onClick={() => {
                           setSelectedVariation(variation)
                           setSelectedVariationIndex(index)
+                          setNewVariation(null)
                           onOpen()
                         }}
                         variant='ghost'
@@ -229,7 +202,6 @@ export const AdminProductVariationComp = (props: AdminProductVariationProps) => 
           </Table>
         </div>
       </div>
-
       <Modal isOpen={isOpen} onClose={handleCloseModal}>
         <ModalContent>
           {(onClose) => (

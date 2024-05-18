@@ -6,6 +6,8 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Select,
+  SelectItem,
   Table,
   TableBody,
   TableCell,
@@ -122,6 +124,13 @@ export const AdminCreateVariationComp = (props: AdminCreateVariationCompProps) =
     onClose()
   }
 
+  const handleUpdateImageVariation = (index: number, image: string) => {
+    payload.setFieldValue(
+      'variations',
+      payload.values.variations.map((v, i) => (i === index ? { ...v, image } : v))
+    )
+  }
+
   const handleRemoveVariation = (index: number) => {
     payload.setFieldValue(
       'variations',
@@ -171,7 +180,15 @@ export const AdminCreateVariationComp = (props: AdminCreateVariationCompProps) =
                   <TableCell align='center'>{variation.type}</TableCell>
                   <TableCell align='center'>{variation.name}</TableCell>
                   <TableCell align='center'>{variation.option}</TableCell>
-                  <TableCell align='center'>{variation.image}</TableCell>
+                  <TableCell align='center'>
+                    <Select onChange={(e) => handleUpdateImageVariation(index, e.target.value)}>
+                      {payload.values.images.map((image) => (
+                        <SelectItem key={image.link} value={image.link}>
+                          {image.link}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </TableCell>
                   <TableCell align='center'>{variation.price}</TableCell>
                   <TableCell align='center'>{variation.oldPrice}</TableCell>
                   <TableCell align='center'>{variation.quantity}</TableCell>
@@ -211,7 +228,7 @@ export const AdminCreateVariationComp = (props: AdminCreateVariationCompProps) =
                 {selectedVariation ? (
                   <div className='flex flex-col gap-2'>
                     {columns
-                      .filter((i) => i.uid !== 'actions')
+                      .filter((i) => ['actions', 'image'].includes(i.uid) === false)
                       .map((column) => (
                         <Input
                           value={(selectedVariation[column.uid as keyof VariationPayload] as string) || ''}
@@ -234,7 +251,7 @@ export const AdminCreateVariationComp = (props: AdminCreateVariationCompProps) =
                 ) : (
                   <div className='flex flex-col gap-2'>
                     {columns
-                      .filter((i) => i.uid !== 'actions')
+                      .filter((i) => ['actions', 'image'].includes(i.uid) === false)
                       .map((column) => (
                         <Input
                           value={(newVariation![column.uid as keyof VariationPayload] as string) || ''}

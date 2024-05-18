@@ -6,6 +6,8 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Select,
+  SelectItem,
   Table,
   TableBody,
   TableCell,
@@ -97,6 +99,26 @@ export const AdminProductVariationComp = (props: AdminProductVariationProps) => 
       )
     )
     onClose()
+  }
+
+  const handleUpdateImageVariation = (index: number, imageLink: string) => {
+    if (variations[index]?.id || 0 !== 0) {
+      const k = payload.values.editVariations.findIndex((item) => item.id === currentVariations[index].id)
+      if (k === -1)
+        payload.values.editVariations.push({
+          ...currentVariations[index],
+          image: imageLink
+        })
+      else payload.values.editVariations[k].image = imageLink
+    } else {
+      payload.setFieldValue('addVariations', [
+        ...payload.values.addVariations,
+        { ...currentVariations[index], image: imageLink }
+      ])
+    }
+    setCurrentVariations(
+      currentVariations.map((variation, i) => (i === index ? { ...variation, image: imageLink } : variation))
+    )
   }
 
   const handleCreateVariation = () => {
@@ -199,7 +221,15 @@ export const AdminProductVariationComp = (props: AdminProductVariationProps) => 
                   <TableCell align='center'>{variation.type}</TableCell>
                   <TableCell align='center'>{variation.name}</TableCell>
                   <TableCell align='center'>{variation.option}</TableCell>
-                  <TableCell align='center'>{variation.image}</TableCell>
+                  <TableCell align='center'>
+                    <Select onChange={(e) => handleUpdateImageVariation(index, e.target.value)}>
+                      {payload.values.images.map((image) => (
+                        <SelectItem key={image.link} value={image.link}>
+                          {image.link}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </TableCell>
                   <TableCell align='center'>{variation.price}</TableCell>
                   <TableCell align='center'>{variation.oldPrice}</TableCell>
                   <TableCell align='center'>{variation.quantity}</TableCell>
@@ -239,7 +269,7 @@ export const AdminProductVariationComp = (props: AdminProductVariationProps) => 
                 {selectedVariation ? (
                   <div className='flex flex-col gap-2'>
                     {columns
-                      .filter((i) => i.uid !== 'actions')
+                      .filter((i) => ['actions', 'image'].includes(i.uid) === false)
                       .map((column) => (
                         <Input
                           value={(selectedVariation[column.uid as keyof VariationPayload] as string) || ''}
@@ -262,7 +292,7 @@ export const AdminProductVariationComp = (props: AdminProductVariationProps) => 
                 ) : (
                   <div className='flex flex-col gap-2'>
                     {columns
-                      .filter((i) => i.uid !== 'actions')
+                      .filter((i) => ['actions', 'image'].includes(i.uid) === false)
                       .map((column) => (
                         <Input
                           value={(newVariation![column.uid as keyof VariationPayload] as string) || ''}

@@ -3,6 +3,9 @@ from src.services.CustomerService import CustomerService
 from src.services.OrderService import OrderService
 from src.services.TokenService import TokenService
 from src.utils.response import Response
+from src.models import Customer
+from datetime import datetime
+from flask import request
 
 
 class AuthController:
@@ -43,7 +46,7 @@ class AuthController:
 
     # Refresh token
     def refeshToken(refreshToken: str):
-        data = TokenService.verify(refreshToken)
+        data = TokenService.verify(refreshToken, isRefreshToken=True)
         if not data:
             return Response(400, "Invalid token")
 
@@ -70,3 +73,38 @@ class AuthController:
             return Response(200, "Success", {"accessToken": accessToken})
 
         return Response(400, "Invalid username or password")
+
+    def getInformation():
+        customer = request.customer
+        if not Customer.query.filter_by(id=customer.id).first():
+            return Response(404, "Người dùng không tồn tại")
+        return_customer = CustomerService.getCustomerById(customer.id)
+        return Response(200, "Truy xuất thành công", return_customer)
+
+    def updateInformation(
+        fullName: str,
+        birthday: datetime,
+        gender: str,
+        email: str,
+        phoneNumber: str,
+        province: str,
+        district: str,
+        ward: str,
+        street: str,
+    ):
+        customer = request.customer
+        if not Customer.query.filter_by(id=customer.id).first():
+            return Response(404, "Người dùng không tồn tại")
+        updated_customer = CustomerService.update(
+            customer.id,
+            fullName,
+            birthday,
+            gender,
+            email,
+            phoneNumber,
+            province,
+            district,
+            ward,
+            street,
+        )
+        return Response(200, "Cập nhật thành công", updated_customer)

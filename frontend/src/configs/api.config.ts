@@ -37,7 +37,7 @@ const payment = {
   confirm: '/payment/confirm'
 }
 
-const user = '/user'
+const user = '/user/'
 
 const review = '/review'
 

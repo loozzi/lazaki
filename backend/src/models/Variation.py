@@ -21,7 +21,27 @@ class Variation(Base):
     sold: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
     def getVariation(self):
-        pass
+        data = {
+            "id": self.id,
+            "type": self.type,
+            "name": self.name,
+            "option": self.option,
+            "image": self.image,
+            "price": self.price,
+            "oldPrice": self.oldPrice,
+            "quantity": self.quantity,
+            "sold": self.sold,
+        }
+        return data
+
+    def setType(self, type):
+        self.type = type
+
+    def setName(self, name):
+        self.name = name
+
+    def setOption(self, option):
+        self.option = option
 
     def setSold(self, soldNumber):
         self.sold = soldNumber
@@ -37,3 +57,23 @@ class Variation(Base):
 
     def setPrice(self, price):
         self.price = price
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "type": self.type,
+            "name": self.name,
+            "option": self.option,
+            "image": self.image,
+            "price": self.price,
+            "oldPrice": self.oldPrice,
+            "quantity": self.quantity,
+            "sold": self.sold,
+        }
+
+    def getInfo(self):
+        return {
+            "type": self.type,
+            "name": self.name,
+            "option": self.option,
+        }

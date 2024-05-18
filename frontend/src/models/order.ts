@@ -8,17 +8,19 @@ export type OrderStatusType = 'success' | 'order' | 'cancel' | 'shipping' | 'pre
 export interface CartItem {
   id?: number
   orderId?: number
-  variationId: number
-  productId: number
+  productId?: number
+  variationId?: number
+  name: string
+  image: string
+  variation: {
+    type: string
+    name: string
+    option: string
+  }
   quantity: number
   price: number
   oldPrice: number
 
-  [key: string]: any
-}
-
-export interface Cart {
-  cartItems: CartItem[]
   [key: string]: any
 }
 
@@ -27,14 +29,29 @@ export interface OrderHistoryResponse extends Base {
   customerId: number
   fullName?: string
   email?: string
-  address: AddressResponse
-  paymentMethod: PaymentMethodType
-  paymentStatus: PaymentStatusType
+  address?: AddressResponse
+  paymentMethod?: PaymentMethodType
+  paymentStatus?: PaymentStatusType
   note?: string
   status: OrderStatusType
   shippingName?: string
   shippingCode?: string
   orderDetails: CartItem[]
   totalAmount?: number
+  [key: string]: any
+}
+
+export interface OrderConfirmPayload {
+  orderId: number
+  fullName: string
+  email: string
+  phoneNumber: string
+  province: string
+  district: string
+  ward: string
+  street: string
+  note: string
+  paymentMethod: PaymentMethodType
+
   [key: string]: any
 }

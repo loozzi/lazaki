@@ -9,11 +9,29 @@ interface SelectAddressCompProps {
   hasPlaceholder?: boolean
 }
 
+interface Ward {
+  Id: string
+  Name: string
+  Level: string
+}
+
+interface District {
+  Id: string
+  Name: string
+  Wards: Ward[]
+}
+
+interface Province {
+  Id: string
+  Name: string
+  Districts: District[]
+}
+
 export const SelectAddressComp = (props: SelectAddressCompProps) => {
   const { setProvince, setDistrict, setWard, hasPlaceholder } = props
 
-  const [districts, setDistricts] = useState<{ Id: string; Name: string; Wards: any[] }[]>([])
-  const [wards, setWards] = useState<any[]>([])
+  const [districts, setDistricts] = useState<District[]>([])
+  const [wards, setWards] = useState<Ward[]>([])
 
   return (
     <div className='grid gap-4 grid-cols-1 lg:grid-cols-3'>
@@ -21,7 +39,7 @@ export const SelectAddressComp = (props: SelectAddressCompProps) => {
         label='Tỉnh thành'
         placeholder={hasPlaceholder ? 'Chọn tỉnh thành' : undefined}
         onChange={(e) => {
-          const province = assets.address.find((address) => address.Id === e.target.value)
+          const province: Province = assets.address.find((address) => address.Id === e.target.value) as Province
           setProvince(province?.Name || '')
           setDistricts(province?.Districts || [])
         }}

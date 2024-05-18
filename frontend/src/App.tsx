@@ -8,13 +8,15 @@ import { ViewAuthPage } from './pages/client/auth'
 import { ViewCartPage } from './pages/client/cart'
 import { ViewDetailPage } from './pages/client/detail'
 import { HomePage } from './pages/client/home'
-import { ViewPurchasePage } from './pages/client/payment'
+import { ViewPurchasePage } from './pages/client/purchase'
 import { ViewSearchPage } from './pages/client/search'
 import { TemplateClientPage } from './pages/client/template'
 import { ViewAdminOrderPage } from './pages/admin/order'
 import { ViewAdminManageUserPage } from './pages/admin/users'
 import { ViewAdminManageProductPage } from './pages/admin/product'
 import { ViewAdminManageCategoryPage } from './pages/admin/category'
+import { ViewAdminManageDetailProductPage } from './pages/admin/detail-product'
+import { ViewAdminCreateProductPage } from './pages/admin/create-product'
 
 function App() {
   const location = useLocation()
@@ -35,6 +37,8 @@ function App() {
         <Route path={routes.admin.order} element={<ViewAdminOrderPage />} />
         <Route path={routes.admin.users} element={<ViewAdminManageUserPage />} />
         <Route path={routes.admin.product} element={<ViewAdminManageProductPage />} />
+        <Route path={routes.admin.productCreate} element={<ViewAdminCreateProductPage />} />
+        <Route path={routes.admin.productDetail} element={<ViewAdminManageDetailProductPage />} />
         <Route path={routes.admin.category} element={<ViewAdminManageCategoryPage />} />
         <Route path={routes.admin.logout} element={<ViewOverviewPage />} />
       </Route>

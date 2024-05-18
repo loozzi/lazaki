@@ -4,8 +4,9 @@ from typing import TYPE_CHECKING
 from sqlalchemy import TIMESTAMP, Enum, ForeignKey, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.utils.enums import OrderStatusEnum, PaymentMethodEnum, PaymentStatusEnum
-
 from .Base import Base
+from .Customer import Customer
+from .Address import Address
 
 if TYPE_CHECKING:
     from .Address import Address
@@ -70,3 +71,56 @@ class Order(Base):
 
     def removeOrderDetail(self, variationId):
         pass
+
+    def getStatus(self):
+        return self.status
+
+    def getCart(self):
+        customer = Customer.query.filter_by(id=self.customerId).first()
+        return {
+            "id": self.id,
+            "customerId": self.customerId,
+            "fullName": self.fullName,
+            "email": customer.email,
+            "paymentMethod": self.paymentMethod.value,
+            "paymentStatus": self.paymentStatus.value,
+            "note": self.note,
+            "status": self.status.value,
+            "shippingName": self.shippingName,
+            "shippingCode": self.shippingCode,
+            "orderDetails": [
+                orderDetail.serialize() for orderDetail in self.orderDetails
+            ],
+            "totalAmount": self.totalAmount,
+        }
+
+    def getHistory(self):
+        return {
+            "id": self.id,
+            "customerId": self.customerId,
+            "fullName": self.fullName,
+            "paymentMethod": self.paymentMethod.value,
+            "paymentStatus": self.paymentStatus.value,
+            "orderDetails": [
+                orderDetail.serialize() for orderDetail in self.orderDetails
+            ],
+            "totalAmount": self.totalAmount,
+            "orderDate": self.orderDate.strftime("%Y-%m-%d %H:%M:%S"),
+        }
+
+    def serialize(self):
+        adderss = Address.query.get(self.addressId)
+        return {
+            "id": self.id,
+            "customerId": self.customerId,
+            "fullName": self.fullName,
+            "address": adderss.serialize() if adderss else "",
+            "paymentMethod": self.paymentMethod.value,
+            "paymentStatus": self.paymentStatus.value,
+            "note": self.note,
+            "orderDetails": [
+                orderDetail.serialize() for orderDetail in self.orderDetails
+            ],
+            "totalAmount": self.totalAmount,
+            "orderDate": self.orderDate.strftime("%Y-%m-%d %H:%M:%S"),
+        }

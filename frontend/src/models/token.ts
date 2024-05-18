@@ -1,7 +1,9 @@
+import { OrderHistoryResponse } from './order'
+
 export interface TokenResponse {
   accessToken: string
   refreshToken: string
-  cart: any
+  cart: OrderHistoryResponse
 }
 
 export interface TokenLocalStorage {

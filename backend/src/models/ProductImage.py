@@ -17,3 +17,10 @@ class ProductImage(Image):
 
     def setVariation(self, variationId):
         pass
+
+    def serialize(self):
+        return {
+            "variationId": self.id,
+            "link": self.link,
+            "isPrimary": self.isPrimary,
+        }

@@ -12,10 +12,17 @@ class ProductProperty(Base):
     value: Mapped[str] = mapped_column(String(1024), nullable=False)
 
     def getProperty(self):
-        pass
+        data = {
+            "name": self.name,
+            "value": self.value,
+        }
+        return data
 
     def setName(self, name):
         self.name = name
 
     def setValue(self, value):
         self.value = value
+
+    def serialize(self):
+        return {"name": self.name, "value": self.value}

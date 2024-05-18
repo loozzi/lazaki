@@ -2,6 +2,11 @@ import {
   Button,
   Chip,
   Input,
+  Modal,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalBody,
   Select,
   SelectItem,
   Table,
@@ -11,12 +16,13 @@ import {
   TableHeader,
   TableRow,
   Textarea,
-  Tooltip
+  Tooltip,
+  useDisclosure
 } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
-import { FaPlus, FaTrash } from 'react-icons/fa'
+import { FaEdit, FaPlus, FaTrash } from 'react-icons/fa'
 import { Category } from '~/models/category'
-import { ProductCreatePayload, ProductUpdatePayload } from '~/models/product'
+import { ProductCreatePayload, ProductUpdatePayload, PropertyPayload } from '~/models/product'
 
 interface AdminProductInfoCompProps {
   className?: string
@@ -32,6 +38,9 @@ export const AdminProductInfoComp = (props: AdminProductInfoCompProps) => {
 
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedCategories, setSelectedCategories] = useState<number[]>([])
+
+  const [newProperty, setNewProperty] = useState<PropertyPayload | null>(null)
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const columns = [
     { name: 'Tên', uid: 'name' },
@@ -52,7 +61,20 @@ export const AdminProductInfoComp = (props: AdminProductInfoCompProps) => {
   }
 
   const handleAddProperty = () => {
-    payload.setFieldValue('properties', [...payload.values.properties, { name: '', value: '' }])
+    if (!newProperty) return
+    payload.setFieldValue('properties', [...payload.values.properties, newProperty])
+    setNewProperty(null)
+    onClose()
+  }
+
+  const handleOpenModal = () => {
+    onOpen()
+    setNewProperty({ name: '', value: '' })
+  }
+
+  const handleCloseModal = () => {
+    onClose()
+    setNewProperty(null)
   }
 
   const handleRemoveProperty = (index: number) => {
@@ -62,16 +84,10 @@ export const AdminProductInfoComp = (props: AdminProductInfoCompProps) => {
     )
   }
 
-  const handleEditProperty = (index: number, field: string, value: string) => {
-    payload.setFieldValue(
-      'properties',
-      payload.values.properties.map((item, i) => {
-        if (i === index) {
-          return { ...item, [field]: value }
-        }
-        return item
-      })
-    )
+  const handleEditProperty = (index: number, item: PropertyPayload) => {
+    setNewProperty(item)
+    onOpen()
+    handleRemoveProperty(index)
   }
 
   useEffect(() => {
@@ -168,7 +184,7 @@ export const AdminProductInfoComp = (props: AdminProductInfoCompProps) => {
               isStriped
               removeWrapper
               bottomContent={
-                <Button color='primary' startContent={<FaPlus size={16} />} onClick={handleAddProperty}>
+                <Button color='primary' startContent={<FaPlus size={16} />} onClick={handleOpenModal}>
                   Thêm thuộc tính
                 </Button>
               }
@@ -184,13 +200,32 @@ export const AdminProductInfoComp = (props: AdminProductInfoCompProps) => {
                 {payload.values.properties.map((item, index) => (
                   <TableRow key={index}>
                     <TableCell>
-                      <Input value={item.name} onChange={(e) => handleEditProperty(index, 'name', e.target.value)} />
+                      {/* <Input
+                        placeholder='Tên'
+                        value={payload.values.properties[index].name}
+                        onChange={(e) => handleEditProperty(index, 'name', e.target.value)}
+                      /> */}
+                      {item.name}
                     </TableCell>
                     <TableCell>
-                      <Input value={item.value} onChange={(e) => handleEditProperty(index, 'value', e.target.value)} />
+                      {/* <Input
+                        placeholder='Giá trị'
+                        value={item.value}
+                        onChange={(e) => handleEditProperty(index, 'value', e.target.value)}
+                      /> */}
+                      {item.value}
                     </TableCell>
                     <TableCell width={120}>
-                      <div className='flex justify-center'>
+                      <div className='flex justify-center gap-2'>
+                        <Button
+                          color='warning'
+                          size='sm'
+                          isIconOnly
+                          variant='ghost'
+                          onClick={() => handleEditProperty(index, item)}
+                        >
+                          <FaEdit />
+                        </Button>
                         <Button
                           color='danger'
                           size='sm'
@@ -209,6 +244,35 @@ export const AdminProductInfoComp = (props: AdminProductInfoCompProps) => {
           </div>
         </div>
       </div>
+      <Modal isOpen={isOpen} onClose={handleCloseModal}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>Chỉnh sửa thuộc tính</ModalHeader>
+              <ModalBody>
+                <Input
+                  label='Tên'
+                  value={newProperty?.name}
+                  onChange={(e) => setNewProperty({ name: e.target.value, value: newProperty?.value || '' })}
+                />
+                <Input
+                  label='Giá trị'
+                  value={newProperty?.value}
+                  onChange={(e) => setNewProperty({ value: e.target.value, name: newProperty?.name || '' })}
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button color='danger' variant='light' onPress={onClose}>
+                  Hủy
+                </Button>
+                <Button color='primary' variant='solid' onPress={handleAddProperty}>
+                  Lưu
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   )
 }

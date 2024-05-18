@@ -7,6 +7,7 @@ import { ListCardItemComp } from '~/components/list-card-item'
 import { ListViewReviewComp } from '~/components/review/list-review'
 import { ProductDetailResponse, ProductResponse } from '~/models/product'
 import { ReviewResponse } from '~/models/review'
+import productService from '~/services/product.service'
 
 export const ViewDetailPage = () => {
   const params = useParams()
@@ -16,140 +17,11 @@ export const ViewDetailPage = () => {
 
   useEffect(() => {
     // call api get product detail
-    // set item
-    setProduct({
-      id: 1,
-      name: 'Sản phẩm này là sản phẩm có tên là sản phẩm',
-      description: 'Mô tả sản phẩm',
-      properties: [
-        {
-          name: 'Màu sắc',
-          value: 'Đen'
-        },
-        {
-          name: 'Chất liệu',
-          value: 'Cotton'
-        }
-      ],
-      variations: [
-        {
-          id: 1,
-          type: 'Màu + Size',
-          name: 'Đen, XL',
-          option: 'Đen, XL',
-          image: 'https://via.placeholder.com/450',
-          price: 100000,
-          oldPrice: 450000,
-          quantity: 10,
-          sold: 10
-        },
-        {
-          id: 2,
-          type: 'Màu + Size',
-          name: 'Đen, L',
-          option: 'Đen, L',
-          image: 'https://via.placeholder.com/450',
-          price: 90000,
-          oldPrice: 140000,
-          quantity: 20,
-          sold: 20
-        },
-        {
-          id: 3,
-          type: 'Màu + Size',
-          name: 'Đen, M',
-          option: 'Đen, M',
-          image: 'https://via.placeholder.com/450',
-          price: 80000,
-          oldPrice: 130000,
-          quantity: 30,
-          sold: 30
-        },
-        {
-          id: 4,
-          type: 'Màu + Size',
-          name: 'Trắng, XL',
-          option: 'Trắng, XL',
-          image: 'https://via.placeholder.com/450',
-          price: 100000,
-          oldPrice: 450000,
-          quantity: 10,
-          sold: 10
-        },
-        {
-          id: 5,
-          type: 'Màu + Size',
-          name: 'Trắng, L',
-          option: 'Trắng, L',
-          image: 'https://via.placeholder.com/450',
-          price: 90000,
-          oldPrice: 140000,
-          quantity: 20,
-          sold: 20
-        },
-        {
-          id: 6,
-          type: 'Màu + Size',
-          name: 'Trắng, M',
-          option: 'Trắng, M',
-          image: 'https://via.placeholder.com/450',
-          price: 80000,
-          oldPrice: 130000,
-          quantity: 30,
-          sold: 30
-        },
-        {
-          id: 7,
-          type: 'Màu + Size',
-          name: 'Trắng, XL',
-          option: 'Trắng, XL',
-          image: 'https://via.placeholder.com/450',
-          price: 100000,
-          oldPrice: 450000,
-          quantity: 10,
-          sold: 10
-        },
-        {
-          id: 8,
-          type: 'Màu + Size',
-          name: 'Trắng, L',
-          option: 'Trắng, L',
-          image: 'https://via.placeholder.com/450',
-          price: 90000,
-          oldPrice: 140000,
-          quantity: 0,
-          sold: 20
-        }
-      ],
-      images: [
-        {
-          link: 'https://via.placeholder.com/450',
-          variationId: 1,
-          isPrimary: true
-        },
-        {
-          link: 'https://via.placeholder.com/450',
-          variationId: 2,
-          isPrimary: false
-        },
-        {
-          link: 'https://via.placeholder.com/450',
-          variationId: 3,
-          isPrimary: false
-        }
-      ],
-      categories: [
-        {
-          id: 1,
-          name: 'Áo thun',
-          slug: 'ao-thun',
-          description: 'Áo thun nam'
-        }
-      ]
+    const { permalink } = params
+    productService.detail(permalink || '').then((res) => {
+      setProduct(res.data)
     })
 
-    // call api get reviews
-    // set reviews
     setReviews([
       {
         id: 1,
@@ -168,7 +40,9 @@ export const ViewDetailPage = () => {
           'https://down-bs-vn.img.susercontent.com/vn-11134103-7r98o-lr7dmjo0fd8kd6.webp',
           'https://down-bs-vn.img.susercontent.com/vn-11134103-7r98o-lr7dmjnzzwyh06.webp'
         ],
-        created_at: '2021-09-01T00:00:00Z'
+        created_at: '2021-09-01T00:00:00Z',
+        variationId: 0,
+        productId: 0
       },
       {
         id: 2,
@@ -181,7 +55,9 @@ export const ViewDetailPage = () => {
           option: 'Đen, XL'
         },
         images: [],
-        created_at: '2021-09-02T00:00:00Z'
+        created_at: '2021-09-02T00:00:00Z',
+        variationId: 0,
+        productId: 0
       },
       {
         id: 3,
@@ -195,7 +71,9 @@ export const ViewDetailPage = () => {
           option: 'Đen, XL'
         },
         images: ['https://down-bs-vn.img.susercontent.com/vn-11134103-7r98o-lunih38whb1ha8.webp'],
-        created_at: '2021-09-03T00:00:00Z'
+        created_at: '2021-09-03T00:00:00Z',
+        variationId: 0,
+        productId: 0
       },
       {
         id: 4,
@@ -208,7 +86,9 @@ export const ViewDetailPage = () => {
           name: 'Đen, XL',
           option: 'Đen, XL'
         },
-        created_at: '2021-09-04T00:00:00Z'
+        created_at: '2021-09-04T00:00:00Z',
+        variationId: 0,
+        productId: 0
       }
     ])
 

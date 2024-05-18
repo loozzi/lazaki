@@ -106,3 +106,10 @@ export interface ProductAdminSearchParams extends PaginationParams {
   order?: 'asc' | 'desc'
   type?: 'sold' | 'quantity'
 }
+
+export interface ProductSearchParams extends PaginationParams {
+  keyword?: string
+  categories?: string
+  minPrice?: number
+  maxPrice?: number
+}

@@ -43,7 +43,24 @@ class AuthController:
 
     # Refresh token
     def refeshToken(refreshToken: str):
-        pass
+        data = TokenService.verify(refreshToken)
+        if not data:
+            return Response(400, "Invalid token")
+
+        if data.get("isRefreshToken"):
+            customer = CustomerService.getCustomer(data["uid"])
+            if not customer:
+                return Response(400, "Invalid token")
+
+            accessToken, refreshToken = TokenService.generate(customer)
+            return Response(
+                200,
+                "Success",
+                {
+                    "accessToken": accessToken,
+                    "refreshToken": refreshToken,
+                },
+            )
 
     def login_admin(username: str, password: str):
         admin = AuthService.verifyAdmin(username, password)

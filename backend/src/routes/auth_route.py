@@ -16,3 +16,9 @@ def login_admin():
     password = request.form.get("password", "")
 
     return AuthController.login_admin(username, password)
+
+
+@auth.route("/refresh", methods=["POST"])
+def refresh_token():
+    refreshToken = request.form.get("token")
+    return AuthController.refeshToken(refreshToken)

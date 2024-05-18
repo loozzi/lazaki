@@ -9,12 +9,16 @@ firebase_request_adapter = requests.Request()
 class AuthService:
     # Xác thực token
     def verify(token: str):
-        claims = google.oauth2.id_token.verify_firebase_token(
-            token, firebase_request_adapter
-        )
-        if not claims:
+        try:
+            claims = google.oauth2.id_token.verify_firebase_token(
+                token, firebase_request_adapter
+            )
+            if not claims:
+                return None
+            return claims
+        except Exception as e:
+            print(e)
             return None
-        return claims
 
     # Xác thực admin
     def verifyAdmin(username: str, password: str):

@@ -7,8 +7,17 @@ from src.models.Token import Token
 
 class TokenService:
     # Kiểm tra token hợp lệ
-    def verify(token):
-        pass
+    def verify(token, isRefreshToken=False):
+        if isRefreshToken:
+            _token = Token.query.filter_by(token=token).first()
+            if not _token:
+                return None
+
+        try:
+            return jwt.decode(token, envConfig.SECRET_KEY, algorithms=["HS256"])
+        except Exception as e:
+            print(e)
+            return None
 
     # Tạo token cho Admin
     def generate(data, type="user"):

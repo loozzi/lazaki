@@ -28,3 +28,13 @@ class Address(Base):
 
     def setStreet(self, street: str):
         self.street = street
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "phoneNumber": self.phoneNumber,
+            "province": self.province,
+            "district": self.district,
+            "ward": self.ward,
+            "street": self.street,
+        }

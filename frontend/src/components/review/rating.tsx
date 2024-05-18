@@ -1,24 +1,35 @@
 import { Button, Textarea } from '@nextui-org/react'
 import { useState } from 'react'
 import { FaStar } from 'react-icons/fa'
+import { CartItem } from '~/models/order'
+import { ReviewPayload } from '~/models/review'
 
 interface RatingCompProps {
   handleCancel: () => void
+  item: CartItem
+  orderId: number
 }
 
 export const RatingComp = (props: RatingCompProps) => {
-  const { handleCancel } = props
+  const { handleCancel, item, orderId } = props
 
-  const [rating, setRating] = useState<number>(0)
+  const [rating, setRating] = useState<number>(5)
   const starValues = [1, 2, 3, 4, 5]
-  const [selectedRating, setSelectedRating] = useState<number>(0)
+  const [selectedRating, setSelectedRating] = useState<number>(5)
   const [comment, setComment] = useState<string>('')
 
   const handleRating = () => {
-    console.group('Rating')
-    console.log('Rating:', selectedRating)
-    console.log('Comment:', comment)
-    console.groupEnd()
+    const payload: ReviewPayload = {
+      productId: item.productId,
+      value: selectedRating,
+      content: comment,
+      orderId: orderId,
+      variationId: item.variationId,
+      images: []
+    }
+
+    console.log(payload)
+    // Call API to create review
   }
 
   return (

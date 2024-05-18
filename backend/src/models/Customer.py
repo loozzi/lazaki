@@ -29,3 +29,13 @@ class Customer(Base):
 
     def setAddress(self, address: Address):
         pass
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "fullName": self.fullName,
+            "email": self.email,
+            "status": self.status.value if self.status else None,
+            "birthday": self.birthday.strftime("%Y-%m-%d") if self.birthday else None,
+            "gender": self.gender.value if self.gender else None,
+        }

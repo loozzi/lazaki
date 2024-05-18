@@ -60,7 +60,7 @@ export const HeaderComp = () => {
             to={routes.client.cart}
             variant='light'
             startContent={
-              <Badge content={cart.cartItems.length.toString()} size='md' color='danger'>
+              <Badge content={cart?.orderDetails.length.toString() || 0} size='md' color='danger'>
                 <CiShoppingCart size={24} />
               </Badge>
             }

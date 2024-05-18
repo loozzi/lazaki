@@ -24,3 +24,11 @@ class Category(Base):
         self.name = name
         self.slug = slug
         self.description = description
+
+    def serialize(self) -> dict:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "slug": self.slug,
+            "description": self.description,
+        }

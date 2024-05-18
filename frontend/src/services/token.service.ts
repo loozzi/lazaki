@@ -2,6 +2,7 @@ import apiConfig from '~/configs/api.config'
 import { IResponse } from '~/models/response'
 import { TokenLocalStorage, TokenResponse } from '~/models/token'
 import client from './axios.service'
+import { OrderHistoryResponse } from '~/models/order'
 
 const signIn = (accessToken: string, refreshToken: string): void => {
   const data: TokenLocalStorage = {
@@ -34,7 +35,7 @@ const getRefreshToken = (): string | null => {
   return localStorage.getItem('refreshToken')
 }
 
-const setCart = (cart: any): void => {
+const setCart = (cart: OrderHistoryResponse): void => {
   localStorage.setItem('cart', JSON.stringify(cart))
 }
 

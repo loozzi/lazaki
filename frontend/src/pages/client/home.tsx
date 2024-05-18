@@ -1,18 +1,52 @@
+import { useEffect, useState } from 'react'
 import { ListCardItemComp } from '~/components/list-card-item'
+import { ProductResponse } from '~/models/product'
+import productService from '~/services/product.service'
 
 export const HomePage = () => {
+  const [products, setProducts] = useState<ProductResponse[]>([])
+  const [suggestProducts, setSuggestProducts] = useState<ProductResponse[]>([])
+
+  useEffect(() => {
+    productService.all({ page: 1, limit: 10 }).then((res) => {
+      setProducts(res.data!.data)
+    })
+
+    const item: ProductResponse = {
+      image: 'https://down-vn.img.susercontent.com/file/sg-11134201-22100-g0vtmbg1llive9',
+      name: 'Sản phẩm có tên là giống với tên của sản phẩm ở chỗ bán sản phẩm',
+      price: 100000,
+      sold: 592,
+      slug: 'san-pham-co-ten-la-giong-voi-ten-cua-san-pham-o-cho-ban-san-pham',
+      rating: 4.5
+    }
+    setSuggestProducts([
+      item,
+      item,
+      item,
+      item,
+      item,
+      item,
+      item,
+      item,
+      item,
+      item,
+      item,
+      item,
+      item,
+      item,
+      item,
+      item,
+      item,
+      item,
+      item
+    ])
+  }, [])
+
   return (
     <div>
-      <ListCardItemComp
-        className='mt-4'
-        heading='Gợi ý sản phẩm'
-        items={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]}
-      />
-      <ListCardItemComp
-        className='mt-4'
-        heading='Gợi ý cho bạn'
-        items={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]}
-      />
+      <ListCardItemComp className='mt-4' heading='Gợi ý sản phẩm' items={products} />
+      <ListCardItemComp className='mt-4' heading='Gợi ý cho bạn' items={suggestProducts} />
     </div>
   )
 }

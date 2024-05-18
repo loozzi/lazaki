@@ -1,8 +1,9 @@
+import { ReviewResponse } from '~/models/review'
 import { PaneComp } from '../pane'
 import { ViewReviewComp } from './review'
 
 interface ListViewReviewProps {
-  reviews: any[]
+  reviews: ReviewResponse[]
   className?: string
 }
 

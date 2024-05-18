@@ -8,6 +8,9 @@ import { AdminProductVariationComp } from '~/components/admin/product/variation'
 import { ProductDetailResponse, ProductUpdatePayload } from '~/models/product'
 import { FaEdit } from 'react-icons/fa'
 import { useFormik } from 'formik'
+import adminService from '~/services/admin.service'
+import { history } from '~/configs/history'
+import routes from '~/configs/routes'
 
 export const ViewAdminManageDetailProductPage = () => {
   const params = useParams()
@@ -43,7 +46,12 @@ export const ViewAdminManageDetailProductPage = () => {
   const handleRemoveProduct = () => {
     const confirmStatus = confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')
     if (confirmStatus) {
-      console.log('Remove product')
+      adminService.product.delete(product?.slug || '').then((res) => {
+        if (res.status === 200) {
+          alert('Xóa sản phẩm thành công')
+          history.push(routes.admin.product)
+        }
+      })
     }
   }
 

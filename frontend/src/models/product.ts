@@ -1,4 +1,5 @@
 import { Category } from './category'
+import { PaginationParams } from './response'
 
 export interface PropertyResponse {
   name: string
@@ -98,4 +99,10 @@ export interface ProductCreatePayload {
   variations: VariationPayload[]
   images: ImagePayload[]
   categories: number[]
+}
+
+export interface ProductAdminSearchParams extends PaginationParams {
+  keyword?: string
+  order?: 'asc' | 'desc'
+  type?: 'sold' | 'quantity'
 }

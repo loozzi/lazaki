@@ -5,7 +5,10 @@ import { FaImages, FaInfo, FaPlus, FaSitemap } from 'react-icons/fa'
 import { AdminProductInfoComp } from '~/components/admin/product/AdminProductInfoComp'
 import { AdminCreateVariationComp } from '~/components/admin/product/create-variation'
 import { AdminProductImageComp } from '~/components/admin/product/image'
+import { history } from '~/configs/history'
+import routes from '~/configs/routes'
 import { ProductCreatePayload } from '~/models/product'
+import adminService from '~/services/admin.service'
 
 export const ViewAdminCreateProductPage = () => {
   const initialValues: ProductCreatePayload = useMemo(
@@ -30,7 +33,29 @@ export const ViewAdminCreateProductPage = () => {
   })
 
   const handleCreateProduct = () => {
-    console.log(payload.values)
+    if (!payload.values.productName || !payload.values.slug) {
+      alert('Vui lòng nhập tên và slug cho sản phẩm')
+      return
+    }
+    if (!payload.values.variations.length) {
+      alert('Vui lòng thêm ít nhất một biến thể cho sản phẩm')
+      return
+    }
+    if (!payload.values.images.length) {
+      alert('Vui lòng thêm ít nhất một hình ảnh cho sản phẩm')
+      return
+    }
+
+    if (!payload.values.images.some((x) => x.isPrimary)) {
+      payload.setFieldValue(
+        'images',
+        payload.values.images.map((x, i) => ({ ...x, isPrimary: i === 0 }))
+      )
+    }
+
+    adminService.product.create(payload.values).then((res) => {
+      if (res.status === 200) history.push(routes.admin.productDetail.replace(':slug', res.data!.slug))
+    })
   }
 
   return (

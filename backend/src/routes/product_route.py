@@ -6,6 +6,7 @@ from src.middlewares.PaginationMiddleware import request_pagination
 from src.services.ProductService import ProductService
 from src.controllers.ProductController import ProductController
 from math import ceil
+from src.utils.response import Response
 
 product = Blueprint("product", __name__)
 
@@ -16,7 +17,9 @@ def get_products():
     page = request.args.get("page", default=1, type=int)
     limit = request.args.get("limit", default=10, type=int)
     sort = request.args.get("sort", default="asc").strip()
-    return ProductController.getProducts(page, limit, sort)
+    product_controller = ProductController()
+    data = product_controller.getProducts(page, limit, sort)
+    return Response(status=200, message="Success", data=data)
     
 
 
@@ -41,10 +44,26 @@ def search_products():
     page = request.args.get("page", default=1, type=int)
     limit = request.args.get("limit", default=10, type=int)
     sort = request.args.get("sort", default="asc").strip()
-    return ProductController.searchProducts(keyword, categories, minPrice,
+    product_controller = ProductController()
+    data = product_controller.searchProducts(keyword, categories, minPrice,
                                             maxPrice, page, limit, sort)
+    return Response(status=200, message="Success", data=data)
 
 
-@product.route("/<string:slug>", methods=["GET"])
+@product.route("/:<string:slug>", methods=["GET"])
 def detail_product(slug):
-    return ProductController.getDetailProduct(slug)
+    product_controller = ProductController()
+    data = product_controller.getDetailProduct(slug)
+    return Response(status=200, message="Success", data=data)
+
+
+@product.route("/suggest", methods=["GET"])
+@customer_middleware
+@request_pagination
+def suggest_products():
+    limit = request.pagination["limit"]
+    page = request.pagination["page"]
+    current_customer = request.customer
+    product_controller = ProductController()
+    data = product_controller.recommendProducts(limit, page, current_customer)
+    return Response(status=200, message="Success", data=data)

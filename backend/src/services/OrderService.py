@@ -38,7 +38,9 @@ class OrderService:
 
     # Lấy lịch sử order của khách hàng
     def getOrderHistory(customerId: int):
-        pass
+        return Order.query.filter_by(
+            customerId=customerId, status=OrderStatusEnum.SUCCESS
+        ).all()
 
     def getOrders():
         pass

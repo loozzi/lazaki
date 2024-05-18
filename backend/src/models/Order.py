@@ -92,3 +92,17 @@ class Order(Base):
             ],
             "totalAmount": self.totalAmount,
         }
+
+    def getHistory(self):
+        return {
+            "id": self.id,
+            "customerId": self.customerId,
+            "fullName": self.fullName,
+            "paymentMethod": self.paymentMethod.value,
+            "paymentStatus": self.paymentStatus.value,
+            "orderDetails": [
+                orderDetail.serialize() for orderDetail in self.orderDetails
+            ],
+            "totalAmount": self.totalAmount,
+            "orderDate": self.orderDate.strftime("%Y-%m-%d %H:%M:%S"),
+        }

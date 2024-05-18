@@ -112,3 +112,15 @@ class Product(Base):
 
     def remove(self):
         pass
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "slug": self.slug,
+            "description": self.description,
+            "properties": [property.serialize() for property in self.properties],
+            "images": [image.serialize() for image in self.images],
+            "categories": [category.serialize() for category in self.categories],
+            "variations": [variation.serialize() for variation in self.variations],
+        }

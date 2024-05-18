@@ -40,6 +40,13 @@ export const ViewAdminManageDetailProductPage = () => {
     console.log(payload.values)
   }
 
+  const handleRemoveProduct = () => {
+    const confirmStatus = confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')
+    if (confirmStatus) {
+      console.log('Remove product')
+    }
+  }
+
   useEffect(() => {
     const { slug } = params
     console.log(slug)
@@ -142,7 +149,12 @@ export const ViewAdminManageDetailProductPage = () => {
 
   return (
     <div className='p-4'>
-      <h1 className='text-2xl font-semibol mb-4'>Quản lý chi tiết sản phẩm</h1>
+      <div className='flex justify-between'>
+        <h1 className='text-2xl font-semibol mb-4'>Quản lý chi tiết sản phẩm </h1>
+        <Button color='danger' className='mb-4' onClick={handleRemoveProduct}>
+          Xóa sản phẩm
+        </Button>
+      </div>
       <div className=''>
         <Tabs aria-label='options' color='primary' variant='bordered'>
           <Tab

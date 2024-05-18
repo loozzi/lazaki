@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 from sqlalchemy import TIMESTAMP, Enum, ForeignKey, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.utils.enums import OrderStatusEnum, PaymentMethodEnum, PaymentStatusEnum
-
 from .Base import Base
+from .Customer import Customer
 
 if TYPE_CHECKING:
     from .Address import Address
@@ -73,3 +73,22 @@ class Order(Base):
 
     def getStatus(self):
         return self.status
+
+    def getCart(self):
+        customer = Customer.query.filter_by(id=self.customerId).first()
+        return {
+            "id": self.id,
+            "customerId": self.customerId,
+            "fullName": self.fullName,
+            "email": customer.email,
+            "paymentMethod": self.paymentMethod.value,
+            "paymentStatus": self.paymentStatus.value,
+            "note": self.note,
+            "status": self.status.value,
+            "shippingName": self.shippingName,
+            "shippingCode": self.shippingCode,
+            "orderDetails": [
+                orderDetail.serialize() for orderDetail in self.orderDetails
+            ],
+            "totalAmount": self.totalAmount,
+        }

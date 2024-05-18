@@ -38,4 +38,5 @@ class Customer(Base):
             "status": self.status.value if self.status else None,
             "birthday": self.birthday.strftime("%Y-%m-%d") if self.birthday else None,
             "gender": self.gender.value if self.gender else None,
+            "address": self.address.serialize() if self.address else None,
         }

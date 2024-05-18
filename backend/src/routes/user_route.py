@@ -1,9 +1,10 @@
-from flask import Blueprint, request
-from src.middlewares.AuthMiddleware import customer_middleware
-from src.utils.response import Response
-from src.utils.enums import GenderEnum
-from src.controllers.AuthController import AuthController
 from datetime import datetime
+
+from flask import Blueprint, request
+from src.controllers.AuthController import AuthController
+from src.middlewares.AuthMiddleware import customer_middleware
+from src.utils.enums import GenderEnum
+from src.utils.response import Response
 
 user = Blueprint("user", __name__)
 

@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -16,6 +17,8 @@ migrate = Migrate(app, db)
 config = _config.getDevConfig()
 
 app.env = config.ENV
+
+bcrypt = Bcrypt(app)
 
 from src.models import *
 from src.routes import api

@@ -3,11 +3,11 @@ import { AdminSidebarComp } from '~/components/admin/sidebar'
 
 export const AdminTemplate = () => {
   return (
-    <div className='grid grid-cols-12'>
-      <div className='lg:col-span-3 md:col-span-4 col-span-2'>
-        <AdminSidebarComp className='border-r-1 h-[100vh]' />
+    <div className='flex bg-sky-50'>
+      <div className='md:w-64 w-20'>
+        <AdminSidebarComp className='h-[100vh] ' />
       </div>
-      <div className='lg:col-span-9 md:col-span-8 col-span-10'>
+      <div className='flex-1 m-2 bg-white rounded-lg'>
         <Outlet />{' '}
       </div>
     </div>

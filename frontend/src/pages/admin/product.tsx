@@ -14,7 +14,7 @@ import {
 } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 import { CiSearch } from 'react-icons/ci'
-import { FaEye, FaPlus } from 'react-icons/fa'
+import { FaEdit, FaEye } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import routes from '~/configs/routes'
 import { ProductAdminResponse } from '~/models/product'
@@ -94,7 +94,7 @@ export const ViewAdminManageProductPage = () => {
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
         />
-        <Button color='primary' startContent={<FaPlus size={16} />}>
+        <Button color='primary' variant='light' startContent={<FaEdit />}>
           Thêm sản phẩm
         </Button>
       </div>

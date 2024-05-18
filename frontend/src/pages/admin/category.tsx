@@ -16,7 +16,7 @@ import {
   useDisclosure
 } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
-import { FaEdit, FaEye, FaPlus, FaTrash } from 'react-icons/fa'
+import { FaEdit, FaEye, FaTrash } from 'react-icons/fa'
 import { Category } from '~/models/category'
 import { CategoryPayload } from '~/models/product'
 
@@ -124,12 +124,12 @@ export const ViewAdminManageCategoryPage = () => {
         <div className='flex justify-end mb-4'>
           <Button
             color='primary'
-            variant='solid'
+            variant='light'
             onPress={() => {
               handleOpenModal()
               setSelectedCategory(null)
             }}
-            startContent={<FaPlus />}
+            startContent={<FaEdit />}
           >
             Thêm danh mục
           </Button>

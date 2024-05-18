@@ -85,6 +85,28 @@ export const ViewAdminManageDetailProductPage = () => {
           oldPrice: 0,
           quantity: 10,
           sold: 0
+        },
+        {
+          id: 2,
+          type: 'Color',
+          name: 'Blue',
+          option: 'XL',
+          image: '',
+          price: 10300,
+          oldPrice: 0,
+          quantity: 10,
+          sold: 0
+        },
+        {
+          id: 3,
+          type: 'Color',
+          name: 'Green',
+          option: 'XL',
+          image: '',
+          price: 4523000,
+          oldPrice: 1203981,
+          quantity: 10,
+          sold: 0
         }
       ],
       images: [
@@ -154,7 +176,7 @@ export const ViewAdminManageDetailProductPage = () => {
               </div>
             }
           >
-            <AdminProductVariationComp variations={product?.variations || []} />
+            <AdminProductVariationComp payload={payload} variations={product?.variations || []} />
           </Tab>
         </Tabs>
       </div>

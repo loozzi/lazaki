@@ -115,6 +115,11 @@ export const AdminProductInfoComp = (props: AdminProductInfoCompProps) => {
           value={payload.values.productName}
           onChange={(e) => payload.setFieldValue('productName', e.target.value)}
         />
+        <Input
+          label='Đường dẫn'
+          value={payload.values.slug}
+          onChange={(e) => payload.setFieldValue('slug', e.target.value)}
+        />
         <Textarea
           label='Mô tả'
           value={payload.values.description}

@@ -1,8 +1,12 @@
+from datetime import datetime
+from src.models.Address import Address
+from src.models.Variation import Variation
 from src.controllers.Pagination import Pagination
-from src.utils.enums import OrderStatusEnum
+from src.utils.enums import OrderStatusEnum, PaymentMethodEnum
 from src.models.Order import Order
 from src.utils.response import Response
 from src.services.OrderService import OrderService
+from src import db
 
 
 class OrderController:
@@ -11,8 +15,43 @@ class OrderController:
         pass
 
     # Xác nhận đơn hàng
-    def confirmOrder(orderId: int):
-        pass
+    def confirmOrder(
+        orderId: int,
+        fullName: str,
+        email: str,
+        phoneNumber: str,
+        province: str,
+        district: str,
+        ward: str,
+        street: str,
+        paymentMethod: str,
+        note: str,
+    ):
+        order = OrderService.getOrder(orderId)
+        if order is None:
+            return Response(404, "Order not found")
+
+        # Kiểm tra đơn hàng có trạng thái là ORDER (đang trong giỏ hàng)
+        if order.status != OrderStatusEnum.ORDER:
+            return Response(400, "Cannot confirm order")
+
+        OrderService.confirmOrder(
+            orderId,
+            fullName,
+            email,
+            phoneNumber,
+            province,
+            district,
+            ward,
+            street,
+            paymentMethod,
+            note,
+        )
+
+        # Tạo giỏ hàng mới sau khi xác nhận
+        OrderService.createCart(order.customerId)
+
+        return Response(200, "Order confirmed succesfully", order.serialize())
 
     # Xem lịch sử đơn hàng
     def viewOrderHistory(customerId: int, page: int, limit: int):
@@ -54,5 +93,44 @@ class OrderController:
         pass
 
     # Cập nhật giỏ hàng
-    def updateCurrentOrder(orderDetailId: int, quantity: int):
-        pass
+    def updateCurrentOrder(
+        orderDetailId: int, variationId: int, productId: int, quantity: int
+    ):
+        orderDetail = OrderService.getOrderDetail(orderDetailId)
+        if orderDetail is None:
+            return Response(404, "Order detail not found")
+
+        # Kiểm tra đơn hàng có trạng thái là ORDER (đang trong giỏ hàng)
+        order = Order.query.get(orderDetail.orderId)
+        if order.status != OrderStatusEnum.ORDER:
+            return Response(400, "Cannot update order detail. Order is not in cart")
+
+        # Kiểm tra thông tin biến thể và sản phẩm
+        variation = Variation.query.filter_by(
+            id=variationId, productId=productId
+        ).first()
+
+        if not variation:
+            return Response(400, "Variation does not belong to the specified product")
+
+        # Kiểm tra số lượng còn lại trong kho
+        if quantity > variation.quantity:
+            return Response(400, "Out of stock")
+
+        # Cập nhật thông tin chi tiết đơn hàng
+        orderDetail.variationId = variationId
+        orderDetail.quantity = quantity
+        orderDetail.price = variation.price
+        orderDetail.oldPrice = variation.oldPrice
+        orderDetail.productId = productId
+
+        db.session.commit()
+
+        return Response(200, "Success", orderDetail.serialize())
+
+    # Xem chi tiết đơn hàng
+    def getDetailOrder(orderId: int):
+        order = OrderService.getOrder(orderId)
+        if order is None:
+            return Response(404, "Order not found")
+        return Response(200, "Success", order.serialize())

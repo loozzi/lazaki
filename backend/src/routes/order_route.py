@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+from src.utils.response import Response
 from src.middlewares.AuthMiddleware import customer_middleware
 from src.middlewares.PaginationMiddleware import request_pagination
 from src.models.Order import Order
@@ -22,3 +23,79 @@ def getOrderHistory():
     page = request.pagination.get("page")
     limit = request.pagination.get("limit")
     return OrderController.viewOrderHistory(customer.id, page, limit)
+
+
+@order.route("/detail/<int:id>", methods=["GET"])
+@customer_middleware
+def getDetailOrder(id: int):
+    return OrderController.getDetailOrder(id)
+
+
+@order.route("/update", methods=["POST"])
+@customer_middleware
+def updateCurrentOrder():
+    try:
+        order_detail_id = int(request.form.get("orderDetailId", None))
+        variation_id = int(request.form.get("variationId", None))
+        product_id = int(request.form.get("productId", None))
+        quantity = int(request.form.get("quantity", None))
+    except Exception:
+        return Response(400, "Invalid format")
+
+    if (
+        order_detail_id is None
+        or variation_id is None
+        or product_id is None
+        or quantity is None
+    ):
+        return Response(400, "Missing fields")
+    return OrderController.updateCurrentOrder(
+        order_detail_id, variation_id, product_id, quantity
+    )
+
+
+@order.route("/purchase", methods=["POST"])
+@customer_middleware
+def purchase():
+    try:
+        order_id = int(request.form.get("orderId", None))
+    except Exception:
+        return Response(400, "Invalid format")
+    full_name = request.form.get("fullName", None)
+    email = request.form.get("email", None)
+    phoneNumber = request.form.get("phoneNumber", None)
+    province = request.form.get("province", None)
+    district = request.form.get("district", None)
+    ward = request.form.get("ward", None)
+    street = request.form.get("street", None)
+    payment_method = request.form.get("paymentMethod", None)
+    note = request.form.get("note", None)
+
+    # Kiểm tra các trường bắt buộc
+    if not all(
+        [
+            order_id,
+            full_name,
+            email,
+            phoneNumber,
+            province,
+            district,
+            ward,
+            street,
+            payment_method,
+        ]
+    ):
+        return Response(400, "Missing required fields")
+
+    return OrderController.confirmOrder(
+        order_id,
+        full_name,
+        email,
+        phoneNumber,
+        province,
+        district,
+        ward,
+        street,
+        payment_method,
+        note,
+    )

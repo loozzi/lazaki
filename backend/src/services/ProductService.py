@@ -1,20 +1,24 @@
 from typing import List
 
+from src.models.ProductImage import ProductImage
+from src.models.ProductProperty import ProductProperty
 from src import db
 from src.models.Product import Product
 from src.models.Variation import Variation
 from src.models.OrderDetail import OrderDetail
 from src.models.Category import Category
 from src.models.CategoryProduct import CategoryProduct
-from sqlalchemy import or_, and_ , desc, asc
+from sqlalchemy import or_, and_, desc, asc
 from src.controllers.Pagination import Pagination
 from src.utils.response import Response
+
 
 class ProductService:
     # Lấy danh sách sản phẩm
     def getProducts(sort, limit: int, page: int):
-        all_products = db.session.query(Product).filter(
-                            Product.isDeleted == False).all()
+        all_products = (
+            db.session.query(Product).filter(Product.isDeleted == False).all()
+        )
         data = []
         for product in all_products:
             info_product = product.serialize()
@@ -26,97 +30,122 @@ class ProductService:
             data_one_product["rating"] = product.getRateMean()
             data.append(data_one_product)
         if sort == "desc":
-            data = sorted(data,
-                          key=lambda x: x["price"], reverse=True)
+            data = sorted(data, key=lambda x: x["price"], reverse=True)
         else:
-            data = sorted(data,
-                          key=lambda x: x["price"])
-        data = data[(page-1)*limit: limit + (page-1)*limit]
+            data = sorted(data, key=lambda x: x["price"])
+        data = data[(page - 1) * limit : limit + (page - 1) * limit]
         res = Pagination(page, len(data), len(all_products), data)
         return res.serialize()
 
-
     # Tìm kiếm sản phẩm
-    def searchProducts(keyword: str, minPrice: int,
-                       maxPrice: int, categories: List[str], sort: str,
-                       limit: int, page: int):
-        if len(categories)  == 0:
-            total_products_join = db.session.query(Product).join(
-                Variation, Product.id == Variation.productId).filter(
-                    Product.name.like(f"%{keyword}%")).filter(
-                        Product.isDeleted == False).filter(
-                            Variation.price >= minPrice).filter(
-                                Variation.price <= maxPrice).all()
+    def searchProducts(
+        keyword: str,
+        minPrice: int,
+        maxPrice: int,
+        categories: List[str],
+        sort: str,
+        limit: int,
+        page: int,
+    ):
+        if len(categories) == 0:
+            total_products_join = (
+                db.session.query(Product)
+                .join(Variation, Product.id == Variation.productId)
+                .filter(Product.name.like(f"%{keyword}%"))
+                .filter(Product.isDeleted == False)
+                .filter(Variation.price >= minPrice)
+                .filter(Variation.price <= maxPrice)
+                .all()
+            )
             if sort == "desc":
-                products_join = db.session.query(Product).join(
-                Variation, Product.id == Variation.productId).filter(
-                    Product.name.like(f"%{keyword}%")).filter(
-                        Product.isDeleted == False).filter(
-                            Variation.price >= minPrice).filter(
-                                Variation.price <= maxPrice).order_by(
-                                        desc(Variation.price)).all()
+                products_join = (
+                    db.session.query(Product)
+                    .join(Variation, Product.id == Variation.productId)
+                    .filter(Product.name.like(f"%{keyword}%"))
+                    .filter(Product.isDeleted == False)
+                    .filter(Variation.price >= minPrice)
+                    .filter(Variation.price <= maxPrice)
+                    .order_by(desc(Variation.price))
+                    .all()
+                )
                 product_list = [product.serialize() for product in products_join]
-                result = product_list[(page-1)*limit: limit + (page-1)*limit]
-                product_pagination = Pagination(page, len(result),
-                                                len(total_products_join), result)
+                result = product_list[(page - 1) * limit : limit + (page - 1) * limit]
+                product_pagination = Pagination(
+                    page, len(result), len(total_products_join), result
+                )
                 return product_pagination.serialize()
             else:
-                products_join = db.session.query(Product).join(
-                Variation, Product.id == Variation.productId).filter(
-                    Product.name.like(f"%{keyword}%")).filter(
-                        Product.isDeleted == False).filter(
-                            Variation.price >= minPrice).filter(
-                                Variation.price <= maxPrice).order_by(
-                                        asc(Variation.price)).all()
+                products_join = (
+                    db.session.query(Product)
+                    .join(Variation, Product.id == Variation.productId)
+                    .filter(Product.name.like(f"%{keyword}%"))
+                    .filter(Product.isDeleted == False)
+                    .filter(Variation.price >= minPrice)
+                    .filter(Variation.price <= maxPrice)
+                    .order_by(asc(Variation.price))
+                    .all()
+                )
                 product_list = [product.serialize() for product in products_join]
-                result = product_list[(page-1)*limit: limit + (page-1)*limit]
-                product_pagination = Pagination(page, len(result),
-                                                len(total_products_join), result)
+                result = product_list[(page - 1) * limit : limit + (page - 1) * limit]
+                product_pagination = Pagination(
+                    page, len(result), len(total_products_join), result
+                )
                 return product_pagination.serialize()
         else:
             comfort_categories = Category.query.filter(
-                                    Category.name.in_(categories)).all()
+                Category.name.in_(categories)
+            ).all()
             product_ids = set()
             for category in comfort_categories:
                 products = category.products
                 for product in products:
                     product_ids.add(product.id)
-            total_products_join = db.session.query(Product).join(
-                Variation, Product.id == Variation.productId).filter(
-                    Product.name.like(f"%{keyword}%")).filter(
-                        Product.isDeleted == False).filter(
-                            Variation.price >= minPrice).filter(
-                                Variation.price <= maxPrice).filter(
-                                    Product.id.in_(product_ids)).all()
+            total_products_join = (
+                db.session.query(Product)
+                .join(Variation, Product.id == Variation.productId)
+                .filter(Product.name.like(f"%{keyword}%"))
+                .filter(Product.isDeleted == False)
+                .filter(Variation.price >= minPrice)
+                .filter(Variation.price <= maxPrice)
+                .filter(Product.id.in_(product_ids))
+                .all()
+            )
             if sort == "desc":
-                products_join = db.session.query(Product).join(
-                Variation, Product.id == Variation.productId).filter(
-                    Product.name.like(f"%{keyword}%")).filter(
-                        Product.isDeleted == False).filter(
-                            Variation.price >= minPrice).filter(
-                                Variation.price <= maxPrice).filter(
-                                    Product.id.in_(product_ids)).order_by(
-                                        desc(Variation.price)).all()
+                products_join = (
+                    db.session.query(Product)
+                    .join(Variation, Product.id == Variation.productId)
+                    .filter(Product.name.like(f"%{keyword}%"))
+                    .filter(Product.isDeleted == False)
+                    .filter(Variation.price >= minPrice)
+                    .filter(Variation.price <= maxPrice)
+                    .filter(Product.id.in_(product_ids))
+                    .order_by(desc(Variation.price))
+                    .all()
+                )
                 product_list = [product.serialize() for product in products_join]
-                result = product_list[(page-1)*limit: limit + (page-1)*limit]
-                product_pagination = Pagination(page, len(result),
-                                                len(total_products_join), result)
+                result = product_list[(page - 1) * limit : limit + (page - 1) * limit]
+                product_pagination = Pagination(
+                    page, len(result), len(total_products_join), result
+                )
                 return product_pagination.serialize()
             else:
-                products_join = db.session.query(Product).join(
-                Variation, Product.id == Variation.productId).filter(
-                    Product.name.like(f"%{keyword}%")).filter(
-                        Product.isDeleted == False).filter(
-                            Variation.price >= minPrice).filter(
-                                Variation.price <= maxPrice).filter(
-                                    Product.id.in_(product_ids)).order_by(
-                                        asc(Variation.price)).all()
+                products_join = (
+                    db.session.query(Product)
+                    .join(Variation, Product.id == Variation.productId)
+                    .filter(Product.name.like(f"%{keyword}%"))
+                    .filter(Product.isDeleted == False)
+                    .filter(Variation.price >= minPrice)
+                    .filter(Variation.price <= maxPrice)
+                    .filter(Product.id.in_(product_ids))
+                    .order_by(asc(Variation.price))
+                    .all()
+                )
                 product_list = [product.serialize() for product in products_join]
-                result = product_list[(page-1)*limit: limit + (page-1)*limit]
-                product_pagination = Pagination(page, len(result),
-                                                len(total_products_join), result)
+                result = product_list[(page - 1) * limit : limit + (page - 1) * limit]
+                product_pagination = Pagination(
+                    page, len(result), len(total_products_join), result
+                )
                 return product_pagination.serialize()
-
 
     # Lấy sản phẩm theo id
     def getProductbyId(productId: int):
@@ -127,9 +156,12 @@ class ProductService:
 
     # Lấy chi tiết sản phẩm
     def getDetailProduct(productSlug: str):
-        product = db.session.query(Product).filter(
-                    Product.slug == productSlug).filter(
-                        Product.isDeleted == False).first()
+        product = (
+            db.session.query(Product)
+            .filter(Product.slug == productSlug)
+            .filter(Product.isDeleted == False)
+            .first()
+        )
         if product is None:
             return {}
         return product.serialize()
@@ -158,10 +190,9 @@ class ProductService:
 
         # Thêm categories
         for cat in categories:
-            category_obj = Category.query.get(cat["id"])
+            category_obj = Category.query.filter_by(slug=cat["slug"]).first()
             if not category_obj:
                 category_obj = Category(
-                    id=cat["id"],
                     name=cat["name"],
                     slug=cat["slug"],
                     description=cat["description"],
@@ -210,7 +241,7 @@ class ProductService:
         categories: List[int],
     ):
         product = ProductService.getDetailProduct(productId)
-            
+
         product.name = productName
         product.slug = slug
         product.description = description
@@ -235,9 +266,30 @@ class ProductService:
                 db.session.delete(prop_obj)
 
         # Thêm variations
-        existing_variations = {(var.type, var.name, var.option, var.image, var.price, var.oldPrice, var.quantity, var.sold) for var in product.variations}
+        existing_variations = {
+            (
+                var.type,
+                var.name,
+                var.option,
+                var.image,
+                var.price,
+                var.oldPrice,
+                var.quantity,
+                var.sold,
+            )
+            for var in product.variations
+        }
         for var in add_variations:
-            var_tuple = (var["type"], var["name"], var["option"], var["image"], var["price"], var["oldPrice"], var["quantity"], var["sold"])
+            var_tuple = (
+                var["type"],
+                var["name"],
+                var["option"],
+                var["image"],
+                var["price"],
+                var["oldPrice"],
+                var["quantity"],
+                var["sold"],
+            )
             if var_tuple in existing_variations:
                 continue
             variation_obj = Variation(

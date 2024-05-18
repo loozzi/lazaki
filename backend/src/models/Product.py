@@ -36,23 +36,18 @@ class Product(Base):
         "Variation", backref="products", uselist=True
     )
 
-
     def getRateMean(self):
-        order_detail_list = OrderDetail.query.filter_by(
-                                productId=self.id).all()
+        order_detail_list = OrderDetail.query.filter_by(productId=self.id).all()
         rate_list = []
         for order_detail in order_detail_list:
-             rate = Rating.query.filter_by(
-                        orderDetailId=order_detail.id).first()
-             rate_list.append(rate)
+            rate = Rating.query.filter_by(orderDetailId=order_detail.id).first()
+            rate_list.append(rate)
         if len(rate_list) == 0:
             return 0
         sum = 0
         for i in rate_list:
             sum += i.value
-        return sum/len(rate_list)
-
-
+        return sum / len(rate_list)
 
     def is_PrimaryImage(self, link):
         image = ProductImage.query.filter_by(link=link).first()
@@ -62,7 +57,6 @@ class Product(Base):
             return True
         return False
 
-
     def getPrimaryImage(self):
         link = ""
         for image in self.images:
@@ -70,7 +64,6 @@ class Product(Base):
                 link = image.link
                 break
         return link
-
 
     def serialize(self):
         id = self.id
@@ -82,12 +75,12 @@ class Product(Base):
         variations = sorted(variations, key=lambda x: x["price"])
         images = []
         for i in variations:
-                image = {
-                     "link": i["image"],
-                     "variationId": i["id"],
-                     "isPrimary": self.is_PrimaryImage(i["image"]),
-                }
-                images.append(image)
+            image = {
+                "link": i["image"],
+                "variationId": i["id"],
+                "isPrimary": self.is_PrimaryImage(i["image"]),
+            }
+            images.append(image)
         data_response = {
             "id": id,
             "name": name,
@@ -98,7 +91,7 @@ class Product(Base):
             "images": images,
         }
         return data_response
-        
+
     def update(
         self,
         name: str,

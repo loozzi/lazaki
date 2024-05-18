@@ -1,7 +1,7 @@
 from sqlalchemy import ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column
-
 from .Base import Base
+from .Variation import Variation
 
 
 class OrderDetail(Base):
@@ -24,3 +24,18 @@ class OrderDetail(Base):
 
     def getPrice(self):
         return self.price
+
+    def serialize(self):
+        variation = Variation.query.filter_by(id=self.variationId).first()
+        return {
+            "id": self.id,
+            "orderId": self.orderId,
+            "productId": self.productId,
+            "variationId": self.variationId,
+            "name": variation.name,
+            "image": variation.image,
+            "variation": variation.getInfo(),
+            "quantity": self.quantity,
+            "price": self.price,
+            "oldPrice": self.oldPrice,
+        }

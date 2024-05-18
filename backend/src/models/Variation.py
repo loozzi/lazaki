@@ -70,3 +70,10 @@ class Variation(Base):
             "quantity": self.quantity,
             "sold": self.sold,
         }
+
+    def getInfo(self):
+        return {
+            "type": self.type,
+            "name": self.name,
+            "option": self.option,
+        }

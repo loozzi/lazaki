@@ -17,14 +17,14 @@ def customer_middleware(f):
         token = token.split(" ")[1]
         data = TokenService.verify(token)
         if not data:
-            return Response(400, "Invalid token")
+            return Response(400, "Invalid token(data not found)")
 
         if data["isRefreshToken"]:
-            return Response(400, "Invalid token")
+            return Response(400, "Invalid token(refresh-token)")
 
         customer = CustomerService.getCustomer(data["uid"])
         if not customer:
-            return Response(400, "Invalid token")
+            return Response(400, "Invalid token(uid)")
 
         request.customer = customer
         return f(*args, **kwargs)

@@ -1,6 +1,7 @@
 from flask import Blueprint, request
 from src.middlewares.AuthMiddleware import customer_middleware
 from src.utils.response import Response
+from src.utils.enums import GenderEnum
 from src.controllers.AuthController import AuthController
 from datetime import datetime
 
@@ -17,13 +18,15 @@ def getInformation():
 @customer_middleware
 def updateInformation():
     fullName = request.form.get("fullName", "")
-    birthday = request.form.get("birthday")
+    birthday = request.form.get("birthday", type=str)
     if birthday:
         try:
-            birthday = datetime.strptime(birthday, format="%d/%m/%Y")
+            birthday = datetime.strptime(birthday, "%d/%m/%Y")
         except ValueError:
             return Response(400, 'Ngày sinh không đúng định dạng "%d/%m/%Y" ')
     gender = request.form.get("gender", "")
+    if gender.lower() not in [gender.value for gender in GenderEnum]:
+        return Response(400, "Giới tính không hợp lệ")
     email = request.form.get("email", "")
     phoneNumber = request.form.get("phoneNumber", "")
     province = request.form.get("province", "")

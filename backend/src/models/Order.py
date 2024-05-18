@@ -58,7 +58,7 @@ class Order(Base):
         pass
 
     def setConfirm(self, confirm):
-        pass
+        self.paymentStatus = confirm
 
     def showDetail(self):
         pass

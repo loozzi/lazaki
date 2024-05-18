@@ -44,3 +44,12 @@ class AuthController:
     # Refresh token
     def refeshToken(refreshToken: str):
         pass
+
+    def login_admin(username: str, password: str):
+        admin = AuthService.verifyAdmin(username, password)
+
+        if admin:
+            accessToken = TokenService.generate(admin, type="admin")
+            return Response(200, "Success", {"accessToken": accessToken})
+
+        return Response(400, "Invalid username or password")

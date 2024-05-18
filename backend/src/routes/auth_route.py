@@ -8,3 +8,11 @@ auth = Blueprint("auth", __name__)
 def login():
     token = request.form.get("token")
     return AuthController.login(token)
+
+
+@auth.route("/admin", methods=["POST"])
+def login_admin():
+    username = request.form.get("username", "")
+    password = request.form.get("password", "")
+
+    return AuthController.login_admin(username, password)

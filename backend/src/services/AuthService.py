@@ -1,5 +1,7 @@
 import google.oauth2.id_token
 from google.auth.transport import requests
+from src import bcrypt
+from src.models import Admin
 
 firebase_request_adapter = requests.Request()
 
@@ -13,3 +15,14 @@ class AuthService:
         if not claims:
             return None
         return claims
+
+    # Xác thực admin
+    def verifyAdmin(username: str, password: str):
+        admin = Admin.query.filter_by(username=username).first()
+        if not admin:
+            return None
+
+        if not bcrypt.check_password_hash(admin.passwordHash, password):
+            return None
+
+        return admin

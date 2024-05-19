@@ -4,6 +4,8 @@ from src.middlewares.AuthMiddleware import customer_middleware
 from src.middlewares.PaginationMiddleware import request_pagination
 from src.models.Order import Order
 from src.controllers.OrderController import OrderController
+from src.models.OrderDetail import OrderDetail
+
 
 order = Blueprint("order", __name__)
 
@@ -99,3 +101,29 @@ def purchase():
         payment_method,
         note,
     )
+
+
+@order.route("/add", methods=["POST"])
+@customer_middleware
+def createOrderDetail():
+    current_customer = request.customer
+    orderId = request.form.get("orderId", None)
+    variationId = request.form.get("variationId", None)
+    productId = request.form.get("productId", None)
+    quantity = request.form.get("quantity", None)
+    return OrderController.addToShopCart(current_customer.id,
+                                         orderId,
+                                         variationId,
+                                         productId,
+                                         quantity)
+
+
+@order.route("/:<int:orderDetailId>", methods=["DELETE"])
+@customer_middleware
+def removeOrderDetail(orderDetailId):
+    current_customer = request.customer
+    orderDetailId = OrderDetail.query.filter_by(id=orderDetailId).first()
+    if orderDetailId is None:
+        return Response(404, "Order not found")
+    return OrderController.removeFromCurrentOrder(current_customer.id,
+                                                  orderDetailId.variationId)

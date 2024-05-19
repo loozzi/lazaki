@@ -2,10 +2,14 @@ from typing import TYPE_CHECKING
 
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from src.models.OrderDetail import OrderDetail
 from src.models.Base import Base
+from src.models.Order import Order
+from src import db
 
 if TYPE_CHECKING:
     from .RatingImage import RatingImage
+    from src.models.Variation import Variation
 
 
 class Rating(Base):
@@ -30,3 +34,25 @@ class Rating(Base):
     images: Mapped[list["RatingImage"]] = relationship(
         "RatingImage", backref="ratings", uselist=True
     )
+
+    def serialize(self):
+        order = (
+            Order.query.join(OrderDetail)
+            .filter(
+                OrderDetail.id == self.orderDetailId,
+                Order.customerId == self.customerId,
+            )
+            .first()
+        )
+        variation = Variation.query.filter_by(id=self.variationId).first()
+        return {
+            "id": self.id,
+            "value": self.value,
+            "fullName": order.fullName,
+            "productId": self.productId,
+            "variationId": self.variationId,
+            "variation": variation.getInfo(),
+            "content": self.content,
+            "images": [image.serialize() for image in self.images],
+            "createdAt": self.createdAt,
+        }

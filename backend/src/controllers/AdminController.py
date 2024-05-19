@@ -1,5 +1,6 @@
 from typing import List
 
+from src.services.ReviewService import ReviewService
 from src import db
 from src.controllers.Pagination import Pagination
 from src.controllers.RevenueController import RevenueController
@@ -17,8 +18,30 @@ class AdminController:
         pass
 
     # Lấy danh sách sản phẩm
-    def getProducts(page: int, limit: int, sort: str):
-        pass
+    def getProducts(page: int, limit: int, keyword: str, order: str, type: str):
+        # Lấy danh sách sản phẩm (kết quả trả về là một tuple)
+        products = ProductService.searchProductsAdmin(keyword, order, type)
+
+        total = len(products)
+        if total == 0:
+            return Response(404, "No product found")
+        start = (page - 1) * limit
+        end = min(start + limit, total)
+        paginated_products = products[start:end]
+
+        # Chuẩn bị dữ liệu trả về
+        product_data = []
+        for product, total_sold, total_quantity in paginated_products:
+            product_detail = product.getInfo()
+            product_detail["sold"] = total_sold
+            product_detail["quantity"] = total_quantity
+            product_data.append(product_detail)
+
+        pagination = Pagination(
+            currentPage=page, perPage=limit, total=total, data=product_data
+        )
+
+        return Response(200, "Success", pagination.serialize())
 
     def getProductDetail(slug: str):
         pass
@@ -147,3 +170,25 @@ class AdminController:
             return RevenueController.calculateCategoryRevenue(orders, slug)
         elif type == "product":
             return RevenueController.calculateProductRevenue(orders, slug)
+
+    # Lấy đánh giá của tất cả sản phẩm
+    def getReviews(page: int, limit: int):
+        all_ratings = ReviewService.getAllReviews()
+
+        total = len(all_ratings)
+        if total == 0:
+            return Response(404, "No review found")
+        start = (page - 1) * limit
+        end = min(start + limit, total)
+        paginated_ratings = all_ratings[start:end]
+
+        # Chuẩn bị dữ liệu trả về
+        rating_data = []
+        for rating in paginated_ratings:
+            rating_data.append(rating.serialize())
+
+        pagination = Pagination(
+            currentPage=page, perPage=limit, total=total, data=rating_data
+        )
+
+        return Response(200, "Success", pagination.serialize())

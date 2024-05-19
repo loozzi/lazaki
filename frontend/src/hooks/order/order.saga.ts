@@ -1,18 +1,29 @@
-import { takeLatest } from 'redux-saga/effects'
-import { orderActions } from './order.slice'
 import { PayloadAction } from '@reduxjs/toolkit'
-import { CartItem } from '~/models/order'
+import { call, takeLatest } from 'redux-saga/effects'
+import { CartItem, OrderCreatePayload, OrderUpdatePayload } from '~/models/order'
+import { IResponse } from '~/models/response'
+import orderService from '~/services/order.service'
+import { orderActions } from './order.slice'
 
 function* addToCart(actions: PayloadAction<CartItem>) {
-  orderActions.addToCart(actions.payload)
+  const payload: OrderCreatePayload = {
+    productId: actions.payload.productId!,
+    variationId: actions.payload.variationId!,
+    quantity: actions.payload.quantity,
+    orderId: actions.payload.orderId === 0 ? undefined : actions.payload.orderId
+  }
+  const response: IResponse<CartItem> = yield call(orderService.add, payload)
+  if (response.status === 200) orderActions.addToCart(response.data!)
 }
 
 function* removeFromCart(actions: PayloadAction<number>) {
-  orderActions.removeFromCart(actions.payload)
+  const response: IResponse<any> = yield call(orderService.remove, actions.payload)
+  if (response.status !== 200) orderActions.removeFromCart(actions.payload)
 }
 
-function* changeQuantity(actions: PayloadAction<{ variationId: number; quantity: number }>) {
-  orderActions.changeQuantity(actions.payload)
+function* changeQuantity(actions: PayloadAction<OrderUpdatePayload>) {
+  const response: IResponse<CartItem> = yield call(orderService.update, actions.payload)
+  orderActions.changeQuantity(response.data!)
 }
 
 export default function* orderSaga() {

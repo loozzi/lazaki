@@ -2,14 +2,14 @@ from typing import TYPE_CHECKING
 
 from sqlalchemy import Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from src.models.Base import Base
 from src import db
-from src.models.OrderDetail import OrderDetail
-from src.models.Rating import Rating
+from src.models.Base import Base
 from src.models.ProductImage import ProductImage
+from src.models.Rating import Rating
 
 if TYPE_CHECKING:
     from .Category import Category
+    from .OrderDetail import OrderDetail
     from .ProductImage import ProductImage
     from .ProductProperty import ProductProperty
     from .Variation import Variation

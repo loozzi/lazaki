@@ -1,6 +1,6 @@
 from src.models import Order
-from src.utils.response import Response
 from src.utils.enums import PaymentStatusEnum
+from src.utils.response import Response
 
 
 class OnlinePaymentService:
@@ -9,7 +9,7 @@ class OnlinePaymentService:
         return Response(
             200,
             "Lấy QR thành công",
-            "https://m.media-amazon.com/images/I/41g9aFO6JLL._AC_.jpg",
+            {"qrCode": "https://m.media-amazon.com/images/I/41g9aFO6JLL._AC_.jpg"},
         )
 
     # Xác nhận thanh toán

@@ -1,13 +1,12 @@
 import datetime
-from src.models.OrderDetail import OrderDetail
+
+from src import db
 from src.models.Address import Address
 from src.models.Order import Order
-from src.utils.enums import OrderStatusEnum
-from src import db
-from src.utils.enums import PaymentMethodEnum
-from src.models.Order import Order
+from src.models.OrderDetail import OrderDetail
 from src.models.Product import Product
 from src.models.Variation import Variation
+from src.utils.enums import OrderStatusEnum, PaymentMethodEnum
 
 
 class OrderService:
@@ -81,8 +80,8 @@ class OrderService:
 
     # Lấy lịch sử order của khách hàng
     def getOrderHistory(customerId: int):
-        return Order.query.filter_by(
-            customerId=customerId, status=OrderStatusEnum.SUCCESS
+        return Order.query.filter(
+            Order.customerId == customerId, Order.status != OrderStatusEnum.ORDER
         ).all()
 
     def getOrders():

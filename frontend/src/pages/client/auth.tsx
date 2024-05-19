@@ -5,14 +5,19 @@ import assets from '~/assets'
 import { FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 import { auth, facebookProvider, githubProvider, googleProvider } from '~/services/firebase.service'
 import { useEffect, useState } from 'react'
-import { useAppDispatch } from '~/app/hook'
-import { authActions } from '~/hooks/auth/auth.slice'
+import { useAppDispatch, useAppSelector } from '~/app/hook'
+import { authActions, selectIsAuthenticated } from '~/hooks/auth/auth.slice'
 import { TokenAuthPayload } from '~/models/token'
+import { history } from '~/configs/history'
+import routes from '~/configs/routes'
 
 export const ViewAuthPage = () => {
   const [provider, setProvider] = useState<GoogleAuthProvider | FacebookAuthProvider | GithubAuthProvider | undefined>(
     undefined
   )
+
+  const isAuthenticated = useAppSelector(selectIsAuthenticated)
+
   const dispatch = useAppDispatch()
 
   useEffect(() => {
@@ -37,6 +42,13 @@ export const ViewAuthPage = () => {
       setProvider(undefined)
     }
   }, [provider])
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      history.push(routes.client.account)
+    }
+    console.log(isAuthenticated)
+  }, [isAuthenticated])
 
   return (
     <div className='flex justify-center mt-4'>

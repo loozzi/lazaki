@@ -3,6 +3,8 @@ import apiConfig from '~/configs/api.config'
 import envConfig from '~/configs/env.config'
 import tokenService from './token.service'
 import authService from './auth.service'
+import { history } from '~/configs/history'
+import routes from '~/configs/routes'
 
 const client = axios.create({
   baseURL: envConfig.API_ENDPOINT,
@@ -46,6 +48,7 @@ client.interceptors.request.use(
 
 client.interceptors.response.use(
   (response: AxiosResponse<any>) => {
+    if (response.data.message === 'Unauthorized') history.push(routes.client.auth)
     return response.data
   },
   (error) => {

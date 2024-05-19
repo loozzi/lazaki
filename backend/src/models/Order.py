@@ -4,9 +4,10 @@ from typing import TYPE_CHECKING
 from sqlalchemy import TIMESTAMP, Enum, ForeignKey, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.utils.enums import OrderStatusEnum, PaymentMethodEnum, PaymentStatusEnum
+
+from .Address import Address
 from .Base import Base
 from .Customer import Customer
-from .Address import Address
 
 if TYPE_CHECKING:
     from .Address import Address
@@ -22,6 +23,7 @@ class Order(Base):
     customerId: Mapped[int] = mapped_column(ForeignKey("customer.id"), nullable=False)
     customer: Mapped["Customer"] = relationship("Customer", backref="orders")
     fullName: Mapped[str] = mapped_column(String(256), nullable=False, default="")
+    email: Mapped[str] = mapped_column(String(256), nullable=False, default="")
     addressId: Mapped[int] = mapped_column(ForeignKey("address.id"), nullable=False)
     address: Mapped["Address"] = relationship("Address", backref="orders")
     paymentMethod: Mapped[str] = mapped_column(
@@ -42,7 +44,7 @@ class Order(Base):
     totalAmount: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     orderDate: Mapped[datetime.datetime] = mapped_column(
         TIMESTAMP(timezone=True),
-        default=func.current_timestamp(),
+        nullable=True,
     )
 
     def setListOrderDetail(self, orderDetails):

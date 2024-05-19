@@ -3,7 +3,7 @@ import { OrderHistoryResponse } from './order'
 export interface TokenResponse {
   accessToken: string
   refreshToken: string
-  cart: OrderHistoryResponse
+  cart?: OrderHistoryResponse
 }
 
 export interface TokenLocalStorage {

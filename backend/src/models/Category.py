@@ -32,3 +32,6 @@ class Category(Base):
             "slug": self.slug,
             "description": self.description,
         }
+
+    def getName(self) -> str:
+        return self.name

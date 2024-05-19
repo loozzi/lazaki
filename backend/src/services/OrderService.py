@@ -74,6 +74,14 @@ class OrderService:
         for order_detail in order.orderDetails:
             total_amount += order_detail.quantity * order_detail.price
         order.totalAmount = total_amount
+
+        # Giảm số lượng sản phẩm trong kho và tăng số lượng đã bán
+        for order_detail in order.orderDetails:
+            variation = Variation.query.filter_by(id=order_detail.variationId).first()
+            variation.quantity -= order_detail.quantity
+            variation.sold += order_detail.quantity
+
+        # Cập nhật ngày order
         order.orderDate = datetime.datetime.now()
 
         db.session.commit()

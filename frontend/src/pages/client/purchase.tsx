@@ -6,9 +6,12 @@ import { DetailCartComp } from '~/components/cart/cart-detail'
 import { PaneComp } from '~/components/pane'
 import { PurchaseInformationComp } from '~/components/purchase/purchase-info'
 import { ModalPurchaseOnline } from '~/components/purchase/purchase-online'
+import { history } from '~/configs/history'
+import routes from '~/configs/routes'
 import { selectCart } from '~/hooks/order/order.slice'
 import { OrderConfirmPayload } from '~/models/order'
 import orderService from '~/services/order.service'
+import paymentService from '~/services/payment.service'
 
 export const ViewPurchasePage = () => {
   const cart = useAppSelector(selectCart)
@@ -38,6 +41,7 @@ export const ViewPurchasePage = () => {
       orderService.purchase(values).then((res) => {
         if (res.status === 200) {
           alert('Đặt hàng thành công')
+          history.push(routes.client.account)
         } else {
           alert('Đặt hàng thất bại')
         }
@@ -68,6 +72,22 @@ export const ViewPurchasePage = () => {
     } else {
       onOpen()
     }
+  }
+
+  const handleConfirmBanking = () => {
+    setConfirmBanking(true)
+    onClose()
+    paymentService
+      .confirm({
+        orderId: cart?.id || 0
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          alert('Xác nhận thanh toán thành công')
+        } else {
+          alert('Xác nhận thanh toán thất bại')
+        }
+      })
   }
 
   useEffect(() => {
@@ -113,7 +133,7 @@ export const ViewPurchasePage = () => {
                 <Button onClick={onClose} color='danger' variant='light'>
                   Hủy
                 </Button>
-                <Button color='primary' onClick={() => setConfirmBanking(true)}>
+                <Button color='primary' onClick={handleConfirmBanking}>
                   Xác nhận đã thanh toán
                 </Button>
               </ModalFooter>

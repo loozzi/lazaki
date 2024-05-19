@@ -17,7 +17,7 @@ import { Link } from 'react-router-dom'
 import { useAppDispatch } from '~/app/hook'
 import routes from '~/configs/routes'
 import { orderActions } from '~/hooks/order/order.slice'
-import { CartItem } from '~/models/order'
+import { CartItem, OrderUpdatePayload } from '~/models/order'
 import { PriceComp } from '../price'
 
 interface DetailCartCompProps {
@@ -43,16 +43,24 @@ export const DetailCartComp = (props: DetailCartCompProps) => {
   const dispatch = useAppDispatch()
 
   const handleChangeQuantity = (product: CartItem, quantity: number) => {
-    dispatch({
-      type: orderActions.changeQuantity.type,
-      payload: { variationId: product.variationId, quantity }
-    })
+    const payload: OrderUpdatePayload = {
+      variationId: product?.variationId!,
+      productId: product.productId!,
+      orderDetailId: product.id!,
+      quantity: quantity + product.quantity
+    }
+
+    if (payload.quantity >= 1)
+      dispatch({
+        type: orderActions.changeQuantity.type,
+        payload: payload
+      })
   }
 
   const handleRemoveProduct = (product: CartItem) => {
     dispatch({
       type: orderActions.removeFromCart.type,
-      payload: product.variationId
+      payload: product.id!
     })
   }
 

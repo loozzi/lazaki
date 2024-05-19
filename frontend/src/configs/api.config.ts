@@ -29,7 +29,9 @@ const order = {
   history: '/order/history',
   detail: '/order/detail',
   update: '/order/update',
-  purchase: '/order/purchase'
+  purchase: '/order/purchase',
+  add: '/order/add',
+  remove: '/order'
 }
 
 const payment = {

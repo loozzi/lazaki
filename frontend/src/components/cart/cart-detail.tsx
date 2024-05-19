@@ -64,25 +64,30 @@ export const DetailCartComp = (props: DetailCartCompProps) => {
     })
   }
 
-  const renderCell = (product: CartItem, columnKey: any) => {
-    const cellValue = product[columnKey]
+  const renderCell = (item: CartItem, columnKey: any) => {
+    const cellValue = item[columnKey]
 
     switch (columnKey) {
       case 'name':
         return (
           <div className='flex gap-2 items-center'>
-            <Image src={product.image} width={50} height={50} className='w-full' alt={product.name} />
-            <span className='font-semibold'>{product.name}</span>
+            <Image src={item.image} width={50} height={50} className='w-full' alt={item.name} />
+            <div className='flex flex-col'>
+              <span className='font-semibold'>{item.name}</span>
+              <span className='text-default-400 text-sm'>
+                {item.variation.type} - {item.variation.name}
+              </span>
+            </div>
           </div>
         )
       case 'price':
         return (
           <div className='flex flex-col'>
             <p className='text-bold text-sm'>
-              <PriceComp price={product.price} size='sm' />
+              <PriceComp price={item.price} size='sm' />
             </p>
             <p className='text-bold text-sm text-default-400 line-through'>
-              <PriceComp price={product.oldPrice} fontSize={12} />
+              <PriceComp price={item.oldPrice} fontSize={12} />
             </p>
           </div>
         )
@@ -90,7 +95,7 @@ export const DetailCartComp = (props: DetailCartCompProps) => {
         return (
           <div className='flex flex-col'>
             <p className='text-bold text-sm'>
-              <PriceComp price={product.price * product.quantity} size='sm' />
+              <PriceComp price={item.price * item.quantity} size='sm' />
             </p>
             <p className='text-bold text-sm text-default-400'>{}</p>
           </div>
@@ -99,13 +104,7 @@ export const DetailCartComp = (props: DetailCartCompProps) => {
         return (
           <div className='flex items-center gap-2'>
             {!viewOnly && (
-              <Button
-                isIconOnly
-                variant='light'
-                radius='full'
-                size='sm'
-                onClick={() => handleChangeQuantity(product, -1)}
-              >
+              <Button isIconOnly variant='light' radius='full' size='sm' onClick={() => handleChangeQuantity(item, -1)}>
                 <FaMinus />
               </Button>
             )}
@@ -113,13 +112,7 @@ export const DetailCartComp = (props: DetailCartCompProps) => {
               {cellValue}
             </Chip>
             {!viewOnly && (
-              <Button
-                isIconOnly
-                variant='light'
-                radius='full'
-                size='sm'
-                onClick={() => handleChangeQuantity(product, +1)}
-              >
+              <Button isIconOnly variant='light' radius='full' size='sm' onClick={() => handleChangeQuantity(item, +1)}>
                 <FaPlus />
               </Button>
             )}
@@ -130,7 +123,7 @@ export const DetailCartComp = (props: DetailCartCompProps) => {
           <Tooltip color='danger' content='Xóa sản phẩm'>
             <span
               className='text-lg text-danger cursor-pointer active:opacity-50'
-              onClick={() => handleRemoveProduct(product)}
+              onClick={() => handleRemoveProduct(item)}
             >
               <FaDeleteLeft />
             </span>

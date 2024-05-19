@@ -1,13 +1,14 @@
 from typing import List
-from src.controllers.RevenueController import RevenueController
-from src.services.OrderService import OrderService
-from src.models import Variation, Address, Customer
-from src.controllers.Pagination import Pagination
-from src.utils.enums import CustomerStatusEnum
-from src.services.CustomerService import CustomerService
-from src.services.ProductService import ProductService
-from src.utils.response import Response
+
 from src import db
+from src.controllers.Pagination import Pagination
+from src.controllers.RevenueController import RevenueController
+from src.models import Address, Customer, Variation
+from src.services.CustomerService import CustomerService
+from src.services.OrderService import OrderService
+from src.services.ProductService import ProductService
+from src.utils.enums import CustomerStatusEnum
+from src.utils.response import Response
 
 
 class AdminController:
@@ -35,7 +36,8 @@ class AdminController:
         images: List[object],
         categories: List[int],
     ):
-        product = ProductService.getDetailProduct(productId)
+        productService = ProductService()
+        product = productService.getDetailProduct(productId)
         if product is None:
             return Response(404, "Product not found")
 

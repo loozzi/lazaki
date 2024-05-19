@@ -11,6 +11,7 @@ import { useFormik } from 'formik'
 import adminService from '~/services/admin.service'
 import { history } from '~/configs/history'
 import routes from '~/configs/routes'
+import productService from '~/services/product.service'
 
 export const ViewAdminManageDetailProductPage = () => {
   const params = useParams()
@@ -40,7 +41,12 @@ export const ViewAdminManageDetailProductPage = () => {
   })
 
   const handleUpdateProduct = () => {
-    console.log(payload.values)
+    adminService.product.update(payload.values).then((res) => {
+      if (res.status === 200) {
+        alert('Cập nhật sản phẩm thành công')
+        history.push(routes.admin.product)
+      }
+    })
   }
 
   const handleRemoveProduct = () => {
@@ -57,103 +63,27 @@ export const ViewAdminManageDetailProductPage = () => {
 
   useEffect(() => {
     const { slug } = params
-    console.log(slug)
 
-    const product = {
-      id: 1,
-      name: 'Product 1',
-      slug: 'sample-product-1',
-      categories: [
-        {
-          id: 1,
-          name: 'Category 1',
-          slug: 'category-1',
-          description: 'Lorem   '
-        },
-        {
-          id: 2,
-          name: 'Category 2',
-          slug: 'category-2',
-          description: 'Lorem   '
-        }
-      ],
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, ex eu tincidunt ultricies, nunc magna fermentum nunc, nec auctor felis metus nec nunc. Ut euismod, dolor ac tincidunt ultricies, nunc magna fermentum nunc, nec auctor felis metus nec nunc. Ut euismod, dolor ac tincidunt ultricies, nunc magna fermentum nunc, nec auctor felis metus nec nunc. Ut euismod, dolor ac tincidunt ultricies, nunc magna fermentum nunc, nec auctor felis metus nec nunc. Ut euismod, dolor ac tincidunt ultricies, nunc magna fermentum nunc, nec auctor felis metus nec nunc. Ut euismod, dolor ac tincidunt ultricies, nunc magna fermentum nunc, nec auctor felis metus nec nunc. Ut euismod, dolor ac tincidunt ultricies, nunc magna fermentum nunc, nec auctor felis metus nec nunc. Ut euismod, dolor ac tincidunt ultricies, nunc magna fermentum nunc, nec auctor felis metus nec nunc. Ut euismod, dolor ac tincidunt ultricies, nunc magna fermentum nunc, nec auctor felis metus nec nunc.',
-      properties: [
-        {
-          name: 'Branch',
-          value: 'Xiaomi'
-        },
-        {
-          name: 'Type',
-          value: 'Mobile'
-        }
-      ],
-      variations: [
-        {
-          id: 1,
-          type: 'Color',
-          name: 'Red',
-          option: 'XL',
-          image: '',
-          price: 10000,
-          oldPrice: 0,
-          quantity: 10,
-          sold: 0
-        },
-        {
-          id: 2,
-          type: 'Color',
-          name: 'Blue',
-          option: 'XL',
-          image: '',
-          price: 10300,
-          oldPrice: 0,
-          quantity: 10,
-          sold: 0
-        },
-        {
-          id: 3,
-          type: 'Color',
-          name: 'Green',
-          option: 'XL',
-          image: '',
-          price: 4523000,
-          oldPrice: 1203981,
-          quantity: 10,
-          sold: 0
-        }
-      ],
-      images: [
-        {
-          link: 'https://via.placeholder.com/150',
-          isPrimary: true
-        },
-        {
-          link: 'https://via.placeholder.com/250',
-          isPrimary: false
-        },
-        {
-          link: 'https://via.placeholder.com/152',
-          isPrimary: false
-        }
-      ]
-    }
-
-    setProduct(product)
-    payload.setValues({
-      productId: product.id,
-      productName: product.name,
-      slug: product.slug,
-      description: product.description,
-      properties: product.properties,
-      addVariations: [],
-      removeVariations: [],
-      editVariations: [],
-      images: product.images,
-      categories: product.categories.map((e) => e.id)
+    productService.detail(slug || '').then((res) => {
+      setProduct(res.data)
     })
   }, [params])
+
+  useEffect(() => {
+    if (product)
+      payload.setValues({
+        productId: product.id,
+        productName: product.name,
+        slug: product.slug,
+        description: product.description,
+        properties: product.properties,
+        addVariations: [],
+        removeVariations: [],
+        editVariations: [],
+        images: product.images,
+        categories: product.categories.map((e) => e.id)
+      })
+  }, [product])
 
   return (
     <div className='p-4'>

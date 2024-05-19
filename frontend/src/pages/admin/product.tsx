@@ -1,5 +1,6 @@
 import {
   Button,
+  Image,
   Input,
   Pagination,
   Select,
@@ -19,61 +20,48 @@ import { Link } from 'react-router-dom'
 import routes from '~/configs/routes'
 import { ProductAdminResponse } from '~/models/product'
 import { PaginationState } from '~/models/response'
+import adminService from '~/services/admin.service'
 
 export const ViewAdminManageProductPage = () => {
   const [products, setProducts] = useState<ProductAdminResponse[]>([])
   const [pagination, setPagination] = useState<PaginationState>({
     currentPage: 1,
     perPage: 10,
-    total: 3
+    total: 1
   })
   const [keyword, setKeyword] = useState<string>('')
   const [type, setType] = useState<'quantity' | 'sold'>('quantity')
   const [sort, setSort] = useState<'asc' | 'desc'>('asc')
 
   useEffect(() => {
-    setProducts([
-      {
-        id: 1,
-        name: 'Product 1',
-        price: 10000,
-        quantity: 10,
-        status: 'active',
-        slug: 'sample-product-1',
-        sold: 0,
-        image: '',
-        rating: 0,
-        categories: ['Category 1', 'Category 2', 'Category 2', 'Category 2']
-      },
-      {
-        id: 2,
-        name: 'Product 2',
-        price: 20000,
-        quantity: 20,
-        status: 'active',
-        slug: 'sample-product-2',
-        sold: 0,
-        image: '',
-        rating: 0,
-        categories: []
-      },
-      {
-        id: 3,
-        name: 'Product 3',
-        price: 30000,
-        quantity: 30,
-        status: 'active',
-        slug: 'sample-product-3',
-        sold: 0,
-        image: '',
-        rating: 0,
-        categories: []
-      }
-    ])
-  }, [pagination, keyword, type, sort])
+    adminService.product
+      .get({
+        keyword,
+        order: sort,
+        type,
+        page: pagination.currentPage,
+        perPage: pagination.perPage
+      })
+      .then((res) => {
+        const products = res.data?.data || []
+
+        setProducts(
+          products.map((product) => ({
+            ...product,
+            categories: [],
+            quantity: 0
+          }))
+        )
+        setPagination({
+          currentPage: res.data?.currentPage || 1,
+          perPage: res.data?.perPage || 10,
+          total: (res.data?.total || 1) / (res.data?.perPage || 1)
+        })
+      })
+  }, [keyword, sort, type, pagination.currentPage, pagination.perPage])
 
   const columns = [
-    { name: 'ID', uid: 'id' },
+    { name: 'Hình ảnh', uid: 'image' },
     { name: 'Tên sản phẩm', uid: 'name' },
     { name: 'Danh mục', uid: 'categories' },
     { name: 'Giá', uid: 'price' },
@@ -99,7 +87,44 @@ export const ViewAdminManageProductPage = () => {
         </Button>
       </div>
       <div className='mt-4'>
-        <Table isStriped>
+        <Table
+          isStriped
+          topContent={
+            <div className='flex justify-between'>
+              <div className='w-64 flex gap-2'>
+                <Select
+                  placeholder='Sắp xếp'
+                  selectedKeys={['asc']}
+                  onChange={(e) => {
+                    setSort(e.target.value as 'asc' | 'desc')
+                  }}
+                >
+                  <SelectItem value='asc' key='asc'>
+                    Tăng dần
+                  </SelectItem>
+                  <SelectItem value='desc' key='desc'>
+                    Giảm dần
+                  </SelectItem>
+                </Select>
+                <Select
+                  placeholder='Theo'
+                  selectedKeys={['quantity']}
+                  onChange={(e) => {
+                    setType(e.target.value as 'quantity' | 'sold')
+                  }}
+                >
+                  <SelectItem value='quantity' key='quantity'>
+                    Kho hàng
+                  </SelectItem>
+                  <SelectItem value='sold' key='sold'>
+                    Đã bán
+                  </SelectItem>
+                </Select>
+              </div>
+              <Pagination className='flex justify-center mt-2' total={pagination.total} page={pagination.currentPage} />
+            </div>
+          }
+        >
           <TableHeader columns={columns}>
             {(column) => (
               <TableColumn key={column.uid} align='center'>
@@ -111,8 +136,10 @@ export const ViewAdminManageProductPage = () => {
           </TableHeader>
           <TableBody items={products}>
             {(item) => (
-              <TableRow key={item.id}>
-                <TableCell width={48}>{item.id}</TableCell>
+              <TableRow key={item.slug}>
+                <TableCell width={48}>
+                  <Image src={item.image} alt={item.name} width={48} height={48} />
+                </TableCell>
                 <TableCell>{item.name}</TableCell>
                 <TableCell width={120}>
                   <div className='flex justify-center'>
@@ -150,39 +177,6 @@ export const ViewAdminManageProductPage = () => {
             )}
           </TableBody>
         </Table>
-        <div className='flex justify-between'>
-          <div className='w-64 flex gap-2'>
-            <Select
-              placeholder='Sắp xếp'
-              selectedKeys={['asc']}
-              onChange={(e) => {
-                setSort(e.target.value as 'asc' | 'desc')
-              }}
-            >
-              <SelectItem value='asc' key='asc'>
-                Tăng dần
-              </SelectItem>
-              <SelectItem value='desc' key='desc'>
-                Giảm dần
-              </SelectItem>
-            </Select>
-            <Select
-              placeholder='Theo'
-              selectedKeys={['quantity']}
-              onChange={(e) => {
-                setType(e.target.value as 'quantity' | 'sold')
-              }}
-            >
-              <SelectItem value='quantity' key='quantity'>
-                Kho hàng
-              </SelectItem>
-              <SelectItem value='sold' key='sold'>
-                Đã bán
-              </SelectItem>
-            </Select>
-          </div>
-          <Pagination className='flex justify-center mt-2' total={pagination.total} page={pagination.currentPage} />
-        </div>
       </div>
     </div>
   )

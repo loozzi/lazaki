@@ -255,7 +255,7 @@ class ProductService:
         images: List[object],
         categories: List[int],
     ):
-        product = ProductService.getDetailProduct(productId)
+        product = Product.query.get(productId)
 
         product.name = productName
         product.slug = slug

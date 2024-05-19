@@ -1,11 +1,16 @@
 import { Select, SelectItem } from '@nextui-org/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import assets from '~/assets'
 
 interface SelectAddressCompProps {
   setProvince: (province: string) => void
   setDistrict: (district: string) => void
   setWard: (ward: string) => void
+  currentAddress?: {
+    province?: string
+    district?: string
+    ward?: string
+  }
   hasPlaceholder?: boolean
 }
 
@@ -28,10 +33,23 @@ interface Province {
 }
 
 export const SelectAddressComp = (props: SelectAddressCompProps) => {
-  const { setProvince, setDistrict, setWard, hasPlaceholder } = props
+  const { setProvince, setDistrict, setWard, hasPlaceholder, currentAddress } = props
 
   const [districts, setDistricts] = useState<District[]>([])
   const [wards, setWards] = useState<Ward[]>([])
+
+  useEffect(() => {
+    if (currentAddress?.province) {
+      console.log(currentAddress)
+      const province = assets.address.find((address) => address.Name === currentAddress.province) as Province
+      setProvince(province?.Name || '')
+      setDistricts(province?.Districts || [])
+      const district = (province?.Districts || []).find(
+        (district) => district.Name === currentAddress.district
+      ) as District
+      setWards(district?.Wards || [])
+    }
+  }, [currentAddress?.province])
 
   return (
     <div className='grid gap-4 grid-cols-1 lg:grid-cols-3'>
@@ -43,6 +61,11 @@ export const SelectAddressComp = (props: SelectAddressCompProps) => {
           setProvince(province?.Name || '')
           setDistricts(province?.Districts || [])
         }}
+        selectedKeys={
+          currentAddress?.province
+            ? [(assets.address.find((address) => address.Name === currentAddress.province) as Province).Id]
+            : []
+        }
       >
         {assets.address.map((address) => (
           <SelectItem key={address.Id} value={address.Id}>
@@ -58,6 +81,11 @@ export const SelectAddressComp = (props: SelectAddressCompProps) => {
           setDistrict(district?.Name || '')
           setWards(district?.Wards || [])
         }}
+        selectedKeys={
+          currentAddress?.district && districts.length > 0
+            ? [(districts.find((district) => district.Name === currentAddress.district) as District).Id]
+            : []
+        }
       >
         {districts.map((district) => (
           <SelectItem key={district.Id} value={district.Id}>
@@ -72,6 +100,11 @@ export const SelectAddressComp = (props: SelectAddressCompProps) => {
           const ward = wards.find((ward) => ward.Id === e.target.value)
           setWard(ward?.Name || '')
         }}
+        selectedKeys={
+          currentAddress?.ward && wards.length > 0
+            ? [(wards.find((ward) => ward.Name === currentAddress.ward) as Ward).Id]
+            : []
+        }
       >
         {wards.map((ward) => (
           <SelectItem key={ward.Id} value={ward.Id}>

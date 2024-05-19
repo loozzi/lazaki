@@ -1,11 +1,11 @@
+from datetime import datetime
+
+from flask import request
 from src.services.AuthService import AuthService
 from src.services.CustomerService import CustomerService
 from src.services.OrderService import OrderService
 from src.services.TokenService import TokenService
 from src.utils.response import Response
-from src.models import Customer
-from datetime import datetime
-from flask import request
 
 
 class AuthController:
@@ -32,7 +32,6 @@ class AuthController:
         cart = OrderService.getCart(customer.id)
         if not cart:
             OrderService.createCart(customer.id)
-            cart = OrderService.getCart(customer.id)
 
         return Response(
             200,
@@ -40,7 +39,6 @@ class AuthController:
             {
                 "accessToken": accessToken,
                 "refreshToken": refreshToken,
-                "cart": cart.serialize(),
             },
         )
 
@@ -76,8 +74,6 @@ class AuthController:
 
     def getInformation():
         customer = request.customer
-        if not Customer.query.filter_by(id=customer.id).first():
-            return Response(404, "Người dùng không tồn tại")
         return_customer = CustomerService.getCustomerById(customer.id)
         return Response(200, "Truy xuất thành công", return_customer)
 
@@ -93,8 +89,6 @@ class AuthController:
         street: str,
     ):
         customer = request.customer
-        if not Customer.query.filter_by(id=customer.id).first():
-            return Response(404, "Người dùng không tồn tại")
         updated_customer = CustomerService.update(
             customer.id,
             fullName,

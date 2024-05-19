@@ -1,6 +1,7 @@
-from src.models import Customer, Address
-from src.utils.enums import CustomerStatusEnum
 from datetime import datetime
+
+from src.models import Address, Customer
+from src.utils.enums import CustomerStatusEnum
 
 
 class CustomerService:
@@ -30,7 +31,11 @@ class CustomerService:
             fullName=data["name"],
             status=CustomerStatusEnum.ACTIVE,
         )
-        customer.save()
+        address = Address(phoneNumber="", province="", district="", ward="", street="")
+        return_address = address.save()
+        customer.addressId = return_address.id
+        return_customer = customer.save()
+        return return_customer
 
     # Cập nhật thông tin khách hàng
     def update(
@@ -89,13 +94,6 @@ class CustomerService:
     def getCustomerById(customerId: int):
         customer = Customer.query.filter_by(id=customerId).first()
         return_customer = customer.serialize()
-        if "addressId" in return_customer:
-            address = Address.query.filter_by(id=return_customer["addressId"]).first()
-            return_address = address.serialize()
-            return_customer["address"] = return_address
-            del return_customer["addressId"]
-        else:
-            return_customer["address"] = None
         del return_customer["id"]
         del return_customer["status"]
         return return_customer

@@ -7,6 +7,7 @@ from .order_route import order
 from .payment_route import payment
 from .product_route import product
 from .user_route import user
+from .review_route import review
 
 api = Blueprint("api", __name__)
 
@@ -17,3 +18,4 @@ api.register_blueprint(order, url_prefix="/order")
 api.register_blueprint(payment, url_prefix="/payment")
 api.register_blueprint(product, url_prefix="/product")
 api.register_blueprint(user, url_prefix="/user")
+api.register_blueprint(review, url_prefix="/review")

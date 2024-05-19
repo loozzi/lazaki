@@ -1,5 +1,6 @@
 from typing import List
 
+from src.services.ReviewService import ReviewService
 from src import db
 from src.controllers.Pagination import Pagination
 from src.controllers.RevenueController import RevenueController
@@ -147,3 +148,25 @@ class AdminController:
             return RevenueController.calculateCategoryRevenue(orders, slug)
         elif type == "product":
             return RevenueController.calculateProductRevenue(orders, slug)
+
+    # Lấy đánh giá của tất cả sản phẩm
+    def getReviews(page: int, limit: int):
+        all_ratings = ReviewService.getAllReviews()
+
+        total = len(all_ratings)
+        if total == 0:
+            return Response(404, "No review found")
+        start = (page - 1) * limit
+        end = min(start + limit, total)
+        paginated_ratings = all_ratings[start:end]
+
+        # Chuẩn bị dữ liệu trả về
+        rating_data = []
+        for rating in paginated_ratings:
+            rating_data.append(rating.serialize())
+
+        pagination = Pagination(
+            currentPage=page, perPage=limit, total=total, data=rating_data
+        )
+
+        return Response(200, "Success", pagination.serialize())

@@ -120,3 +120,12 @@ def getOverview():
     if time not in ["week", "month"]:
         return Response(400, "Invalid time")
     return AdminController.getRevenue(time, type, slug)
+
+
+@admin.route("/review", methods=["GET"])
+# @admin_middleware
+@request_pagination
+def getReviews():
+    page = request.pagination.get("page")
+    limit = request.pagination.get("limit")
+    return AdminController.getReviews(page, limit)

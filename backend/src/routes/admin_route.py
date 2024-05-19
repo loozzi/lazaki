@@ -129,3 +129,15 @@ def getReviews():
     page = request.pagination.get("page")
     limit = request.pagination.get("limit")
     return AdminController.getReviews(page, limit)
+
+
+@admin.route("/product", methods=["GET"])
+# @admin_middleware
+@request_pagination
+def getProducts():
+    page = request.pagination.get("page")
+    limit = request.pagination.get("limit")
+    keyword = request.args.get("keyword", None)
+    order = request.args.get("order", None)
+    type = request.args.get("type", None)
+    return AdminController.getProducts(page, limit, keyword, order, type)

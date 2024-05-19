@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING
 
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from src.models.Variation import Variation
 from src.models.OrderDetail import OrderDetail
 from src.models.Base import Base
 from src.models.Order import Order
@@ -10,6 +9,7 @@ from src import db
 
 if TYPE_CHECKING:
     from .RatingImage import RatingImage
+    from src.models.Variation import Variation
 
 
 class Rating(Base):

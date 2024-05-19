@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import asc, desc
+from sqlalchemy import asc, desc, func
 from src import db
 from src.controllers.Pagination import Pagination
 from src.models.Category import Category
@@ -410,3 +410,37 @@ class ProductService:
         result = data[(page - 1) * limit : limit + (page - 1) * limit]
         product_pagination = Pagination(page, len(result), len(data), result)
         return product_pagination.serialize()
+
+    # Lấy sản phẩm theo keyword, order, type
+    def searchProductsAdmin(keyword: str, order: str, type: str):
+        # Truy vấn tất cả sản phẩm và tổng số lượng bán được và tổng số lượng tồn kho
+        searched_products = (
+            db.session.query(
+                Product,
+                func.sum(Variation.sold).label("total_sold"),
+                func.sum(Variation.quantity).label("total_quantity"),
+            )
+            .outerjoin(Variation)
+            .filter(Product.isDeleted == False)
+            .group_by(Product.id)
+        )
+
+        # Tìm kiếm sản phẩm theo keyword
+        if keyword:
+            searched_products = searched_products.filter(
+                Product.name.ilike(f"%{keyword}%")
+            )
+
+        # Sắp xếp sản phẩm theo type và order
+        if type == "sold":
+            if order == "asc":
+                searched_products = searched_products.order_by(asc("total_sold"))
+            else:
+                searched_products = searched_products.order_by(desc("total_sold"))
+        elif type == "quantity":
+            if order == "asc":
+                searched_products = searched_products.order_by(asc("total_quantity"))
+            else:
+                searched_products = searched_products.order_by(desc("total_quantity"))
+
+        return searched_products.all()

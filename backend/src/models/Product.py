@@ -118,3 +118,13 @@ class Product(Base):
             "categories": [category.serialize() for category in self.categories],
             "variations": [variation.serialize() for variation in self.variations],
         }
+
+    def getInfo(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "slug": self.slug,
+            "image": self.getPrimaryImage(),
+            "rating": self.getRateMean(),
+            "category": [category.getName() for category in self.categories],
+        }

@@ -1,8 +1,15 @@
 import { Select, SelectItem, Textarea } from '@nextui-org/react'
+import { PaymentMethodType } from '~/models/order'
 
 interface PurchaseMethodCompProps {
   className?: string
-  payload: any
+  payload: {
+    setFieldValue: (field: string, value: string) => void
+    values: {
+      paymentMethod: PaymentMethodType
+      note: string
+    }
+  }
 }
 
 export const PurchaseMethodComp = (props: PurchaseMethodCompProps) => {
@@ -13,13 +20,13 @@ export const PurchaseMethodComp = (props: PurchaseMethodCompProps) => {
       <Select
         label='Chọn phương thức thanh toán'
         required
-        onChange={(e) => payload.setFieldValue('method', e.target.value)}
+        onChange={(e) => payload.setFieldValue('paymentMethod', e.target.value)}
         selectedKeys={[payload.values.paymentMethod]}
       >
         <SelectItem key='cod' value='cod'>
           Thanh toán khi nhận hàng
         </SelectItem>
-        <SelectItem key='momo' value='momo'>
+        <SelectItem key='banking' value='banking'>
           Thanh toán qua ngân hàng
         </SelectItem>
       </Select>

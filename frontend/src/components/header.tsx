@@ -10,7 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger
 } from '@nextui-org/react'
-import { CiShoppingCart, CiUser } from 'react-icons/ci'
+import { CiLogout, CiShoppingCart, CiUser } from 'react-icons/ci'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import assets from '~/assets'
@@ -80,7 +80,7 @@ export const HeaderComp = () => {
                   <Button
                     color='primary'
                     variant='light'
-                    startContent={<CiUser size={24} />}
+                    startContent={<CiLogout size={24} />}
                     fullWidth
                     className='flex justify-start'
                     as={Link}

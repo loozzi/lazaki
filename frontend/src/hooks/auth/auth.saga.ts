@@ -8,6 +8,8 @@ import { PayloadAction } from '@reduxjs/toolkit'
 import { OrderHistoryResponse } from '~/models/order'
 import orderService from '~/services/order.service'
 import { orderActions } from '../order/order.slice'
+import { User } from '~/models/user'
+import userService from '~/services/user.service'
 
 function* handleSignIn(tokenPayload: TokenAuthPayload) {
   const resp: IResponse<TokenResponse> = yield call(authService.signIn, tokenPayload)
@@ -42,6 +44,10 @@ function* watchAuthFlow() {
       const orderCart: IResponse<OrderHistoryResponse> = yield call(orderService.current)
       if (orderCart.status === 200) {
         yield put(orderActions.setCart(orderCart.data!))
+      }
+      const userInfo: IResponse<User> = yield call(userService.get)
+      if (userInfo.status === 200) {
+        yield put(authActions.setUserInfo(userInfo.data!))
       }
 
       yield take(authActions.signOut)

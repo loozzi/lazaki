@@ -7,7 +7,8 @@ export default {
     cart: '/cart',
     purchase: '/purchase',
     search: '/search',
-    auth: '/auth'
+    auth: '/auth',
+    signOut: '/sign-out'
   },
   admin: {
     home: '/admin',

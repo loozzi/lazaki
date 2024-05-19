@@ -1,4 +1,15 @@
-import { Badge, Button, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@nextui-org/react'
+import {
+  Badge,
+  Button,
+  Image,
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@nextui-org/react'
 import { CiShoppingCart, CiUser } from 'react-icons/ci'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
@@ -9,6 +20,7 @@ import { SearchInputHeaderComp } from './search-input'
 import { useAppSelector } from '~/app/hook'
 import { selectCart } from '~/hooks/order/order.slice'
 import { useEffect } from 'react'
+import { selectIsAuthenticated } from '~/hooks/auth/auth.slice'
 
 export const HeaderComp = () => {
   const suggestions = [
@@ -19,6 +31,7 @@ export const HeaderComp = () => {
   ]
 
   const cart = useAppSelector(selectCart)
+  const isAuthenticated = useAppSelector(selectIsAuthenticated)
 
   useEffect(() => {
     console.log(cart)
@@ -44,16 +57,52 @@ export const HeaderComp = () => {
       </NavbarContent>
       <NavbarContent className='flex-col justify-end'>
         <NavbarItem className='lg:flex'>
-          <Button
-            as={Link}
-            to={routes.client.account}
-            color='primary'
-            variant='flat'
-            startContent={<CiUser size={24} />}
-            className='mr-2'
-          >
-            Tài khoản
-          </Button>
+          {isAuthenticated ? (
+            <Popover>
+              <PopoverTrigger>
+                <Button color='primary' variant='flat' startContent={<CiUser size={24} />} className='mr-2'>
+                  Tài khoản
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <div className='flex flex-col items-start py-2'>
+                  <Button
+                    color='primary'
+                    variant='light'
+                    startContent={<CiUser size={24} />}
+                    fullWidth
+                    className='flex justify-start'
+                    as={Link}
+                    to={routes.client.account}
+                  >
+                    Thông tin tài khoản
+                  </Button>
+                  <Button
+                    color='primary'
+                    variant='light'
+                    startContent={<CiUser size={24} />}
+                    fullWidth
+                    className='flex justify-start'
+                    as={Link}
+                    to={routes.client.signOut}
+                  >
+                    Đăng xuất
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+          ) : (
+            <Button
+              as={Link}
+              to={routes.client.auth}
+              color='primary'
+              variant='flat'
+              startContent={<CiUser size={24} />}
+              className='mr-2'
+            >
+              Tài khoản
+            </Button>
+          )}
           <Button
             as={Link}
             color='primary'

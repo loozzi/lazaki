@@ -1,6 +1,6 @@
 import apiConfig from '~/configs/api.config'
 import client from './axios.service'
-import { IResponse } from '~/models/response'
+import { IResponse, PaginationResponse } from '~/models/response'
 import {
   CartItem,
   OrderConfirmPayload,
@@ -13,7 +13,7 @@ const current = (): Promise<IResponse<OrderHistoryResponse>> => {
   return client.get(apiConfig.order.current)
 }
 
-const histories = (): Promise<IResponse<OrderHistoryResponse[]>> => {
+const histories = (): Promise<IResponse<PaginationResponse<OrderHistoryResponse>>> => {
   return client.get(apiConfig.order.history)
 }
 

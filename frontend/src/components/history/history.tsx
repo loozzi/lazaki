@@ -11,7 +11,6 @@ import {
 } from '@nextui-org/react'
 import { MdOutlinePreview } from 'react-icons/md'
 import { CartItem, OrderHistoryResponse } from '~/models/order'
-import { ImageResponse } from '~/models/product'
 import { OrderStatusColor, OrderStatusName } from '~/utils'
 import { PriceComp } from '../price'
 import { HistoryDetailComp } from './history-detail'
@@ -48,11 +47,7 @@ export const HistoryComp = (props: HistoryCompProps) => {
           {history.orderDetails.map((item: CartItem) => (
             <div key={item.id} className='flex justify-between gap-4 border-b-1 border-gray-200 pb-2'>
               <div className='flex gap-4 items-center'>
-                <Image
-                  src={item.images.filter((e: ImageResponse) => e.isPrimary === true)[0].link}
-                  alt={item.name}
-                  className='w-20 h-20 object-cover'
-                />
+                <Image src={item.image} alt={item.name} className='w-20 h-20 object-cover' />
                 <div className='flex flex-col gap-2'>
                   <div className='text-lg font-semibold'>{item.name}</div>
                   <div className='flex gap-4'>
@@ -60,7 +55,7 @@ export const HistoryComp = (props: HistoryCompProps) => {
                   </div>
                   <div className='flex gap-4'>
                     <div className='text-sm text-gray-500 capitalize'>
-                      {item.variation.type}: {item.variation.option}
+                      {item.variation.type}: {item.variation.name}
                     </div>
                   </div>
                 </div>
@@ -99,7 +94,7 @@ export const HistoryComp = (props: HistoryCompProps) => {
             <>
               <ModalHeader className='flex flex-col gap-1'>Chi tiết đơn hàng</ModalHeader>
               <ModalBody className='overflow-auto'>
-                <HistoryDetailComp history={history} />
+                <HistoryDetailComp historyId={history.id} />
               </ModalBody>
               <ModalFooter>
                 <Button color='danger' variant='light' onPress={onClose}>

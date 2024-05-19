@@ -55,3 +55,17 @@ export interface OrderConfirmPayload {
 
   [key: string]: any
 }
+
+export interface OrderUpdatePayload {
+  orderDetailId: number
+  variationId: number
+  productId: number
+  quantity: number
+}
+
+export interface OrderCreatePayload {
+  orderId?: number
+  productId: number
+  variationId: number
+  quantity: number
+}

@@ -6,6 +6,8 @@ from src.models.Product import Product
 from src.models.Order import Order
 from src import db
 
+from src.models.Rating import Rating
+
 
 class ReviewService:
     # Thêm đánh giá cho mặt hàng
@@ -55,3 +57,12 @@ class ReviewService:
             .all()
         )
         return order_ratings
+
+    def getRateMean(productId: int):
+        rate_list = Rating.query.filter_by(productId=productId).all()
+        if len(rate_list) == 0:
+            return 0
+        sum = 0
+        for i in rate_list:
+            sum += i.value
+        return sum / len(rate_list)

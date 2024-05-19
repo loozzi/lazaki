@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 from sqlalchemy import ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column
+
 from .Base import Base
 
 if TYPE_CHECKING:
@@ -30,12 +31,13 @@ class OrderDetail(Base):
 
     def serialize(self):
         variation = Variation.query.filter_by(id=self.variationId).first()
+        product = variation.getProduct()
         return {
             "id": self.id,
             "orderId": self.orderId,
             "productId": self.productId,
             "variationId": self.variationId,
-            "name": variation.name,
+            "name": product.name,
             "image": variation.image,
             "variation": variation.getInfo(),
             "quantity": self.quantity,

@@ -3,9 +3,6 @@ from typing import TYPE_CHECKING
 from sqlalchemy import Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.models.Base import Base
-from src import db
-from src.models.OrderDetail import OrderDetail
-from src.models.Rating import Rating
 from src.models.ProductImage import ProductImage
 
 if TYPE_CHECKING:
@@ -35,20 +32,6 @@ class Product(Base):
     variations: Mapped[list["Variation"]] = relationship(
         "Variation", backref="products", uselist=True
     )
-
-    def getRateMean(self):
-        order_details = OrderDetail.query.filter_by(productId=self.id).all()
-        rate_list = []
-        for order_detail in order_details:
-            rate = Rating.query.filter_by(orderDetailId=order_detail.id).first()
-            if rate is not None:
-                rate_list.append(rate)
-        if len(rate_list) == 0:
-            return 0
-        sum = 0
-        for i in rate_list:
-            sum += i.value
-        return sum / len(rate_list)
 
     def is_PrimaryImage(self, link):
         image = ProductImage.query.filter_by(link=link).first()

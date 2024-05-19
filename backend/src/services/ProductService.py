@@ -10,6 +10,7 @@ from src.models.ProductImage import ProductImage
 from src.models.ProductProperty import ProductProperty
 from src.models.Variation import Variation
 from src.services.RecommendService import RecommendService
+from src.services.ReviewService import ReviewService
 from src.utils.response import Response
 
 
@@ -28,7 +29,7 @@ class ProductService:
             for variation in info_product["variations"]:
                 sold += variation["sold"]
             data_one_product["sold"] = sold
-            data_one_product["rating"] = product.getRateMean()
+            data_one_product["rating"] = ReviewService.getRateMean(product.id)
             data.append(data_one_product)
         if sort == "desc":
             data = sorted(data, key=lambda x: x["price"], reverse=True)

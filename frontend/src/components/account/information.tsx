@@ -1,6 +1,9 @@
 import { Button, Input } from '@nextui-org/react'
 import { useFormik } from 'formik'
 import { useEffect, useMemo, useState } from 'react'
+import { FaEdit } from 'react-icons/fa'
+import { useAppDispatch } from '~/app/hook'
+import { authActions } from '~/hooks/auth/auth.slice'
 import { User, UserUpdatePayload } from '~/models/user'
 import userService from '~/services/user.service'
 import { PaneComp } from '../pane'
@@ -12,6 +15,8 @@ interface UserInformationCompProps {
 
 export const UserInformationComp = (props: UserInformationCompProps) => {
   const { className } = props
+
+  const dispatch = useAppDispatch()
 
   const [userDetail, setUserDetail] = useState<User | undefined>()
 
@@ -39,7 +44,10 @@ export const UserInformationComp = (props: UserInformationCompProps) => {
 
   const handleUpdateUserInformation = () => {
     userService.update(payload.values).then((res) => {
-      console.log(res)
+      if (res.status === 200) {
+        alert('Cập nhật thông tin thành công')
+        dispatch(authActions.setUserInfo(res.data))
+      }
     })
   }
 
@@ -106,9 +114,16 @@ export const UserInformationComp = (props: UserInformationCompProps) => {
             value={payload.values.street}
             onChange={(e) => payload.setFieldValue('street', e.target.value)}
           />
-          <Button className='max-w-32' color='primary' onClick={handleUpdateUserInformation}>
-            Chỉnh sửa
-          </Button>
+          <div className='flex justify-end'>
+            <Button
+              className='max-w-32'
+              color='primary'
+              onClick={handleUpdateUserInformation}
+              startContent={<FaEdit />}
+            >
+              Chỉnh sửa
+            </Button>
+          </div>
         </div>
       </PaneComp>
     </div>

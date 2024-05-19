@@ -27,13 +27,12 @@ const orderSlice = createSlice({
       }
     },
     removeFromCart: (state, action: PayloadAction<number>) => {
-      state.cart!.orderDetails = state.cart!.orderDetails.filter((item) => item.variationId !== action.payload)
+      state.cart!.orderDetails = state.cart!.orderDetails.filter((item) => item.id !== action.payload)
     },
-    changeQuantity: (state, action: PayloadAction<{ variationId: number; quantity: number }>) => {
+    changeQuantity: (state, action: PayloadAction<CartItem>) => {
       const index = state.cart!.orderDetails.findIndex((item) => item.variationId === action.payload.variationId)
       if (index !== -1) {
-        const tmpQuantity = state.cart!.orderDetails[index].quantity + action.payload.quantity
-        if (tmpQuantity > 0) state.cart!.orderDetails[index].quantity = tmpQuantity
+        state.cart!.orderDetails[index].quantity = action.payload.quantity
       }
     },
     setCart: (state, action: PayloadAction<OrderHistoryResponse>) => {

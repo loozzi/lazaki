@@ -17,7 +17,6 @@ def get_products():
     data = product_controller.getProducts(page, limit, sort)
     return Response(status=200, message="Success", data=data)
 
-
 @product.route("/search", methods=["GET"])
 @request_pagination
 def search_products():
@@ -58,5 +57,6 @@ def suggest_products():
     page = request.pagination["page"]
     current_customer = request.customer
     product_controller = ProductController()
-    data = product_controller.recommendProducts(limit, page, current_customer)
+    data = product_controller.recommendProducts(limit, page,
+                                                current_customer)
     return Response(status=200, message="Success", data=data)

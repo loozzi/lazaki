@@ -37,11 +37,12 @@ class Product(Base):
     )
 
     def getRateMean(self):
-        order_detail_list = OrderDetail.query.filter_by(productId=self.id).all()
+        order_details = OrderDetail.query.filter_by(productId=self.id).all()
         rate_list = []
-        for order_detail in order_detail_list:
+        for order_detail in order_details:
             rate = Rating.query.filter_by(orderDetailId=order_detail.id).first()
-            rate_list.append(rate)
+            if rate is not None:
+                rate_list.append(rate)
         if len(rate_list) == 0:
             return 0
         sum = 0

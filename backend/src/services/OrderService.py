@@ -6,6 +6,8 @@ from src.utils.enums import OrderStatusEnum
 from src import db
 from src.utils.enums import PaymentMethodEnum
 from src.models.Order import Order
+from src.models.Product import Product
+from src.models.Variation import Variation
 
 
 class OrderService:
@@ -113,8 +115,32 @@ class OrderService:
         pass
 
     # Thêm sản phẩm vào giỏ hàng
-    def addToShopCart(customerId: int, productId: int, variationId: int, quantity: int):
-        pass
+    def addToShopCart(orderId: int, variationId: int, productId: int, quantity: int):
+        variation = Variation.query.filter_by(id=variationId).first()
+        new_order_detail = OrderDetail(
+            orderId=orderId,
+            productId=productId,
+            variationId=variationId,
+            quantity=quantity,
+            price=variation.price,
+            oldPrice=variation.oldPrice,
+        )
+        db.session.add(new_order_detail)
+        db.session.flush()
+        current_order = Order.query.filter_by(id=orderId).first()
+        current_order.totalAmount += int(quantity) * int(variation.price)
+        db.session.commit()
+        data_response = {}
+        data_response["id"] = new_order_detail.id
+        data_response["orderId"] = new_order_detail.orderId
+        data_response["productId"] = new_order_detail.productId
+        data_response["variationId"] = new_order_detail.variationId
+        data_response["image"] = variation.image
+        data_response["variation"] = variation.getInfo()
+        data_response["quantity"] = new_order_detail.quantity
+        data_response["price"] = new_order_detail.price
+        data_response["oldPrice"] = new_order_detail.oldPrice
+        return data_response
 
     def updateOrder(orderId: int, status: str, shippingName: str, shippingCode: str):
         pass

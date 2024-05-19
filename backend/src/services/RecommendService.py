@@ -64,6 +64,8 @@ class RecommendService:
         model_pipe = make_pipeline(prepare_pipe, model_recommend)
         model_pipe.fit(data_frame_all_product)
         data_frame_list_product = self.create_dataframe(list_product)
+        if len(data_frame_list_product) == 0:
+            return products_recommend
         cluster_all_product = model_pipe.predict(data_frame_all_product)
         cluster_set_product = set(model_pipe.predict(data_frame_list_product))
         for i in range(len(cluster_all_product)):

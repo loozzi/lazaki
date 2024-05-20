@@ -1,7 +1,8 @@
 from typing import List
+
+from src.controllers.Pagination import Pagination
 from src.services.ReviewService import ReviewService
 from src.utils.response import Response
-from src.controllers.Pagination import Pagination
 
 
 class RatingController:
@@ -14,7 +15,7 @@ class RatingController:
         content: str,
         images: List[str],
     ):
-        ReviewService.addReview(
+        new_review = ReviewService.addReview(
             customerId,
             orderDetailId,
             variationId,
@@ -23,7 +24,11 @@ class RatingController:
             content,
             images,
         )
-        return Response(200, "Success")
+        return Response(
+            200,
+            "Success",
+            new_review.serialize(),
+        )
 
     # Lấy danh sách đánh giá mặt hàng theo slug
     def getReviews(slug: str, page: int, limit: int):

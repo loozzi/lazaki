@@ -12,6 +12,32 @@ export function parseDateToDMY(dateString: string) {
   return `${day}/${month}/${year}`
 }
 
+export function parseTimeToHM(dateString: string) {
+  // Parse the input string into a Date object
+  const date = new Date(dateString)
+
+  // Check if the parsing was successful
+  if (isNaN(date.getTime())) {
+    return 'Invalid date string'
+  }
+
+  // Format the date and time
+  const formattedDate =
+    date.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    }) +
+    ' - ' +
+    date.toLocaleDateString([], {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    })
+
+  return formattedDate
+}
+
 export function PaymentMethodName(method: PaymentMethodType) {
   switch (method) {
     case 'cod':

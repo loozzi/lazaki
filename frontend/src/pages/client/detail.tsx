@@ -8,6 +8,7 @@ import { ListViewReviewComp } from '~/components/review/list-review'
 import { ProductDetailResponse, ProductResponse } from '~/models/product'
 import { ReviewResponse } from '~/models/review'
 import productService from '~/services/product.service'
+import reviewService from '~/services/review.service'
 
 export const ViewDetailPage = () => {
   const params = useParams()
@@ -22,75 +23,12 @@ export const ViewDetailPage = () => {
       setProduct(res.data)
     })
 
-    setReviews([
-      {
-        id: 1,
-        value: 3,
-        content: 'Sản phẩm tốt',
-        fullName: 'Nguyễn Văn A',
-        variation: {
-          type: 'Màu + Size',
-          name: 'Đen, XL',
-          option: 'Đen, XL'
-        },
-        images: [
-          'https://down-bs-vn.img.susercontent.com/vn-11134103-7r98o-lr7dmjnzzwyh06.webp',
-          'https://down-bs-vn.img.susercontent.com/vn-11134103-7r98o-lr7dmjo0fd8kd6.webp',
-          'https://down-bs-vn.img.susercontent.com/vn-11134103-7r98o-lr7dmjnzzwyh06.webp',
-          'https://down-bs-vn.img.susercontent.com/vn-11134103-7r98o-lr7dmjo0fd8kd6.webp',
-          'https://down-bs-vn.img.susercontent.com/vn-11134103-7r98o-lr7dmjnzzwyh06.webp'
-        ],
-        created_at: '2021-09-01T00:00:00Z',
-        variationId: 0,
-        productId: 0
-      },
-      {
-        id: 2,
-        value: 4,
-        content: 'Sản phẩm rất tốt',
-        fullName: 'Nguyễn Văn B',
-        variation: {
-          type: 'Màu + Size',
-          name: 'Đen, XL',
-          option: 'Đen, XL'
-        },
-        images: [],
-        created_at: '2021-09-02T00:00:00Z',
-        variationId: 0,
-        productId: 0
-      },
-      {
-        id: 3,
-        value: 5,
-        content:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua, lorem tempor incididunt ut labore et dolore magna aliqua, lorem ',
-        fullName: 'Nguyễn Văn C',
-        variation: {
-          type: 'Màu + Size',
-          name: 'Đen, XL',
-          option: 'Đen, XL'
-        },
-        images: ['https://down-bs-vn.img.susercontent.com/vn-11134103-7r98o-lunih38whb1ha8.webp'],
-        created_at: '2021-09-03T00:00:00Z',
-        variationId: 0,
-        productId: 0
-      },
-      {
-        id: 4,
-        value: 4,
-        content:
-          'lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-        fullName: 'Nguyễn Văn D',
-        variation: {
-          type: 'Màu + Size',
-          name: 'Đen, XL',
-          option: 'Đen, XL'
-        },
-        created_at: '2021-09-04T00:00:00Z',
-        variationId: 0,
-        productId: 0
+    // call api get reviews
+    reviewService.getAll(permalink || '', { page: 1, limit: 5 }).then((res) => {
+      if (res.status === 200) {
+        setReviews(res.data?.data || [])
       }
-    ])
+    })
 
     // call api get suggest products
     // set suggest products
@@ -107,11 +45,13 @@ export const ViewDetailPage = () => {
 
   return (
     <div>
-      {product ? <DetailItemComp product={product} /> : <Skeleton></Skeleton>}
+      {product ? <DetailItemComp product={product} /> : <Skeleton className='w-full h-[300px]' />}
       <div className='mt-2 grid grid-cols-10 gap-2 lg:gap-4'>
         <div className='flex flex-col lg:col-span-8 md:col-span-6 col-span-10'>
           {product && <DescriptionItemComp product={product} />}
-          <ListViewReviewComp reviews={reviews} className='mt-4' />
+          <div id='reviews'>
+            <ListViewReviewComp reviews={reviews} className='mt-4' />
+          </div>
         </div>
         <div className='lg:col-span-2 md:col-span-4 col-span-10'>
           <ListCardItemComp heading='Sản phẩm tương tự' items={suggestProducts} isColumn />

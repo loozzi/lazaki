@@ -71,7 +71,7 @@ export const DetailItemComp = (props: DetailItemCompProps) => {
             <div className='mr-8'>
               <StarComp stars={0} />
             </div>
-            <a href='#review' className='mr-8'>
+            <a href='#reviews' className='mr-8'>
               <span className='mr-1 underline text-sm font-semibold'>{0}</span>
               Đánh giá
             </a>

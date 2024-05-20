@@ -109,9 +109,13 @@ export const HeaderComp = () => {
             to={routes.client.cart}
             variant='light'
             startContent={
-              <Badge content={cart?.orderDetails.length.toString() || 0} size='md' color='danger'>
+              isAuthenticated ? (
+                <Badge content={cart?.orderDetails.length.toString() || 0} size='md' color='danger'>
+                  <CiShoppingCart size={24} />
+                </Badge>
+              ) : (
                 <CiShoppingCart size={24} />
-              </Badge>
+              )
             }
           >
             Giỏ hàng

@@ -53,7 +53,7 @@ export interface ProductResponse {
 
 export interface ProductAdminResponse extends ProductResponse {
   quantity: number
-  categories: string[]
+  category: string[]
 }
 
 export interface PropertyPayload {

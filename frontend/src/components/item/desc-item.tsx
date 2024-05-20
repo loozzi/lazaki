@@ -1,5 +1,7 @@
 import { ProductDetailResponse } from '~/models/product'
 import { PaneComp } from '../pane'
+import { Link } from 'react-router-dom'
+import routes from '~/configs/routes'
 
 interface DescriptionItemProps {
   product: ProductDetailResponse
@@ -18,7 +20,17 @@ export const DescriptionItemComp = (props: DescriptionItemProps) => {
           <div className='p-4 flex flex-col gap-2'>
             <div className='flex'>
               <span className='w-32 text-gray-500'>Danh mục</span>
-              <div>{product.categories.map((cat) => cat.name).join(',')}</div>
+              {/* <div>{product.categories.map((cat) => cat.name).join(', ')}</div> */}
+              <div className='flex gap-2'>
+                {product.categories.map((cat, index) => (
+                  <span key={cat.slug}>
+                    <Link className='text-blue-600' to={`${routes.client.search}/?categories=${cat.slug}`}>
+                      {cat.name}
+                    </Link>
+                    {index < product.categories.length - 1 && ' - '}
+                  </span>
+                ))}
+              </div>
             </div>
             {product.properties.map((property, index) => (
               <div key={index} className='flex'>

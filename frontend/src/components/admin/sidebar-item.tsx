@@ -22,7 +22,7 @@ export const SidebarItemComp = (props: SidebarItemCompProps) => {
 
   return (
     <Link to={to || ''} className={`text-default-900 active:bg-none max-w-full ${className}`}>
-      <Tooltip content={title}>
+      <Tooltip content={title} isDisabled={!collapsed}>
         <div
           className={
             'flex gap-2 px-5 py-3 items-center hover:bg-slate-200 rounded-xl w-16 md:w-full' +

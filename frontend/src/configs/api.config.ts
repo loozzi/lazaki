@@ -44,6 +44,8 @@ const user = '/user/'
 
 const review = '/review'
 
+const image = '/image/add'
+
 export default {
   auth,
   admin,
@@ -52,5 +54,6 @@ export default {
   order,
   payment,
   user,
-  review
+  review,
+  image
 }

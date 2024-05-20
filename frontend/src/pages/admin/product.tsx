@@ -49,7 +49,7 @@ export const ViewAdminManageProductPage = () => {
         setPagination({
           currentPage: res.data?.currentPage || 1,
           perPage: res.data?.perPage || 10,
-          total: (res.data?.total || 1) / (res.data?.perPage || 1)
+          total: res.data?.total || 0
         })
       })
   }, [keyword, sort, type, pagination.currentPage, pagination.perPage])
@@ -121,6 +121,7 @@ export const ViewAdminManageProductPage = () => {
               className='flex justify-center mt-2'
               total={Math.ceil(pagination.total / pagination.perPage)}
               page={pagination.currentPage}
+              onChange={(page) => setPagination({ ...pagination, currentPage: page })}
             />
           }
         >

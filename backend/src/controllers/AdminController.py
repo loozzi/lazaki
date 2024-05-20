@@ -4,11 +4,11 @@ from src.controllers.Pagination import Pagination
 from src.controllers.RevenueController import RevenueController
 from src.models import Address, Customer, Variation
 from src.services.AdminService import AdminService
+from src.services.CategoryService import CategoryService
 from src.services.CustomerService import CustomerService
 from src.services.OrderService import OrderService
 from src.services.ProductService import ProductService
 from src.services.ReviewService import ReviewService
-from src.services.CategoryService import CategoryService
 from src.utils.enums import CustomerStatusEnum
 from src.utils.response import Response
 
@@ -91,7 +91,7 @@ class AdminController:
         description: str,
         slug: str,
         properties: List[object],
-        categories: List[object],
+        categories: List[int],
         variations: List[object],
         images: List[str],
     ):

@@ -35,7 +35,11 @@ export const DescriptionItemComp = (props: DescriptionItemProps) => {
             {product.properties.map((property, index) => (
               <div key={index} className='flex'>
                 <span className='w-32 text-gray-500'>{property.name}</span>
-                <div>{property.value}</div>
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: property.value
+                  }}
+                ></span>
               </div>
             ))}
             <div className='flex'>
@@ -48,7 +52,7 @@ export const DescriptionItemComp = (props: DescriptionItemProps) => {
           <div className='w-full bg-slate-100 p-4 rounded-md'>
             <span className='text-2xl '>Mô tả sản phẩm</span>
           </div>
-          <div className='p-4'>{product.description}</div>
+          <span className='p-4' dangerouslySetInnerHTML={{ __html: product.description }}></span>
         </div>
       </div>
     </PaneComp>

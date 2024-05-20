@@ -32,7 +32,7 @@ export const ItemImageControllerComp = (props: ItemImageControllerProps) => {
   const getSlicedImages = images.slice(start, end)
 
   useEffect(() => {
-    if (variationImage) setCurrentImage(images.filter((image) => image.link === variationImage)[0])
+    if (variationImage) setCurrentImage(images.filter((image) => image.link === variationImage)[0] || images[0])
   }, [variationImage])
 
   return (
@@ -41,7 +41,7 @@ export const ItemImageControllerComp = (props: ItemImageControllerProps) => {
         <Image
           src={currentImage.link}
           alt={'Hình ảnh sản phẩm'}
-          className='max-w-[450px] w-full max-h-[450px] object-cover'
+          className='max-w-[450px] w-full aspect-square max-h-[450px] object-cover'
         />
       </div>
       <div className='flex mt-2 justify-between'>

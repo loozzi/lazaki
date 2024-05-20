@@ -4,6 +4,7 @@ from src.middlewares.AuthMiddleware import admin_middleware
 from src.middlewares.PaginationMiddleware import request_pagination
 from src.utils.response import Response
 
+
 admin = Blueprint("admin", __name__)
 
 
@@ -162,3 +163,40 @@ def editCategory():
     if not name or not slug or not description or not id:
         return Response(400, "Vui lòng điền đủ thông tin")
     return AdminController.editCategory(id, name, slug, description)
+
+
+@admin.route("/category/<string:slug>", methods=["DELETE"])
+@admin_middleware
+def deleteCategory(slug):
+    return AdminController.deleteCategory(slug)
+
+
+@admin.route("/order", methods=["GET"])
+# @admin_middleware
+@request_pagination
+def getOrders():
+    sort = request.args.get("sort", "")
+    limit = request.pagination.get("limit")
+    page = request.pagination.get("page")
+    return AdminController.getOrders(page, limit, sort)
+
+
+@admin.route("/order", methods=["PUT"])
+# @admin_middleware
+def editOrder():
+    try:
+        orderId = int(request.form.get("orderId", ""))
+    except TypeError:
+        return Response(400, "Mã đơn hàng không hợp lệ")
+    type = request.args.get("type", "")
+    if type == "status":
+        status = request.form.get("status")
+        return AdminController.updateOrderStatus(orderId, status)
+    if type == "shipping":
+        name = request.form.get("shippingName")
+        code = request.form.get("shippingCode")
+        return AdminController.updateOrderShipping(orderId, name, code)
+    if type == "paymentStatus":
+        paymentStatus = request.form.get("paymentStatus")
+        return AdminController.updateOrderPayment(orderId, paymentStatus)
+    return Response(400, "type chỉ chấp nhận status, shipping và paymentStatus")

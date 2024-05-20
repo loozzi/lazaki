@@ -1,5 +1,4 @@
 from typing import List
-
 from src.controllers.Pagination import Pagination
 from src.controllers.RevenueController import RevenueController
 from src.models import Address, Customer, Variation
@@ -9,8 +8,10 @@ from src.services.CustomerService import CustomerService
 from src.services.OrderService import OrderService
 from src.services.ProductService import ProductService
 from src.services.ReviewService import ReviewService
+from src.services.CategoryService import CategoryService
 from src.utils.enums import CustomerStatusEnum
 from src.utils.response import Response
+from src.utils.enums import OrderStatusEnum, PaymentMethodEnum, PaymentStatusEnum
 
 
 class AdminController:
@@ -107,19 +108,53 @@ class AdminController:
 
     # Lấy danh sách đơn hàng
     def getOrders(page: int, limit: int, sort: str):
-        pass
+        orders = OrderService.getOrders(sort)
+        total = orders.__len__()
+        start = (page - 1) * limit
+        end = min(start + limit, total)
+        paginated_orders = orders[start:end]
+        return_order = Pagination(page, limit, total, paginated_orders)
+        return Response(200, "Truy xuất thành công", return_order.serialize())
 
-    # Chỉnh sửa đơn hàng
-    def editOrder(orderId: int, status: str):
-        pass
+    # Chỉnh sửa trạng thái đơn hàng
+    def updateOrderStatus(orderId: int, status: str):
+        if not status:
+            return Response(400, "Vui lòng nhập đủ thông tin")
+        if status.lower() not in [status.value for status in OrderStatusEnum]:
+            return Response(400, "Trạng thái không hợp lệ")
+        order = OrderService.getOrder(orderId)
+        if not order:
+            return Response(404, "Đơn hàng không tồn tại")
+        updatedOrder = OrderService.updateOrderStatus(order, status)
+        return Response(200, "Chỉnh sửa thành công", updatedOrder.serialize())
 
     # Hủy bỏ đơn hàng
     def cancelOrder(orderId: int):
         pass
 
-    # Chỉnh sửa đơn hàng
-    def updateOrder(orderId: int, status: str, shippingName: str, shippingCode: str):
-        pass
+    # Chỉnh sửa thông tin vận chuyển của đơn hàng
+    def updateOrderShipping(orderId: int, shippingName: str, shippingCode: str):
+        if not shippingName or not shippingCode:
+            return Response(400, "Vui lòng nhập đủ thông tin")
+        order = OrderService.getOrder(orderId)
+        if not order:
+            return Response(404, "Đơn hàng không tồn tại")
+        updatedOrder = OrderService.updateOrderShipping(
+            order, shippingName, shippingCode
+        )
+        return Response(200, "Chỉnh sửa thành công", updatedOrder.serialize())
+
+    # Chỉnh sửa thông tin thanh toán của đơn hàng
+    def updateOrderPayment(orderId: int, paymentStatus: str):
+        if not paymentStatus:
+            return Response(400, "Vui lòng nhập đủ thông tin")
+        if paymentStatus.lower() not in [status.value for status in PaymentStatusEnum]:
+            return Response(400, "Trạng thái không hợp lệ")
+        order = OrderService.getOrder(orderId)
+        if not order:
+            return Response(404, "Đơn hàng không tồn tại")
+        updatedOrder = OrderService.updateOrderPayment(order, paymentStatus)
+        return Response(200, "Chỉnh sửa thành công", updatedOrder.serialize())
 
     # Lấy thông tin tất cả khách hàng
     def getCustomers(page: int, limit: int, sort: str):
@@ -217,7 +252,7 @@ class AdminController:
 
         return Response(200, "Success", pagination.serialize())
 
-    # Tạo sản phẩm
+    # Tạo danh mục
     def createCategory(name: str, slug: str, desc: str):
         # Kiểm tra xem có danh mục nào với slug này
         if CategoryService.getCategoryBySlug(slug):
@@ -225,7 +260,7 @@ class AdminController:
         category = CategoryService.addCategory(name, slug, desc)
         return Response(200, "Tạo danh mục thành công", category.serialize())
 
-    # Chỉnh sửa sản phẩm
+    # Chỉnh sửa danh mục
     def editCategory(id: int, name: str, slug: str, desc: str):
         # Kiểm tra xem có danh mục nào với slug này
         if CategoryService.getCategoryBySlug(slug):
@@ -236,3 +271,11 @@ class AdminController:
             return Response(404, "Danh mục không tồn tại")
         category = CategoryService.editCategory(category, name, slug, desc)
         return Response(200, "Chỉnh sửa thành công", category.serialize())
+
+    # Xoá danh mục
+    def deleteCategory(slug: str):
+        category = CategoryService.getCategoryBySlug(slug)
+        if not category or category.isDeleted:
+            return Response(404, "Danh mục không tồn tại")
+        category.delete()
+        return Response(200, "Xoá thành công")

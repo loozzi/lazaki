@@ -3,6 +3,9 @@ python-dotenv
 flask_sqlalchemy
 flask_migrate
 flask_cors
+numpy
+pandas
+scikit-learn
 pyjwt
 gunicorn
 requests

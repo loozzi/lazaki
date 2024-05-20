@@ -221,8 +221,12 @@ export const AdminProductVariationComp = (props: AdminProductVariationProps) => 
                   <TableCell align='center'>{variation.type}</TableCell>
                   <TableCell align='center'>{variation.name}</TableCell>
                   <TableCell align='center'>{variation.option}</TableCell>
-                  <TableCell align='center'>
-                    <Select onChange={(e) => handleUpdateImageVariation(index, e.target.value)}>
+                  <TableCell align='center' width={240}>
+                    <Select
+                      onChange={(e) => handleUpdateImageVariation(index, e.target.value)}
+                      selectedKeys={[variation.image]}
+                      className='max-w-[200px] w-full'
+                    >
                       {payload.values.images.map((image) => (
                         <SelectItem key={image.link} value={image.link}>
                           {image.link}

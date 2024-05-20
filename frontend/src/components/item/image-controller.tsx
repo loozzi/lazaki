@@ -1,14 +1,15 @@
 import { Image } from '@nextui-org/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { ImageResponse } from '~/models/product'
 
 interface ItemImageControllerProps {
   images: ImageResponse[]
+  variationImage?: string
 }
 
 export const ItemImageControllerComp = (props: ItemImageControllerProps) => {
-  const { images } = props
+  const { images, variationImage } = props
 
   const [currentImage, setCurrentImage] = useState(images.filter((image) => image.isPrimary)[0])
 
@@ -29,6 +30,10 @@ export const ItemImageControllerComp = (props: ItemImageControllerProps) => {
   }
 
   const getSlicedImages = images.slice(start, end)
+
+  useEffect(() => {
+    if (variationImage) setCurrentImage(images.filter((image) => image.link === variationImage)[0])
+  }, [variationImage])
 
   return (
     <div className={'md:max-w-[450px] w-full mx-2 md:mx-0'}>

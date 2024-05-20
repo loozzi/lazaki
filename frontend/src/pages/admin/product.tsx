@@ -58,7 +58,6 @@ export const ViewAdminManageProductPage = () => {
     { name: 'Hình ảnh', uid: 'image' },
     { name: 'Tên sản phẩm', uid: 'name' },
     { name: 'Danh mục', uid: 'categories' },
-    { name: 'Giá', uid: 'price' },
     { name: 'Đã bán', uid: 'sold' },
     { name: 'Kho hàng', uid: 'quantity' },
     { name: 'Đánh giá', uid: 'rating' },
@@ -142,14 +141,11 @@ export const ViewAdminManageProductPage = () => {
                 </TableCell>
                 <TableCell>{item.name}</TableCell>
                 <TableCell width={120}>
-                  <div className='flex justify-center'>
+                  <div className='flex justify-start'>
                     <Tooltip content={item.category.join(', ')}>
                       <span className='line-clamp-1'>{item.category.join(', ')}</span>
                     </Tooltip>
                   </div>
-                </TableCell>
-                <TableCell width={120} align='center'>
-                  <div className='flex justify-center'>{item.price}</div>
                 </TableCell>
                 <TableCell width={60}>
                   <div className='flex justify-center'>{item.sold}</div>

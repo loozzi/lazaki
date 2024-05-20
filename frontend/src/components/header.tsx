@@ -1,26 +1,27 @@
 import {
   Badge,
   Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Image,
   Navbar,
   NavbarBrand,
   NavbarContent,
-  NavbarItem,
-  Popover,
-  PopoverContent,
-  PopoverTrigger
+  NavbarItem
 } from '@nextui-org/react'
-import { CiLogout, CiShoppingCart, CiUser } from 'react-icons/ci'
+import { useEffect } from 'react'
+import { CiShoppingCart, CiUser } from 'react-icons/ci'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
+import { useAppSelector } from '~/app/hook'
 import assets from '~/assets'
 import { history } from '~/configs/history'
 import routes from '~/configs/routes'
-import { SearchInputHeaderComp } from './search-input'
-import { useAppSelector } from '~/app/hook'
-import { selectCart } from '~/hooks/order/order.slice'
-import { useEffect } from 'react'
 import { selectIsAuthenticated } from '~/hooks/auth/auth.slice'
+import { selectCart } from '~/hooks/order/order.slice'
+import { SearchInputHeaderComp } from './search-input'
 
 export const HeaderComp = () => {
   const suggestions = [
@@ -58,39 +59,21 @@ export const HeaderComp = () => {
       <NavbarContent className='flex-col justify-end'>
         <NavbarItem className='lg:flex'>
           {isAuthenticated ? (
-            <Popover>
-              <PopoverTrigger>
+            <Dropdown>
+              <DropdownTrigger>
                 <Button color='primary' variant='flat' startContent={<CiUser size={24} />} className='mr-2'>
                   Tài khoản
                 </Button>
-              </PopoverTrigger>
-              <PopoverContent>
-                <div className='flex flex-col items-start py-2'>
-                  <Button
-                    color='primary'
-                    variant='light'
-                    startContent={<CiUser size={24} />}
-                    fullWidth
-                    className='flex justify-start'
-                    as={Link}
-                    to={routes.client.account}
-                  >
-                    Thông tin tài khoản
-                  </Button>
-                  <Button
-                    color='primary'
-                    variant='light'
-                    startContent={<CiLogout size={24} />}
-                    fullWidth
-                    className='flex justify-start'
-                    as={Link}
-                    to={routes.client.signOut}
-                  >
-                    Đăng xuất
-                  </Button>
-                </div>
-              </PopoverContent>
-            </Popover>
+              </DropdownTrigger>
+              <DropdownMenu>
+                <DropdownItem key='account' color='primary'>
+                  <Link to={routes.client.account}>Thông tin tài khoản</Link>
+                </DropdownItem>
+                <DropdownItem key='signout' color='danger'>
+                  <Link to={routes.client.signOut}>Đăng xuất</Link>
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
           ) : (
             <Button
               as={Link}

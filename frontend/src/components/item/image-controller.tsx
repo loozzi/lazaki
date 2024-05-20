@@ -32,8 +32,12 @@ export const ItemImageControllerComp = (props: ItemImageControllerProps) => {
 
   return (
     <div className={'md:max-w-[450px] w-full mx-2 md:mx-0'}>
-      <div>
-        <Image src={currentImage.link} alt={'Hình ảnh sản phẩm'} />
+      <div className='flex justify-center'>
+        <Image
+          src={currentImage.link}
+          alt={'Hình ảnh sản phẩm'}
+          className='max-w-[450px] w-full max-h-[450px] object-cover'
+        />
       </div>
       <div className='flex mt-2 justify-between'>
         <button onClick={handlePrev} className=''>
@@ -43,7 +47,11 @@ export const ItemImageControllerComp = (props: ItemImageControllerProps) => {
           {getSlicedImages.map((image, index) => {
             return (
               <div key={index} onClick={() => setCurrentImage(image)}>
-                <Image src={image.link} alt={'Hình ảnh sản phẩm'} width={76} height={140} className='cursor-pointer' />
+                <Image
+                  src={image.link}
+                  alt={'Hình ảnh sản phẩm'}
+                  className='cursor-pointer w-[76px] h-[76px] object-cover'
+                />
               </div>
             )
           })}

@@ -45,13 +45,7 @@ export const ViewAdminManageProductPage = () => {
       .then((res) => {
         const products = res.data?.data || []
 
-        setProducts(
-          products.map((product) => ({
-            ...product,
-            categories: [],
-            quantity: 0
-          }))
-        )
+        setProducts(products)
         setPagination({
           currentPage: res.data?.currentPage || 1,
           perPage: res.data?.perPage || 10,
@@ -94,7 +88,7 @@ export const ViewAdminManageProductPage = () => {
               <div className='w-64 flex gap-2'>
                 <Select
                   placeholder='Sắp xếp'
-                  selectedKeys={['asc']}
+                  selectedKeys={[sort]}
                   onChange={(e) => {
                     setSort(e.target.value as 'asc' | 'desc')
                   }}
@@ -108,7 +102,7 @@ export const ViewAdminManageProductPage = () => {
                 </Select>
                 <Select
                   placeholder='Theo'
-                  selectedKeys={['quantity']}
+                  selectedKeys={[type]}
                   onChange={(e) => {
                     setType(e.target.value as 'quantity' | 'sold')
                   }}
@@ -121,8 +115,14 @@ export const ViewAdminManageProductPage = () => {
                   </SelectItem>
                 </Select>
               </div>
-              <Pagination className='flex justify-center mt-2' total={pagination.total} page={pagination.currentPage} />
             </div>
+          }
+          bottomContent={
+            <Pagination
+              className='flex justify-center mt-2'
+              total={Math.ceil(pagination.total / pagination.perPage)}
+              page={pagination.currentPage}
+            />
           }
         >
           <TableHeader columns={columns}>
@@ -143,8 +143,8 @@ export const ViewAdminManageProductPage = () => {
                 <TableCell>{item.name}</TableCell>
                 <TableCell width={120}>
                   <div className='flex justify-center'>
-                    <Tooltip content={item.categories.join(', ')}>
-                      <span className='line-clamp-1'>{item.categories.join(', ')}</span>
+                    <Tooltip content={item.category.join(', ')}>
+                      <span className='line-clamp-1'>{item.category.join(', ')}</span>
                     </Tooltip>
                   </div>
                 </TableCell>

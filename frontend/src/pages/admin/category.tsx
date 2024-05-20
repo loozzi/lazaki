@@ -17,8 +17,10 @@ import {
 } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 import { FaEdit, FaEye, FaTrash } from 'react-icons/fa'
-import { Category } from '~/models/category'
-import { CategoryPayload } from '~/models/product'
+import { Category, CategoryCreatePayload, CategoryUpdatePayload } from '~/models/category'
+import adminService from '~/services/admin.service'
+import categoryService from '~/services/category.service'
+import { stringToSlug } from '~/utils'
 
 export const ViewAdminManageCategoryPage = () => {
   const [categories, setCategories] = useState<Category[]>([])
@@ -28,10 +30,12 @@ export const ViewAdminManageCategoryPage = () => {
 
   const [inputName, setName] = useState<string>('')
   const [inputDescription, setDescription] = useState<string>('')
+  const [inputSlug, setSlug] = useState<string>('')
 
   const columns = [
     { name: 'ID', uid: 'id' },
     { name: 'Tên danh mục', uid: 'name' },
+    { name: 'Đường dẫn', uid: 'slug' },
     { name: 'Mô tả', uid: 'description' },
     { name: 'Hành động', uid: 'action' }
   ]
@@ -51,69 +55,70 @@ export const ViewAdminManageCategoryPage = () => {
 
   const handleCreateCategory = () => {
     if (!inputName) return
-
-    const payload: CategoryPayload = {
-      name: inputName,
-      description: inputDescription
+    if (!inputSlug) {
+      setSlug(stringToSlug(inputName))
+      return
     }
-    console.log('Create category', payload)
+    const payload: CategoryCreatePayload = {
+      name: inputName,
+      description: inputDescription,
+      slug: inputSlug.split(' ').join('-')
+    }
+
+    adminService.category.create(payload).then((res) => {
+      if (res.data) {
+        setCategories([...categories, res.data])
+        handleCloseModal()
+      }
+    })
   }
 
   const handleUpdateCategory = () => {
     if (!inputName) return
 
+    if (!inputSlug) {
+      setSlug(stringToSlug(inputName))
+      return
+    }
+
     if (selectedCategory) {
-      const payload: CategoryPayload = {
+      const payload: CategoryUpdatePayload = {
         id: selectedCategory.id,
         name: inputName,
-        description: inputDescription
+        description: inputDescription,
+        slug: inputSlug
       }
-      console.log('Update category', selectedCategory.id, payload)
+      adminService.category.update(payload).then((res) => {
+        if (res.data) {
+          const index = categories.findIndex((item) => item.id === res.data!.id)
+          if (index !== -1) {
+            const newCategories = [...categories]
+            newCategories[index] = res.data
+            setCategories(newCategories)
+          }
+          handleCloseModal()
+        }
+      })
     }
   }
 
   useEffect(() => {
-    setCategories([
-      {
-        id: 1,
-        name: 'Category 1',
-        slug: 'category-1',
-        description: 'Description 1'
-      },
-      {
-        id: 2,
-        name: 'Category 2',
-        slug: 'category-2',
-        description: 'Description 2'
-      },
-      {
-        id: 3,
-        name: 'Category 3',
-        slug: 'category-3',
-        description: 'Description 3'
-      },
-      {
-        id: 4,
-        name: 'Category 4',
-        slug: 'category-4',
-        description: 'Description 4'
-      },
-      {
-        id: 5,
-        name: 'Category 5',
-        slug: 'category-5',
-        description: 'Description 5'
+    categoryService.getAll().then((res) => {
+      if (res.data) {
+        setCategories(res.data)
       }
-    ])
+    })
   }, [])
 
   useEffect(() => {
     if (selectedCategory) {
       setName(selectedCategory.name)
       setDescription(selectedCategory.description)
+      setSlug(selectedCategory.slug)
     } else {
       setName('')
       setDescription('')
+      setSlug('')
     }
   }, [selectedCategory])
 
@@ -147,6 +152,7 @@ export const ViewAdminManageCategoryPage = () => {
               <TableRow key={item.id}>
                 <TableCell width={28}>{item.id}</TableCell>
                 <TableCell width={240}>{item.name}</TableCell>
+                <TableCell width={240}>{item.slug}</TableCell>
                 <TableCell>{item.description}</TableCell>
                 <TableCell width={120}>
                   <div className='flex gap-2'>
@@ -185,6 +191,13 @@ export const ViewAdminManageCategoryPage = () => {
                   placeholder='Tên danh mục'
                   value={inputName}
                   onChange={(e) => setName(e.target.value)}
+                  required
+                />
+                <Input
+                  label='Đường dẫn'
+                  placeholder='Đường dẫn'
+                  value={inputSlug}
+                  onChange={(e) => setSlug(e.target.value)}
                   required
                 />
                 <Textarea

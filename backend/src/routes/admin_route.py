@@ -1,10 +1,8 @@
-import ast
 from flask import Blueprint, json, request
-from src.controllers.RevenueController import RevenueController
-from src.utils.response import Response
 from src.controllers.AdminController import AdminController
 from src.middlewares.AuthMiddleware import admin_middleware
 from src.middlewares.PaginationMiddleware import request_pagination
+from src.utils.response import Response
 
 admin = Blueprint("admin", __name__)
 
@@ -149,7 +147,7 @@ def createCategory():
     name = request.form.get("name", "")
     slug = request.form.get("slug", "")
     description = request.form.get("description", "")
-    if not name or not slug or not description:
+    if not name or not slug:
         return Response(400, "Vui lòng điền đủ thông tin")
     return AdminController.createCategory(name, slug, description)
 

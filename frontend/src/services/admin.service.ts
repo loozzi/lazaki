@@ -1,5 +1,6 @@
-import { IResponse, PaginationParams, PaginationResponse } from '~/models/response'
-import client from './axios.service'
+import apiConfig from '~/configs/api.config'
+import { AdminOverviewParams, AdminOverviewResponse } from '~/models/admin'
+import { Category, CategoryCreatePayload, CategoryUpdatePayload } from '~/models/category'
 import {
   ProductAdminResponse,
   ProductAdminSearchParams,
@@ -7,9 +8,9 @@ import {
   ProductDetailResponse,
   ProductUpdatePayload
 } from '~/models/product'
-import apiConfig from '~/configs/api.config'
+import { IResponse, PaginationParams, PaginationResponse } from '~/models/response'
 import { UserAdminResponse } from '~/models/user'
-import { AdminOverviewParams, AdminOverviewResponse } from '~/models/admin'
+import client from './axios.service'
 
 const product = {
   get: async (query: ProductAdminSearchParams): Promise<IResponse<PaginationResponse<ProductAdminResponse>>> => {
@@ -53,8 +54,21 @@ const overview = async (params: AdminOverviewParams): Promise<IResponse<AdminOve
   return client.get(apiConfig.admin.overview, { params })
 }
 
+const category = {
+  create: async (payload: CategoryCreatePayload): Promise<IResponse<Category>> => {
+    return client.post(apiConfig.admin.category, payload)
+  },
+  update: async (payload: CategoryUpdatePayload): Promise<IResponse<Category>> => {
+    return client.put(apiConfig.admin.category, payload)
+  },
+  delete: async (slug: string): Promise<IResponse<any>> => {
+    return client.delete(`${apiConfig.admin.category}/${slug}`)
+  }
+}
+
 export default {
   product,
   user,
-  overview
+  overview,
+  category
 }

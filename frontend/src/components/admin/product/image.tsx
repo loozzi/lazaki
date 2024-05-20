@@ -1,7 +1,18 @@
-import { Button, Image, Input, Radio, RadioGroup } from '@nextui-org/react'
-import { useState } from 'react'
-import { CiSquarePlus } from 'react-icons/ci'
-import { FaTrash } from 'react-icons/fa'
+import {
+  Button,
+  Image,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Radio,
+  RadioGroup,
+  useDisclosure
+} from '@nextui-org/react'
+import { FaEdit, FaTrash } from 'react-icons/fa'
+import { ImageUploaderComp } from '~/components/image-uploader'
 import { ImageResponse } from '~/models/product'
 
 interface AdminProductImageProps {
@@ -17,13 +28,8 @@ interface AdminProductImageProps {
 
 export const AdminProductImageComp = (props: AdminProductImageProps) => {
   const { className, payload } = props
-  const [newImage, setNewImage] = useState<string>('')
 
-  const handleAddImage = () => {
-    if (!newImage) return
-    payload.setFieldValue('images', [...payload.values.images, { link: newImage, isPrimary: false }])
-    setNewImage('')
-  }
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const handleSetPrimary = (value: string) => {
     payload.setFieldValue(
@@ -50,10 +56,16 @@ export const AdminProductImageComp = (props: AdminProductImageProps) => {
 
   return (
     <div className={className}>
-      <div className='ml-8 mb-4 flex gap-4 max-w-[540px]'>
-        <Input value={newImage} onChange={(e) => setNewImage(e.target.value)} placeholder='Nhập link hình ảnh' />
-        <Button isIconOnly color='primary' onClick={handleAddImage}>
-          <CiSquarePlus size={24} />
+      <div className='mb-4 flex gap-4 justify-end'>
+        <Button
+          color='primary'
+          variant='light'
+          onClick={() => {
+            onOpen()
+          }}
+          startContent={<FaEdit />}
+        >
+          Chỉnh sửa danh sách hình ảnh
         </Button>
       </div>
       <RadioGroup
@@ -86,6 +98,34 @@ export const AdminProductImageComp = (props: AdminProductImageProps) => {
           </Radio>
         ))}
       </RadioGroup>
+      <Modal isOpen={isOpen} size='3xl' onClose={onClose}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>Cập nhật hình ảnh</ModalHeader>
+              <ModalBody>
+                <ImageUploaderComp
+                  images={payload.values.images.map((img) => img.link)}
+                  onChange={(images) =>
+                    payload.setFieldValue(
+                      'images',
+                      images.map((img) => ({
+                        link: img,
+                        isPrimary: payload.values.images.find((item) => item.link === img)?.isPrimary || false
+                      }))
+                    )
+                  }
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button onClick={onClose} color='danger' variant='light'>
+                  Đóng
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   )
 }

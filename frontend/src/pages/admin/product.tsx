@@ -45,17 +45,11 @@ export const ViewAdminManageProductPage = () => {
       .then((res) => {
         const products = res.data?.data || []
 
-        setProducts(
-          products.map((product) => ({
-            ...product,
-            categories: [],
-            quantity: 0
-          }))
-        )
+        setProducts(products)
         setPagination({
           currentPage: res.data?.currentPage || 1,
           perPage: res.data?.perPage || 10,
-          total: (res.data?.total || 1) / (res.data?.perPage || 1)
+          total: res.data?.total || 0
         })
       })
   }, [keyword, sort, type, pagination.currentPage, pagination.perPage])
@@ -64,7 +58,6 @@ export const ViewAdminManageProductPage = () => {
     { name: 'Hình ảnh', uid: 'image' },
     { name: 'Tên sản phẩm', uid: 'name' },
     { name: 'Danh mục', uid: 'categories' },
-    { name: 'Giá', uid: 'price' },
     { name: 'Đã bán', uid: 'sold' },
     { name: 'Kho hàng', uid: 'quantity' },
     { name: 'Đánh giá', uid: 'rating' },
@@ -94,7 +87,7 @@ export const ViewAdminManageProductPage = () => {
               <div className='w-64 flex gap-2'>
                 <Select
                   placeholder='Sắp xếp'
-                  selectedKeys={['asc']}
+                  selectedKeys={[sort]}
                   onChange={(e) => {
                     setSort(e.target.value as 'asc' | 'desc')
                   }}
@@ -108,7 +101,7 @@ export const ViewAdminManageProductPage = () => {
                 </Select>
                 <Select
                   placeholder='Theo'
-                  selectedKeys={['quantity']}
+                  selectedKeys={[type]}
                   onChange={(e) => {
                     setType(e.target.value as 'quantity' | 'sold')
                   }}
@@ -121,8 +114,15 @@ export const ViewAdminManageProductPage = () => {
                   </SelectItem>
                 </Select>
               </div>
-              <Pagination className='flex justify-center mt-2' total={pagination.total} page={pagination.currentPage} />
             </div>
+          }
+          bottomContent={
+            <Pagination
+              className='flex justify-center mt-2'
+              total={Math.ceil(pagination.total / pagination.perPage)}
+              page={pagination.currentPage}
+              onChange={(page) => setPagination({ ...pagination, currentPage: page })}
+            />
           }
         >
           <TableHeader columns={columns}>
@@ -142,14 +142,11 @@ export const ViewAdminManageProductPage = () => {
                 </TableCell>
                 <TableCell>{item.name}</TableCell>
                 <TableCell width={120}>
-                  <div className='flex justify-center'>
-                    <Tooltip content={item.categories.join(', ')}>
-                      <span className='line-clamp-1'>{item.categories.join(', ')}</span>
+                  <div className='flex justify-start'>
+                    <Tooltip content={item.category.join(', ')}>
+                      <span className='line-clamp-1'>{item.category.join(', ')}</span>
                     </Tooltip>
                   </div>
-                </TableCell>
-                <TableCell width={120} align='center'>
-                  <div className='flex justify-center'>{item.price}</div>
                 </TableCell>
                 <TableCell width={60}>
                   <div className='flex justify-center'>{item.sold}</div>

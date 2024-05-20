@@ -71,7 +71,7 @@ export const DetailCartComp = (props: DetailCartCompProps) => {
       case 'name':
         return (
           <div className='flex gap-2 items-center'>
-            <Image src={item.image} width={50} height={50} className='w-full' alt={item.name} />
+            <Image src={item.image} className='' width={50} height={50} alt={item.name} />
             <div className='flex flex-col'>
               <span className='font-semibold'>{item.name}</span>
               <span className='text-default-400 text-sm'>

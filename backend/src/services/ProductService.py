@@ -192,7 +192,7 @@ class ProductService:
         description: str,
         slug: str,
         properties: List[object],
-        categories: List[object],
+        categories: List[int],
         variations: List[object],
         images: List[object],
     ):
@@ -210,15 +210,9 @@ class ProductService:
 
         # Thêm categories
         for cat in categories:
-            category_obj = Category.query.filter_by(slug=cat["slug"]).first()
-            if not category_obj:
-                category_obj = Category(
-                    name=cat["name"],
-                    slug=cat["slug"],
-                    description=cat["description"],
-                )
-                db.session.add(category_obj)
-            product.categories.append(category_obj)
+            category_obj = Category.query.get(cat)
+            if category_obj:
+                product.categories.append(category_obj)
 
         # Thêm variations
         for var in variations:

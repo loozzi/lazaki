@@ -1,14 +1,15 @@
 import { Image } from '@nextui-org/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { ImageResponse } from '~/models/product'
 
 interface ItemImageControllerProps {
   images: ImageResponse[]
+  variationImage?: string
 }
 
 export const ItemImageControllerComp = (props: ItemImageControllerProps) => {
-  const { images } = props
+  const { images, variationImage } = props
 
   const [currentImage, setCurrentImage] = useState(images.filter((image) => image.isPrimary)[0])
 
@@ -30,10 +31,18 @@ export const ItemImageControllerComp = (props: ItemImageControllerProps) => {
 
   const getSlicedImages = images.slice(start, end)
 
+  useEffect(() => {
+    if (variationImage) setCurrentImage(images.filter((image) => image.link === variationImage)[0] || images[0])
+  }, [variationImage])
+
   return (
     <div className={'md:max-w-[450px] w-full mx-2 md:mx-0'}>
-      <div>
-        <Image src={currentImage.link} alt={'Hình ảnh sản phẩm'} />
+      <div className='flex justify-center'>
+        <Image
+          src={currentImage.link}
+          alt={'Hình ảnh sản phẩm'}
+          className='max-w-[450px] w-full aspect-square max-h-[450px] object-cover'
+        />
       </div>
       <div className='flex mt-2 justify-between'>
         <button onClick={handlePrev} className=''>
@@ -43,7 +52,11 @@ export const ItemImageControllerComp = (props: ItemImageControllerProps) => {
           {getSlicedImages.map((image, index) => {
             return (
               <div key={index} onClick={() => setCurrentImage(image)}>
-                <Image src={image.link} alt={'Hình ảnh sản phẩm'} width={76} height={140} className='cursor-pointer' />
+                <Image
+                  src={image.link}
+                  alt={'Hình ảnh sản phẩm'}
+                  className='cursor-pointer w-[76px] h-[76px] object-cover'
+                />
               </div>
             )
           })}

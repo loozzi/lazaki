@@ -23,6 +23,7 @@ import { useEffect, useState } from 'react'
 import { FaEdit, FaPlus, FaTrash } from 'react-icons/fa'
 import { Category } from '~/models/category'
 import { ProductCreatePayload, ProductUpdatePayload, PropertyPayload } from '~/models/product'
+import categoryService from '~/services/category.service'
 
 interface AdminProductInfoCompProps {
   className?: string
@@ -37,7 +38,6 @@ export const AdminProductInfoComp = (props: AdminProductInfoCompProps) => {
   const { className, payload } = props
 
   const [categories, setCategories] = useState<Category[]>([])
-  const [selectedCategories, setSelectedCategories] = useState<number[]>([])
 
   const [newProperty, setNewProperty] = useState<PropertyPayload | null>(null)
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -49,15 +49,11 @@ export const AdminProductInfoComp = (props: AdminProductInfoCompProps) => {
   ]
 
   const handleChangeCategories = (keys: string) => {
-    const lastKey = keys.split(',').pop()
-    const lastCategoryId = parseInt(lastKey || '0')
-    setSelectedCategories((prev) => {
-      if (prev.includes(lastCategoryId)) {
-        return prev.filter((id) => id !== lastCategoryId)
-      } else {
-        return [...prev, lastCategoryId]
-      }
-    })
+    const selected = keys
+      .split(',')
+      .map((key) => parseInt(key))
+      .filter((key) => !isNaN(key))
+    payload.setFieldValue('categories', selected)
   }
 
   const handleAddProperty = () => {
@@ -91,37 +87,12 @@ export const AdminProductInfoComp = (props: AdminProductInfoCompProps) => {
   }
 
   useEffect(() => {
-    setCategories([
-      {
-        id: 1,
-        name: 'Category 1',
-        slug: 'category-1',
-        description: 'Lorem   '
-      },
-      {
-        id: 2,
-        name: 'Category 2',
-        slug: 'category-2',
-        description: 'Lorem   '
-      },
-      {
-        id: 3,
-        name: 'Category 3',
-        slug: 'category-3',
-        description: 'Lorem   '
-      },
-      {
-        id: 4,
-        name: 'Category 4',
-        slug: 'category-4',
-        description: 'Lorem   '
+    categoryService.getAll().then((res) => {
+      if (res.status === 200) {
+        setCategories(res.data!)
       }
-    ])
+    })
   }, [])
-
-  useEffect(() => {
-    payload.setFieldValue('categories', selectedCategories)
-  }, [selectedCategories])
 
   return (
     <div className={className}>
@@ -167,7 +138,7 @@ export const AdminProductInfoComp = (props: AdminProductInfoCompProps) => {
                 </div>
               )}
               onChange={(keys) => handleChangeCategories(keys.target.value)}
-              defaultSelectedKeys={payload.values.categories.map((i) => i.toString())}
+              selectedKeys={payload.values.categories.map((id) => id.toString())}
             >
               {(category) => (
                 <SelectItem key={category.id} value={category.id}>
@@ -199,22 +170,8 @@ export const AdminProductInfoComp = (props: AdminProductInfoCompProps) => {
               <TableBody>
                 {payload.values.properties.map((item, index) => (
                   <TableRow key={index}>
-                    <TableCell>
-                      {/* <Input
-                        placeholder='Tên'
-                        value={payload.values.properties[index].name}
-                        onChange={(e) => handleEditProperty(index, 'name', e.target.value)}
-                      /> */}
-                      {item.name}
-                    </TableCell>
-                    <TableCell>
-                      {/* <Input
-                        placeholder='Giá trị'
-                        value={item.value}
-                        onChange={(e) => handleEditProperty(index, 'value', e.target.value)}
-                      /> */}
-                      {item.value}
-                    </TableCell>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.value}</TableCell>
                     <TableCell width={120}>
                       <div className='flex justify-center gap-2'>
                         <Button

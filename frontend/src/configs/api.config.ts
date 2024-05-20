@@ -5,6 +5,7 @@ const auth = {
 }
 
 const admin = {
+  root: '/admin',
   user: '/admin/user',
   overview: '/admin/overview',
   product: '/admin/product',

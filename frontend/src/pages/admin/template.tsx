@@ -1,7 +1,17 @@
+import { useEffect } from 'react'
 import { Outlet } from 'react-router'
 import { AdminSidebarComp } from '~/components/admin/sidebar'
+import { history } from '~/configs/history'
+import routes from '~/configs/routes'
 
 export const AdminTemplate = () => {
+  useEffect(() => {
+    const adminAccessToken = localStorage.getItem('adminAccessToken')
+    if (!adminAccessToken) {
+      history.push(routes.admin.login)
+    }
+  }, [])
+
   return (
     <div className='flex bg-sky-50'>
       <div className='md:w-64 w-20'>

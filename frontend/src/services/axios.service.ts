@@ -24,22 +24,32 @@ client.interceptors.request.use(
       return config
     }
 
-    const accessToken = tokenService.getAccessToken()
-    const refreshToken = tokenService.getRefreshToken()
+    if (config.url?.includes(apiConfig.admin.root)) {
+      const adminAccessToken = localStorage.getItem('adminAccessToken')
+      if (adminAccessToken) {
+        config.headers.Authorization = `Bearer ${adminAccessToken}`
+        return config
+      } else {
+        return config
+      }
+    } else {
+      const accessToken = tokenService.getAccessToken()
+      const refreshToken = tokenService.getRefreshToken()
 
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`
-    } else if (refreshToken) {
-      authService.refreshToken({ token: refreshToken }).then((res) => {
-        if (res.status === 200) {
-          tokenService.signIn(res.data!.accessToken, res.data!.refreshToken)
-        }
-      })
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`
+      } else if (refreshToken) {
+        authService.refreshToken({ token: refreshToken }).then((res) => {
+          if (res.status === 200) {
+            tokenService.signIn(res.data!.accessToken, res.data!.refreshToken)
+          }
+        })
+      }
+
+      const _accessToken = tokenService.getAccessToken()
+      if (_accessToken) config.headers.Authorization = `Bearer ${_accessToken}`
+      return config
     }
-
-    const _accessToken = tokenService.getAccessToken()
-    if (_accessToken) config.headers.Authorization = `Bearer ${_accessToken}`
-    return config
   },
   (error) => {
     return Promise.reject(error)
@@ -49,6 +59,10 @@ client.interceptors.request.use(
 client.interceptors.response.use(
   (response: AxiosResponse<any>) => {
     if (response.data.message === 'Unauthorized') history.push(routes.client.auth)
+    if (response.data.message === 'Forbidden') {
+      localStorage.removeItem('adminAccessToken')
+      history.push(routes.admin.login)
+    }
     return response.data
   },
   (error) => {

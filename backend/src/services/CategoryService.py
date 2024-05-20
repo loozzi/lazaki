@@ -20,3 +20,10 @@ class CategoryService:
         category.description = desc
         category.update()
         return category
+
+    def get_categories():
+        categories = Category.query.filter(Category.isDeleted == False).all()
+        data = []
+        for category in categories:
+            data.append(category.serialize())
+        return data

@@ -15,6 +15,7 @@ import { ViewPurchasePage } from '~/pages/client/purchase'
 import { ViewRatingPage } from '~/pages/client/rating-page'
 import { ViewSearchPage } from '~/pages/client/search'
 import routes from './routes'
+import { ViewAdminLogoutPage } from '~/pages/admin/logout'
 
 const client = [
   { path: routes.client.home, component: HomePage },
@@ -35,7 +36,7 @@ const admin = [
   { path: routes.admin.productCreate, component: ViewAdminCreateProductPage },
   { path: routes.admin.productDetail, component: ViewAdminManageDetailProductPage },
   { path: routes.admin.category, component: ViewAdminManageCategoryPage },
-  { path: routes.admin.logout, component: ViewOverviewPage }
+  { path: routes.admin.logout, component: ViewAdminLogoutPage }
 ]
 
 const others = [{ path: routes.admin.login, component: ViewAdminLoginPage }]

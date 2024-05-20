@@ -108,7 +108,7 @@ def removeProduct(slug):
 
 
 @admin.route("/overview", methods=["GET"])
-# @admin_middleware
+@admin_middleware
 def getOverview():
     type = request.args.get("type", None)
     time = request.args.get("time", None)
@@ -142,7 +142,7 @@ def getProducts():
 
 
 @admin.route("/category", methods=["POST"])
-# @admin_middleware
+@admin_middleware
 def createCategory():
     name = request.form.get("name", "")
     slug = request.form.get("slug", "")

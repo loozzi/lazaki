@@ -8,7 +8,8 @@ export default {
     purchase: '/purchase',
     search: '/search',
     auth: '/auth',
-    signOut: '/sign-out'
+    signOut: '/sign-out',
+    rating: '/history/:orderId'
   },
   admin: {
     home: '/admin',

@@ -1,4 +1,4 @@
-import { Button, Chip, Image, Snippet } from '@nextui-org/react'
+import { Button, Chip, Image, Skeleton, Snippet } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 import { FaStar } from 'react-icons/fa'
 import { CartItem, OrderHistoryResponse } from '~/models/order'
@@ -18,6 +18,7 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
   const [selectedReview, setSelectedReview] = useState<number>(-1)
   const [reviews, setReviews] = useState<ReviewResponse[]>([])
   const [history, setHistory] = useState<OrderHistoryResponse | undefined>(undefined)
+  const [unload, setUnload] = useState<boolean>(false)
 
   const [userInfor, setUserInfor] = useState<{ label: string; value: any }[]>([])
 
@@ -40,6 +41,8 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
     orderService.detail(historyId).then((res) => {
       if (res.status === 200) {
         setHistory(res.data)
+      } else {
+        setUnload(true)
       }
     })
   }, [historyId])
@@ -66,7 +69,7 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
 
   return (
     <div className={className}>
-      {history && (
+      {history ? (
         <>
           <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6'>
             <div className='flex flex-col gap-2'>
@@ -178,6 +181,12 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
             </div>
           </div>
         </>
+      ) : (
+        <div>
+          {unload ? 'Không có dữ liệu...' : 'Đang tải dữ liệu...'}
+          <Skeleton className='w-full h-[300px] rounded-lg mb-2' />
+          <Skeleton className='w-full h-[300px] rounded-lg' />
+        </div>
       )}
     </div>
   )

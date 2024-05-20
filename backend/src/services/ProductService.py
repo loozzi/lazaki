@@ -180,7 +180,11 @@ class ProductService:
         )
         if product is None:
             return {}
-        return product.serialize()
+        response = product.serialize()
+        response["rating"] = ReviewService.getRateMean(product.id)
+        response["totalRating"] = ReviewService.getTotalRate(product.id)
+
+        return response
 
     # Thêm sản phẩm vào database
     def addProduct(

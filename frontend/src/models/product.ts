@@ -34,6 +34,8 @@ export interface ProductDetailResponse {
   variations: VariationResponse[]
   images: ImageResponse[]
   categories: Category[]
+  rating?: number
+  totalRating?: number
   [key: string]: any
 }
 

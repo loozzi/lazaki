@@ -68,6 +68,7 @@ class OrderService:
         order.addressId = address.id
         order.paymentMethod = PaymentMethodEnum[paymentMethod.upper()]
         order.note = note
+        order.email = email
 
         # Tính tổng tiền
         total_amount = 0

@@ -1,7 +1,7 @@
 from functools import wraps
 
 from flask import request
-from src.services import AdminService
+from src.services.AdminService import AdminService
 from src.services.CustomerService import CustomerService
 from src.services.TokenService import TokenService
 from src.utils.response import Response
@@ -37,12 +37,15 @@ def admin_middleware(f):
     def decorated(*args, **kwargs):
         token = request.headers.get("Authorization")
         if not token:
-            return Response(401, "Unauthorized")
+            return Response(401, "Forbidden")
 
         token = token.split(" ")[1]
         data = AdminService.verify(token)
         if not data:
-            return Response(400, "Invalid token")
+            return Response(400, "Forbidden")
+
+        if "id" not in data or not data["id"]:
+            return Response(400, "Forbidden")
 
         request.admin = data
         return f(*args, **kwargs)

@@ -49,33 +49,6 @@ class Product(Base):
                 break
         return link
 
-    def serialize(self):
-        id = self.id
-        name = self.name
-        description = self.description
-        property = [prop.serialize() for prop in self.properties]
-        categories = [category.serialize() for category in self.categories]
-        variations = [variation.serialize() for variation in self.variations]
-        variations = sorted(variations, key=lambda x: x["price"])
-        images = []
-        for i in variations:
-            image = {
-                "link": i["image"],
-                "variationId": i["id"],
-                "isPrimary": self.is_PrimaryImage(i["image"]),
-            }
-            images.append(image)
-        data_response = {
-            "id": id,
-            "name": name,
-            "description": description,
-            "properties": property,
-            "categories": categories,
-            "variations": variations,
-            "images": images,
-        }
-        return data_response
-
     def update(
         self,
         name: str,

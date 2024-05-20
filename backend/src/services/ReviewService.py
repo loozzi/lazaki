@@ -67,3 +67,6 @@ class ReviewService:
         for i in rate_list:
             sum += i.value
         return sum / len(rate_list)
+
+    def getTotalRate(productId: int):
+        return Rating.query.filter_by(productId=productId).count()

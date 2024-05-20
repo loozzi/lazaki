@@ -68,6 +68,7 @@ class OrderService:
         order.addressId = address.id
         order.paymentMethod = PaymentMethodEnum[paymentMethod.upper()]
         order.note = note
+        order.email = email
 
         # Tính tổng tiền
         total_amount = 0
@@ -112,8 +113,8 @@ class OrderService:
 
         # Truy vấn toàn bộ order đã hoàn thành trong khoảng thời gian
         orders = Order.query.filter(
-            Order.createdAt >= start_date,
-            Order.createdAt <= end_date,
+            Order.orderDate >= start_date,
+            Order.orderDate <= end_date,
         ).all()
         return orders
 

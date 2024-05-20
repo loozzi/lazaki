@@ -1,6 +1,9 @@
 import { Checkbox, CheckboxGroup, Select, SelectItem, Slider } from '@nextui-org/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FaFilter } from 'react-icons/fa'
+import { useLocation } from 'react-router'
+import { history } from '~/configs/history'
+import { Category } from '~/models/category'
 
 interface SearchFilterProps {
   className?: string
@@ -9,7 +12,10 @@ interface SearchFilterProps {
 export const SearchFilterComp = (props: SearchFilterProps) => {
   const { className } = props
 
+  const location = useLocation()
+
   const [showFilter, setShowFilter] = useState<boolean>(false)
+  const [categories, setCategories] = useState<Category[]>([])
 
   const [budget, setBudget] = useState<number[]>([10000, 100000000])
 
@@ -20,6 +26,19 @@ export const SearchFilterComp = (props: SearchFilterProps) => {
       setBudget((prevBudget) => [...prevBudget, value]) // Append the number if it's a single value
     }
   }
+
+  const applyFilter = () => {
+    const searchParams = new URLSearchParams(location.search)
+    searchParams.delete('minPrice')
+    searchParams.delete('maxPrice')
+    searchParams.append('minPrice', budget[0].toString())
+    searchParams.append('maxPrice', budget[1].toString())
+    history.push(`${location.pathname}?${searchParams.toString()}`)
+  }
+
+  useEffect(() => {
+    // call api get categories
+  }, [])
 
   return (
     <div className={className}>
@@ -34,11 +53,11 @@ export const SearchFilterComp = (props: SearchFilterProps) => {
         <div className={'flex-col gap-4 md:flex' + (!showFilter ? ' hidden' : ' flex')}>
           <div className='flex flex-col space-y-1'>
             <CheckboxGroup label='Danh mục' defaultValue={['buenos-aires', 'london']}>
-              <Checkbox value='buenos-aires'>Buenos Aires</Checkbox>
-              <Checkbox value='sydney'>Sydney</Checkbox>
-              <Checkbox value='san-francisco'>San Francisco</Checkbox>
-              <Checkbox value='london'>London</Checkbox>
-              <Checkbox value='tokyo'>Tokyo</Checkbox>
+              {categories.map((category) => (
+                <Checkbox key={category.id} value={category.slug}>
+                  {category.name}
+                </Checkbox>
+              ))}
             </CheckboxGroup>
           </div>
           <div className='flex flex-col space-y-1'>
@@ -74,7 +93,9 @@ export const SearchFilterComp = (props: SearchFilterProps) => {
               <SelectItem key='5'>5 Sao</SelectItem>
             </Select>
           </div>
-          <button className='w-full p-2 text-white bg-blue-500 rounded'>Áp dụng</button>
+          <button className='w-full p-2 text-white bg-blue-500 rounded' onClick={applyFilter}>
+            Áp dụng
+          </button>
         </div>
       </div>
     </div>

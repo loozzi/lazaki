@@ -69,10 +69,10 @@ export const DetailItemComp = (props: DetailItemCompProps) => {
           <div className='text-3xl normal-case font-medium md:block hidden'>{product.name}</div>
           <div className='flex mt-4'>
             <div className='mr-8'>
-              <StarComp stars={0} />
+              <StarComp stars={product.rating || 0} />
             </div>
             <a href='#reviews' className='mr-8'>
-              <span className='mr-1 underline text-sm font-semibold'>{0}</span>
+              <span className='mr-1 underline text-sm font-semibold'>{product.totalRating}</span>
               Đánh giá
             </a>
             <div>

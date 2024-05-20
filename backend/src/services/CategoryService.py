@@ -9,8 +9,13 @@ class CategoryService:
         return category
 
     # Trả về danh mục theo id
-    def getCategoryById(id) -> Category:
+    def getCategoryById(id: int) -> Category | None:
         category = Category.query.filter_by(id=id).first()
+        return category
+
+    # Trả về danh mục theo slug
+    def getCategoryBySlug(slug: str) -> Category | None:
+        category = Category.query.filter_by(slug=slug).first()
         return category
 
     # Chỉnh sửa danh mục

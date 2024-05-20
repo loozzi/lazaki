@@ -217,11 +217,20 @@ class AdminController:
 
         return Response(200, "Success", pagination.serialize())
 
+    # Tạo sản phẩm
     def createCategory(name: str, slug: str, desc: str):
+        # Kiểm tra xem có danh mục nào với slug này
+        if CategoryService.getCategoryBySlug(slug):
+            return Response(400, "Đã có danh mục với slug này")
         category = CategoryService.addCategory(name, slug, desc)
         return Response(200, "Tạo danh mục thành công", category.serialize())
 
+    # Chỉnh sửa sản phẩm
     def editCategory(id: int, name: str, slug: str, desc: str):
+        # Kiểm tra xem có danh mục nào với slug này
+        if CategoryService.getCategoryBySlug(slug):
+            return Response(400, "Đã có danh mục với slug này")
+        # Lấy danh mục cần sửa kiểm tra xem danh mục đó có tồn tại không
         category = CategoryService.getCategoryById(id)
         if not category:
             return Response(404, "Danh mục không tồn tại")

@@ -10,7 +10,7 @@ admin = Blueprint("admin", __name__)
 
 
 @admin.route("/user", methods=["GET"])
-# @admin_middleware
+@admin_middleware
 @request_pagination
 def getCustomers():
     page = request.pagination.get("page")
@@ -20,7 +20,7 @@ def getCustomers():
 
 
 @admin.route("/user", methods=["PUT"])
-# @admin_middleware
+@admin_middleware
 def editUser():
     customer_id = request.form.get("id", None)
     if customer_id is None:
@@ -29,7 +29,7 @@ def editUser():
 
 
 @admin.route("/product", methods=["PUT"])
-# @admin_middleware
+@admin_middleware
 def editProduct():
     try:
         product_id = int(request.form.get("productId", None))
@@ -70,7 +70,7 @@ def editProduct():
 
 
 @admin.route("/product", methods=["POST"])
-# @admin_middleware
+@admin_middleware
 def addProduct():
     product_name = request.form.get("productName", None)
     slug = request.form.get("slug", None)
@@ -104,7 +104,7 @@ def addProduct():
 
 
 @admin.route("/product/<string:slug>", methods=["DELETE"])
-# @admin_middleware
+@admin_middleware
 def removeProduct(slug):
     return AdminController.removeProduct(slug)
 
@@ -123,7 +123,7 @@ def getOverview():
 
 
 @admin.route("/review", methods=["GET"])
-# @admin_middleware
+@admin_middleware
 @request_pagination
 def getReviews():
     page = request.pagination.get("page")
@@ -132,7 +132,7 @@ def getReviews():
 
 
 @admin.route("/product", methods=["GET"])
-# @admin_middleware
+@admin_middleware
 @request_pagination
 def getProducts():
     page = request.pagination.get("page")
@@ -155,7 +155,7 @@ def createCategory():
 
 
 @admin.route("/category", methods=["PUT"])
-# @admin_middleware
+@admin_middleware
 def editCategory():
     id = request.form.get("id", "")
     name = request.form.get("name", "")

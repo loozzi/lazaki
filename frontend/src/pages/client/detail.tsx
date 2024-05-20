@@ -107,11 +107,13 @@ export const ViewDetailPage = () => {
 
   return (
     <div>
-      {product ? <DetailItemComp product={product} /> : <Skeleton></Skeleton>}
+      {product ? <DetailItemComp product={product} /> : <Skeleton className='w-full h-[300px]' />}
       <div className='mt-2 grid grid-cols-10 gap-2 lg:gap-4'>
         <div className='flex flex-col lg:col-span-8 md:col-span-6 col-span-10'>
           {product && <DescriptionItemComp product={product} />}
-          <ListViewReviewComp reviews={reviews} className='mt-4' />
+          <div id='reviews'>
+            <ListViewReviewComp reviews={reviews} className='mt-4' />
+          </div>
         </div>
         <div className='lg:col-span-2 md:col-span-4 col-span-10'>
           <ListCardItemComp heading='Sản phẩm tương tự' items={suggestProducts} isColumn />

@@ -103,6 +103,7 @@ class Order(Base):
             "fullName": self.fullName,
             "paymentMethod": self.paymentMethod.value,
             "paymentStatus": self.paymentStatus.value,
+            "status": self.status.value,
             "orderDetails": [
                 orderDetail.serialize() for orderDetail in self.orderDetails
             ],
@@ -121,6 +122,7 @@ class Order(Base):
             "address": adderss.serialize() if adderss else "",
             "paymentMethod": self.paymentMethod.value,
             "paymentStatus": self.paymentStatus.value,
+            "status": self.status.value,
             "note": self.note,
             "orderDetails": [
                 orderDetail.serialize() for orderDetail in self.orderDetails

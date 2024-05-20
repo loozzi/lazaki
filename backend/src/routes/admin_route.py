@@ -141,3 +141,26 @@ def getProducts():
     order = request.args.get("order", None)
     type = request.args.get("type", None)
     return AdminController.getProducts(page, limit, keyword, order, type)
+
+
+@admin.route("/category", methods=["POST"])
+# @admin_middleware
+def createCategory():
+    name = request.form.get("name", "")
+    slug = request.form.get("slug", "")
+    description = request.form.get("description", "")
+    if not name or not slug or not description:
+        return Response(400, "Vui lòng điền đủ thông tin")
+    return AdminController.createCategory(name, slug, description)
+
+
+@admin.route("/category", methods=["PUT"])
+# @admin_middleware
+def editCategory():
+    id = request.form.get("id", "")
+    name = request.form.get("name", "")
+    slug = request.form.get("slug", "")
+    description = request.form.get("description", "")
+    if not name or not slug or not description or not id:
+        return Response(400, "Vui lòng điền đủ thông tin")
+    return AdminController.editCategory(id, name, slug, description)

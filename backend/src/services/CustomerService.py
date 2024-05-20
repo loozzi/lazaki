@@ -97,3 +97,15 @@ class CustomerService:
         del return_customer["id"]
         del return_customer["status"]
         return return_customer
+
+    def toggleStatus(customerId: int):
+        customer = Customer.query.get(customerId)
+        if not customer:
+            return None
+
+        if customer.status == CustomerStatusEnum.ACTIVE:
+            customer.status = CustomerStatusEnum.DEACTIVE
+        else:
+            customer.status = CustomerStatusEnum.ACTIVE
+
+        return customer.update()

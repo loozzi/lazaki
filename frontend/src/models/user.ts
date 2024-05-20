@@ -24,3 +24,13 @@ export interface UserUpdatePayload {
   ward?: string
   street?: string
 }
+
+export interface UserAdminResponse {
+  id: number
+  fullName: string
+  email: string
+  status: 'active' | 'deactive'
+  birthday: string
+  gender: 'male' | 'female'
+  address: AddressResponse
+}

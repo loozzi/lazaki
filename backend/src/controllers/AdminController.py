@@ -1,13 +1,13 @@
 from typing import List
 
-from src.services.ReviewService import ReviewService
-from src import db
 from src.controllers.Pagination import Pagination
 from src.controllers.RevenueController import RevenueController
 from src.models import Address, Customer, Variation
+from src.services.AdminService import AdminService
 from src.services.CustomerService import CustomerService
 from src.services.OrderService import OrderService
 from src.services.ProductService import ProductService
+from src.services.ReviewService import ReviewService
 from src.services.CategoryService import CategoryService
 from src.utils.enums import CustomerStatusEnum
 from src.utils.response import Response
@@ -36,6 +36,7 @@ class AdminController:
             product_detail = product.getInfo()
             product_detail["sold"] = total_sold
             product_detail["quantity"] = total_quantity
+            product_detail["rating"] = ReviewService.getRateMean(product.id)
             product_data.append(product_detail)
 
         pagination = Pagination(
@@ -153,24 +154,46 @@ class AdminController:
 
     # Chỉnh sửa thông tin khách hàng
     def editCustomer(customerId: int):
-        customer = CustomerService.getCustomerById(customerId)
-        if customer is None:
+        customer = CustomerService.toggleStatus(customerId)
+        if customer:
+            return Response(200, "Success", customer.serialize())
+        else:
             return Response(404, "Customer not found")
-        customer.setStatus(CustomerStatusEnum.DEACTIVE)
-        db.session.commit()
-        return Response(200, "Success")
 
     # Doanh thu
     def getRevenue(time: str, type: str, slug: str):
         orders = OrderService.getAllOrderHistory(time)
         if orders is None:
             return Response(404, "Orders not found")
-        if type == "all":
-            return RevenueController.getTotalRevenue(orders)
-        elif type == "category":
-            return RevenueController.calculateCategoryRevenue(orders, slug)
+
+        if type == "category":
+            total_revenue, total_order, pending_order, completed_order = (
+                RevenueController.calculateCategoryRevenue(orders, slug)
+            )
         elif type == "product":
-            return RevenueController.calculateProductRevenue(orders, slug)
+            total_revenue, total_order, pending_order, completed_order = (
+                RevenueController.calculateProductRevenue(orders, slug)
+            )
+        else:
+            total_revenue, total_order, pending_order, completed_order = (
+                RevenueController.getTotalRevenue(orders)
+            )
+
+        totalProduct, totalCategory, totalCustomer = AdminService.getOverview()
+
+        return Response(
+            200,
+            "Success",
+            {
+                "totalRevenue": total_revenue,
+                "totalOrder": total_order,
+                "pendingOrder": pending_order,
+                "completedOrder": completed_order,
+                "totalProduct": totalProduct,
+                "totalCategory": totalCategory,
+                "totalCustomer": totalCustomer,
+            },
+        )
 
     # Lấy đánh giá của tất cả sản phẩm
     def getReviews(page: int, limit: int):

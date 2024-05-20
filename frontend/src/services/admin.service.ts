@@ -1,4 +1,4 @@
-import { IResponse, PaginationResponse } from '~/models/response'
+import { IResponse, PaginationParams, PaginationResponse } from '~/models/response'
 import client from './axios.service'
 import {
   ProductAdminResponse,
@@ -8,6 +8,8 @@ import {
   ProductUpdatePayload
 } from '~/models/product'
 import apiConfig from '~/configs/api.config'
+import { UserAdminResponse } from '~/models/user'
+import { AdminOverviewParams, AdminOverviewResponse } from '~/models/admin'
 
 const product = {
   get: async (query: ProductAdminSearchParams): Promise<IResponse<PaginationResponse<ProductAdminResponse>>> => {
@@ -38,6 +40,21 @@ const product = {
   }
 }
 
+const user = {
+  get: async (params: PaginationParams): Promise<IResponse<PaginationResponse<UserAdminResponse>>> => {
+    return client.get(apiConfig.admin.user, { params })
+  },
+  update: async (id: number): Promise<IResponse<any>> => {
+    return client.put(apiConfig.admin.user, { id })
+  }
+}
+
+const overview = async (params: AdminOverviewParams): Promise<IResponse<AdminOverviewResponse>> => {
+  return client.get(apiConfig.admin.overview, { params })
+}
+
 export default {
-  product
+  product,
+  user,
+  overview
 }

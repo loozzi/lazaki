@@ -81,6 +81,5 @@ class Product(Base):
             "name": self.name,
             "slug": self.slug,
             "image": self.getPrimaryImage(),
-            "rating": self.getRateMean(),
             "category": [category.getName() for category in self.categories],
         }

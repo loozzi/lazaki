@@ -4,9 +4,9 @@ from src import db
 from src.models.Address import Address
 from src.models.Order import Order
 from src.models.OrderDetail import OrderDetail
-from src.models.Product import Product
+from src.models import Customer
 from src.models.Variation import Variation
-from src.utils.enums import OrderStatusEnum, PaymentMethodEnum
+from src.utils.enums import OrderStatusEnum, PaymentStatusEnum
 
 
 class OrderService:
@@ -93,11 +93,20 @@ class OrderService:
             Order.customerId == customerId, Order.status != OrderStatusEnum.ORDER
         ).all()
 
-    def getOrders():
-        pass
+    def getOrders(sort: str) -> list[dict]:
+        order_list = Order.query.all()
+        data = []
+        for order in order_list:
+            dict_order = order.serialize()
+            data.append(dict_order)
+        if sort == "desc":
+            data.sort(key=lambda order: order["id"], reverse=True)
+        else:
+            data.sort(key=lambda order: order["id"])
+        return data
 
     # Lấy thông tin 1 order
-    def getOrder(orderId: int):
+    def getOrder(orderId: int) -> Order | None:
         return Order.query.get(orderId)
 
     def getOrderDetail(orderDetailId: int):
@@ -154,5 +163,24 @@ class OrderService:
         data_response["oldPrice"] = new_order_detail.oldPrice
         return data_response
 
-    def updateOrder(orderId: int, status: str, shippingName: str, shippingCode: str):
-        pass
+    def updateOrderStatus(order: Order, status: str) -> Order:
+        for s in OrderStatusEnum:
+            if s.value == status.lower():
+                order.status = s
+        order.update()
+        return order
+
+    def updateOrderShipping(
+        order: Order, shippingName: str, shippingCode: str
+    ) -> Order:
+        order.shippingName = shippingName
+        order.shippingCode = shippingCode
+        order.update()
+        return order
+
+    def updateOrderPayment(order: Order, paymentStatus: str) -> Order:
+        for s in PaymentStatusEnum:
+            if s.value == paymentStatus.lower():
+                order.paymentStatus = s
+        order.update()
+        return order

@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react'
 import { FaStar } from 'react-icons/fa'
 import { CartItem, OrderHistoryResponse } from '~/models/order'
 import { ReviewResponse } from '~/models/review'
-import { OrderStatusColor, OrderStatusName, PaymentMethodName, PaymentStatusName, parseDateToDMY } from '~/utils'
+import orderService from '~/services/order.service'
+import reviewService from '~/services/review.service'
+import { OrderStatusColor, OrderStatusName, PaymentMethodName, PaymentStatusName, parseTimeToHM } from '~/utils'
 import { PriceComp } from '../price'
 import { RatingComp } from '../review/rating'
 import { StarComp } from '../star-field'
-import orderService from '~/services/order.service'
 interface HistoryDetailCompProps {
   className?: string
   historyId: number
@@ -49,22 +50,11 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
 
   useEffect(() => {
     // Call API to get reviews
-    setReviews([
-      {
-        id: 1,
-        fullName: 'Nguyễn Văn A',
-        variation: {
-          type: 'size',
-          name: 'Size',
-          option: 'M'
-        },
-        value: 5,
-        content: 'Sản phẩm rất tốt',
-        created_at: '2021-09-01T00:00:00.000Z',
-        variationId: 0,
-        productId: 0
+    reviewService.get({ orderId: historyId }).then((res) => {
+      if (res.status === 200) {
+        setReviews(res.data || [])
       }
-    ])
+    })
   }, [history])
 
   return (
@@ -140,12 +130,18 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
                     <div>
                       <span className='text-xs flex gap-4'>
                         <StarComp stars={reviews.filter((r) => r.variationId === item.variationId)[0].value} />{' '}
-                        {parseDateToDMY(reviews.filter((r) => r.variationId === item.variationId)[0].created_at)}
+                        {parseTimeToHM(reviews.filter((r) => r.variationId === item.variationId)[0].createdAt)}
                       </span>
-                      <span className='line-clamp-3'>
-                        {reviews.filter((r) => r.variationId === item.variationId)[0].content ||
-                          'Không có đánh giá nào từ khách hàng'}
+                      <span className='line-clamp-3 mt-2'>
+                        {reviews.filter((r) => r.variationId === item.variationId)[0].content || 'Không có đánh giá...'}
                       </span>
+                      <div className='flex gap-2 mt-2'>
+                        {reviews
+                          .filter((r) => r.variationId === item.variationId)[0]
+                          .images?.map((img) => (
+                            <Image src={img} alt='Hình ảnh đánh giá' className='w-16 h-16 object-cover rounded-md' />
+                          ))}
+                      </div>
                     </div>
                   ) : selectedReview !== item.id ? (
                     <div className='w-full flex justify-end items-end'>
@@ -168,7 +164,13 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
                     </div>
                   ) : (
                     <div className='w-full'>
-                      <RatingComp handleCancel={() => setSelectedReview(0)} item={item} orderId={history.id} />
+                      <RatingComp
+                        handleCancel={() => setSelectedReview(0)}
+                        item={item}
+                        onSuccess={(review: ReviewResponse) => {
+                          setReviews([...reviews, review])
+                        }}
+                      />
                     </div>
                   )}
                 </div>

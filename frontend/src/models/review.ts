@@ -11,7 +11,7 @@ export interface ReviewResponse {
   value: number
   content?: string
   images?: string[]
-  created_at: string
+  createdAt: string
 }
 
 export interface ReviewPayload {
@@ -19,6 +19,6 @@ export interface ReviewPayload {
   content: string
   variationId: number
   productId: number
-  orderId: number
-  images?: string[]
+  orderDetailId: number
+  images: string[]
 }

@@ -1,12 +1,11 @@
 from typing import List
-from src.models.RatingImage import RatingImage
-from src.models.OrderDetail import OrderDetail
-from src.models.Rating import Rating
-from src.models.Product import Product
-from src.models.Order import Order
-from src import db
 
+from src import db
+from src.models.Order import Order
+from src.models.OrderDetail import OrderDetail
+from src.models.Product import Product
 from src.models.Rating import Rating
+from src.models.RatingImage import RatingImage
 
 
 class ReviewService:
@@ -36,6 +35,8 @@ class ReviewService:
             new_image = RatingImage(ratingId=new_rating.id, link=image)
             db.session.add(new_image)
             db.session.commit()
+
+        return new_rating
 
     # Lấy danh sách đánh giá mặt hàng theo slug
     def getReviews(slug: str):

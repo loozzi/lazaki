@@ -8,6 +8,7 @@ from src.models import Address, Customer, Variation
 from src.services.CustomerService import CustomerService
 from src.services.OrderService import OrderService
 from src.services.ProductService import ProductService
+from src.services.CategoryService import CategoryService
 from src.utils.enums import CustomerStatusEnum
 from src.utils.response import Response
 
@@ -192,3 +193,14 @@ class AdminController:
         )
 
         return Response(200, "Success", pagination.serialize())
+
+    def createCategory(name: str, slug: str, desc: str):
+        category = CategoryService.addCategory(name, slug, desc)
+        return Response(200, "Tạo danh mục thành công", category.serialize())
+
+    def editCategory(id: int, name: str, slug: str, desc: str):
+        category = CategoryService.getCategoryById(id)
+        if not category:
+            return Response(404, "Danh mục không tồn tại")
+        category = CategoryService.editCategory(category, name, slug, desc)
+        return Response(200, "Chỉnh sửa thành công", category.serialize())

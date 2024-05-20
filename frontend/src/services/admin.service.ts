@@ -9,6 +9,7 @@ import {
 } from '~/models/product'
 import apiConfig from '~/configs/api.config'
 import { UserAdminResponse } from '~/models/user'
+import { AdminOverviewParams, AdminOverviewResponse } from '~/models/admin'
 
 const product = {
   get: async (query: ProductAdminSearchParams): Promise<IResponse<PaginationResponse<ProductAdminResponse>>> => {
@@ -48,7 +49,12 @@ const user = {
   }
 }
 
+const overview = async (params: AdminOverviewParams): Promise<IResponse<AdminOverviewResponse>> => {
+  return client.get(apiConfig.admin.overview, { params })
+}
+
 export default {
   product,
-  user
+  user,
+  overview
 }

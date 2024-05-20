@@ -1,6 +1,5 @@
 from typing import List
 
-from src import db
 from src.controllers.Pagination import Pagination
 from src.controllers.RevenueController import RevenueController
 from src.models import Address, Customer, Variation

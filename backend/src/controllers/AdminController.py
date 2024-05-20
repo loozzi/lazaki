@@ -4,11 +4,11 @@ from src import db
 from src.controllers.Pagination import Pagination
 from src.controllers.RevenueController import RevenueController
 from src.models import Address, Customer, Variation
+from src.services.AdminService import AdminService
 from src.services.CustomerService import CustomerService
 from src.services.OrderService import OrderService
 from src.services.ProductService import ProductService
 from src.services.ReviewService import ReviewService
-from src.utils.enums import CustomerStatusEnum
 from src.utils.response import Response
 
 
@@ -164,12 +164,35 @@ class AdminController:
         orders = OrderService.getAllOrderHistory(time)
         if orders is None:
             return Response(404, "Orders not found")
-        if type == "all":
-            return RevenueController.getTotalRevenue(orders)
-        elif type == "category":
-            return RevenueController.calculateCategoryRevenue(orders, slug)
+
+        if type == "category":
+            total_revenue, total_order, pending_order, completed_order = (
+                RevenueController.calculateCategoryRevenue(orders, slug)
+            )
         elif type == "product":
-            return RevenueController.calculateProductRevenue(orders, slug)
+            total_revenue, total_order, pending_order, completed_order = (
+                RevenueController.calculateProductRevenue(orders, slug)
+            )
+        else:
+            total_revenue, total_order, pending_order, completed_order = (
+                RevenueController.getTotalRevenue(orders)
+            )
+
+        totalProduct, totalCategory, totalCustomer = AdminService.getOverview()
+
+        return Response(
+            200,
+            "Success",
+            {
+                "totalRevenue": total_revenue,
+                "totalOrder": total_order,
+                "pendingOrder": pending_order,
+                "completedOrder": completed_order,
+                "totalProduct": totalProduct,
+                "totalCategory": totalCategory,
+                "totalCustomer": totalCustomer,
+            },
+        )
 
     # Lấy đánh giá của tất cả sản phẩm
     def getReviews(page: int, limit: int):

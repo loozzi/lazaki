@@ -112,10 +112,14 @@ class OrderService:
             start_date = end_date - datetime.timedelta(days=30)
 
         # Truy vấn toàn bộ order đã hoàn thành trong khoảng thời gian
-        orders = Order.query.filter(
-            Order.orderDate >= start_date,
-            Order.orderDate <= end_date,
-        ).all()
+        orders = (
+            Order.query.filter(
+                Order.orderDate >= start_date,
+                Order.orderDate <= end_date,
+            )
+            .filter(Order.status != OrderStatusEnum.ORDER)
+            .all()
+        )
         return orders
 
     # Lấy order hiện tại của khách hàng

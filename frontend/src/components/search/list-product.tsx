@@ -4,10 +4,13 @@ import { CardItem } from '../item/card-item'
 interface ListSearchProductProps {
   className?: string
   products: ProductResponse[]
+  bottomContent?: React.ReactNode
+  loading?: boolean
+  numberLoading?: number
 }
 
 export const ListSearchProductComp = (props: ListSearchProductProps) => {
-  const { className, products } = props
+  const { className, products, bottomContent, loading } = props
 
   return (
     <div className={className}>
@@ -17,6 +20,11 @@ export const ListSearchProductComp = (props: ListSearchProductProps) => {
             <CardItem key={index} size='md' item={product} />
           ))}
         </div>
+        {products.length === 0 && !loading && (
+          <div className='text-center text-slate-400 text-lg font-semibold w-full'>Không tìm thấy sản phẩm nào</div>
+        )}
+        {loading && <div className='text-center text-slate-400 text-lg font-semibold w-full'>Đang tìm kiếm</div>}
+        {bottomContent}
       </div>
     </div>
   )

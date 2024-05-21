@@ -7,10 +7,12 @@ interface ListCardItemProps {
   items: ProductResponse[]
   className?: string
   isColumn?: boolean
+  loading?: boolean
+  numberLoading?: number
 }
 
 export const ListCardItemComp = (props: ListCardItemProps) => {
-  const { heading, items, className, isColumn } = props
+  const { heading, items, className, isColumn, numberLoading, loading } = props
 
   return (
     <PaneComp header={heading} className={className}>
@@ -22,8 +24,12 @@ export const ListCardItemComp = (props: ListCardItemProps) => {
         }
       >
         {items.map((item, index) => (
-          <CardItem key={index} item={item} size='md' />
+          <CardItem key={index} item={item} size='lg' />
         ))}
+        {loading &&
+          Array.from(Array(numberLoading || 12).keys()).map((e) => (
+            <CardItem key={e} item={{} as ProductResponse} loading={true} size='lg' />
+          ))}
       </div>
     </PaneComp>
   )

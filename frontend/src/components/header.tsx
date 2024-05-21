@@ -41,7 +41,7 @@ export const HeaderComp = () => {
 
   return (
     <Navbar isBordered className='h-24 w-full justify-center' maxWidth='xl'>
-      <NavbarBrand onClick={() => history.push(routes.client.home)} className='cursor-pointer'>
+      <NavbarBrand as={Link} to={routes.client.home} className='cursor-pointer'>
         <Image src={assets.lazaki} className='min-w-36 max-w-36' />
       </NavbarBrand>
       <NavbarContent className='hidden sm:flex gap-6' justify='center'>

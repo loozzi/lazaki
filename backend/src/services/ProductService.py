@@ -39,8 +39,14 @@ class ProductService:
 
     # Lấy danh sách sản phẩm
     def getProducts(self, sort, limit: int, page: int):
+        #all_products = Product.query.filter_by(isDeleted = False).all()
         all_products = (
-            db.session.query(Product).filter(Product.isDeleted == False).all()
+            db.session.query(
+                Product
+            )
+            .outerjoin(Variation)
+            .filter(Product.isDeleted == False)
+            .group_by(Product.id).all()
         )
         data = self.data_response(all_products, sort)
         data = data[(page - 1) * limit : limit + (page - 1) * limit]

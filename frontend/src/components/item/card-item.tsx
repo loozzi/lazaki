@@ -44,7 +44,7 @@ export const CardItem = (props: CardItemProps) => {
           alt={item.name}
           radius='lg'
           width='100%'
-          className={`w-full object-cover aspect-square h-[${szConfig.width}px]`}
+          className={`w-full object-contain aspect-square h-[${szConfig.width}px]`}
         />
       </CardBody>
       <CardFooter>

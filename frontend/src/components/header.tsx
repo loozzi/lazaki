@@ -12,8 +12,9 @@ import {
   NavbarItem
 } from '@nextui-org/react'
 import { useEffect } from 'react'
-import { CiShoppingCart, CiUser } from 'react-icons/ci'
+import { CiUser } from 'react-icons/ci'
 import { FaExternalLinkAlt } from 'react-icons/fa'
+import { PiShoppingCartSimple } from 'react-icons/pi'
 import { Link } from 'react-router-dom'
 import { useAppSelector } from '~/app/hook'
 import assets from '~/assets'
@@ -57,11 +58,28 @@ export const HeaderComp = () => {
         </NavbarItem>
       </NavbarContent>
       <NavbarContent className='flex-col justify-end'>
-        <NavbarItem className='lg:flex'>
+        <NavbarItem className='lg:flex gap-2'>
+          <Button
+            as={Link}
+            color='primary'
+            to={routes.client.cart}
+            variant='light'
+            startContent={
+              isAuthenticated ? (
+                <Badge content={cart?.orderDetails.length.toString() || 0} size='md' color='danger'>
+                  <PiShoppingCartSimple size={24} />
+                </Badge>
+              ) : (
+                <PiShoppingCartSimple size={24} />
+              )
+            }
+          >
+            Giỏ hàng
+          </Button>
           {isAuthenticated ? (
             <Dropdown>
               <DropdownTrigger>
-                <Button color='primary' variant='flat' startContent={<CiUser size={24} />} className='mr-2'>
+                <Button color='primary' variant='flat' startContent={<CiUser size={24} />}>
                   Tài khoản
                 </Button>
               </DropdownTrigger>
@@ -86,23 +104,6 @@ export const HeaderComp = () => {
               Tài khoản
             </Button>
           )}
-          <Button
-            as={Link}
-            color='primary'
-            to={routes.client.cart}
-            variant='light'
-            startContent={
-              isAuthenticated ? (
-                <Badge content={cart?.orderDetails.length.toString() || 0} size='md' color='danger'>
-                  <CiShoppingCart size={24} />
-                </Badge>
-              ) : (
-                <CiShoppingCart size={24} />
-              )
-            }
-          >
-            Giỏ hàng
-          </Button>
         </NavbarItem>
         <NavbarItem className='md:mt-3'></NavbarItem>
       </NavbarContent>

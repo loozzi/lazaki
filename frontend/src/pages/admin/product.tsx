@@ -79,8 +79,9 @@ export const ViewAdminManageProductPage = () => {
       <div className='mt-4 w-full flex justify-between'>
         <Input
           className='max-w-[560px]'
-          placeholder='Tên sản phẩm'
-          endContent={<CiSearch />}
+          label='Tìm kiếm'
+          placeholder='Tìm kiếm tên sản phẩm'
+          startContent={<CiSearch />}
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
         />

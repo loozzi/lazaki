@@ -34,8 +34,12 @@ export const ViewAdminManageProductPage = () => {
   const [sort, setSort] = useState<'asc' | 'desc'>('asc')
   const [limit, setLimit] = useState<number>(10)
 
+  const [loading, setLoading] = useState<boolean>(false)
+
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
+      setLoading(true)
+      setProducts([])
       adminService.product
         .get({
           keyword,
@@ -53,6 +57,7 @@ export const ViewAdminManageProductPage = () => {
             perPage: res.data?.perPage || 10,
             total: res.data?.total || 0
           })
+          setLoading(false)
         })
     }, 500)
     return () => clearTimeout(delayDebounceFn)
@@ -144,12 +149,27 @@ export const ViewAdminManageProductPage = () => {
             </div>
           }
           bottomContent={
-            <Pagination
-              className='flex justify-center mt-2'
-              total={Math.ceil(pagination.total / pagination.perPage)}
-              page={pagination.currentPage}
-              onChange={(page) => setPagination({ ...pagination, currentPage: page })}
-            />
+            <div className='flex flex-col items-center'>
+              {loading && (
+                <div className='flex justify-center items-center mt-4'>
+                  <div className='animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-gray-900' />
+                </div>
+              )}
+              <div className='flex justify-between'>
+                <div className='flex gap-2'>
+                  <span className='text-sm'>
+                    Hiển thị {Math.min(pagination.perPage, products.length)} trong {pagination.total} sản phẩm
+                  </span>
+                </div>
+              </div>
+
+              <Pagination
+                className='flex justify-center mt-2'
+                total={Math.ceil(pagination.total / pagination.perPage)}
+                page={pagination.currentPage}
+                onChange={(page) => setPagination({ ...pagination, currentPage: page })}
+              />
+            </div>
           }
         >
           <TableHeader columns={columns}>

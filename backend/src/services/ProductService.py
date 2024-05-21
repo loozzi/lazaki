@@ -455,7 +455,7 @@ class ProductService:
         return product_pagination.serialize()
 
     # Lấy sản phẩm theo keyword, order, type
-    def searchProductsAdmin(keyword: str, order: str, type: str):
+    def searchProductsAdmin(keyword: str, order: str, type: str, page: int, limit: int):
         # Truy vấn tất cả sản phẩm và tổng số lượng bán được và tổng số lượng tồn kho
         searched_products = (
             db.session.query(
@@ -486,4 +486,7 @@ class ProductService:
             else:
                 searched_products = searched_products.order_by(desc("total_quantity"))
 
-        return searched_products.all()
+        return (
+            searched_products.limit(limit).offset((page - 1) * limit).all(),
+            searched_products.count(),
+        )

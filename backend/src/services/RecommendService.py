@@ -8,6 +8,8 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from src.models.Product import Product
 from src.services.ReviewService import ReviewService
+import os
+import joblib
 
 
 class RecommendService:
@@ -24,7 +26,11 @@ class RecommendService:
             list_name.append(info["name"])
             list_price.append(info["variations"][0]["price"])
             list_rating_average.append(ReviewService.getRateMean(info["id"]))
-            list_category.append(info["categories"][0]["name"])
+            if len(info["categories"]) == 0:
+                list_category.append(product.name)
+            else:
+                list_category.append(info["categories"][0]["name"])
+            
             list_solds.append(info["variations"][0]["sold"])
         new_data_frame = pd.DataFrame(
             {
@@ -84,17 +90,31 @@ class RecommendService:
         PreparePipe = make_pipeline(preprocessor)
         return PreparePipe
 
-    def generateProducts(self, list_product: List[Product]):
-        products_recommend = []
-        all_product = Product.query.filter(Product.isDeleted == False).all()
-        data_frame_all_product = self.create_dataframe(all_product)
+
+    def save_and_load_model(self, data_frame_all_product, model_path):
         prepare_pipe = self.prepare_pipe(data_frame_all_product)
-        model_recommend = KMeans(n_clusters=100)
+        model_recommend = KMeans(n_clusters=40)
         model_pipe = make_pipeline(prepare_pipe, model_recommend)
         model_pipe.fit(data_frame_all_product)
-        data_frame_list_product = self.create_dataframe(list_product)
-        if len(data_frame_list_product) == 0:
+        joblib.dump(model_pipe, model_path)
+        return model_pipe
+
+
+    def generateProducts(self, list_product: List[Product]):
+        products_recommend = []
+        if len(list_product) == 0:
             return products_recommend
+        all_product = Product.query.filter(Product.isDeleted == False).all()
+        data_frame_all_product = self.create_dataframe(all_product)
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        model_path = os.path.join(current_directory, "model.joblib")
+        model_pipe = []
+        if os.path.exists(model_path):
+                model_pipe = joblib.load(model_path)
+        else:
+            model_pipe = self.save_and_load_model(data_frame_all_product,model_path)
+        model_pipe = joblib.load(model_path)
+        data_frame_list_product = self.create_dataframe(list_product)
         cluster_all_product = model_pipe.predict(data_frame_all_product)
         cluster_set_product = set(model_pipe.predict(data_frame_list_product))
         for i in range(len(cluster_all_product)):

@@ -1,6 +1,7 @@
 from typing import List
 
 from sqlalchemy import asc, desc, func
+from sqlalchemy.orm import aliased
 from src import db
 from src.controllers.Pagination import Pagination
 from src.models.Category import Category
@@ -39,19 +40,60 @@ class ProductService:
 
     # Lấy danh sách sản phẩm
     def getProducts(self, sort, limit: int, page: int):
-        #all_products = Product.query.filter_by(isDeleted = False).all()
-        all_products = (
+        # all_products = Product.query.filter_by(isDeleted=False).all()
+
+        # all_products = (
+        #     db.session.query(
+        #         Product
+        #     )
+        #     .outerjoin(Variation)
+        #     .filter(Product.isDeleted == False)
+        #     .group_by(Product.id).all()
+        # )
+        # data = self.data_response(all_products, sort)
+        # data = data[(page - 1) * limit : limit + (page - 1) * limit]
+        # res = Pagination(page, len(data), len(all_products), data)
+        VariationAlias = aliased(Variation)
+        totalProducts = Product.query.count()
+        subquery = (
             db.session.query(
-                Product
+                VariationAlias.productId,
+                func.min(VariationAlias.id).label("min_variation_id"),
             )
-            .outerjoin(Variation)
-            .filter(Product.isDeleted == False)
-            .group_by(Product.id).all()
+            .group_by(VariationAlias.productId)
+            .subquery()
         )
-        data = self.data_response(all_products, sort)
-        data = data[(page - 1) * limit : limit + (page - 1) * limit]
-        res = Pagination(page, len(data), len(all_products), data)
-        return res.serialize()
+        order_by_query = (
+            desc(Product.updatedAt) if sort == "desc" else asc(Product.updatedAt)
+        )
+        allProducts = (
+            db.session.query(Product)
+            .join(subquery, Product.id == subquery.c.productId)
+            .join(Variation, Variation.id == subquery.c.min_variation_id)
+            .filter(Product.isDeleted == False)
+            .order_by(order_by_query)
+            .limit(limit)
+            .offset((page - 1) * limit)
+            .all()
+        )
+
+        dataResponse = []
+        for product in allProducts:
+            info_product = product.serialize()
+            data_one_product = {}
+            data_one_product["name"] = info_product["name"]
+            data_one_product["slug"] = product.slug
+            data_one_product["image"] = product.getPrimaryImage()
+            data_one_product["price"] = info_product["variations"][0]["price"]
+            sold = 0
+            for variation in info_product["variations"]:
+                sold += variation["sold"]
+            data_one_product["sold"] = sold
+            data_one_product["rating"] = ReviewService.getRateMean(product.id)
+            dataResponse.append(data_one_product)
+
+        response = Pagination(page, limit, totalProducts, dataResponse)
+        return response.serialize()
 
     # Tìm kiếm sản phẩm
     def searchProducts(

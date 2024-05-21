@@ -142,6 +142,7 @@ export const DetailItemComp = (props: DetailItemCompProps) => {
                         variant={variation.id === selectedVariation.id ? 'solid' : 'ghost'}
                         color={variation.quantity > 0 ? 'primary' : 'warning'}
                         onClick={() => handleChangeVariation(variation)}
+                        className='max-w-64 h-auto whitespace-normal break-words text-center p-2'
                       >
                         {variation.name}
                       </Button>

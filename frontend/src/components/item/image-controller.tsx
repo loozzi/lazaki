@@ -41,7 +41,7 @@ export const ItemImageControllerComp = (props: ItemImageControllerProps) => {
         <Image
           src={currentImage.link}
           alt={'Hình ảnh sản phẩm'}
-          className='max-w-[450px] w-full aspect-square max-h-[450px] object-cover'
+          className=' w-[450px] h-[450px] max-w-[450px] aspect-square max-h-[450px] object-contain'
         />
       </div>
       <div className='flex mt-2 justify-between'>

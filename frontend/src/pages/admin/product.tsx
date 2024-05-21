@@ -32,27 +32,31 @@ export const ViewAdminManageProductPage = () => {
   const [keyword, setKeyword] = useState<string>('')
   const [type, setType] = useState<'quantity' | 'sold'>('quantity')
   const [sort, setSort] = useState<'asc' | 'desc'>('asc')
+  const [limit, setLimit] = useState<number>(10)
 
   useEffect(() => {
-    adminService.product
-      .get({
-        keyword,
-        order: sort,
-        type,
-        page: pagination.currentPage,
-        perPage: pagination.perPage
-      })
-      .then((res) => {
-        const products = res.data?.data || []
-
-        setProducts(products)
-        setPagination({
-          currentPage: res.data?.currentPage || 1,
-          perPage: res.data?.perPage || 10,
-          total: res.data?.total || 0
+    const delayDebounceFn = setTimeout(() => {
+      adminService.product
+        .get({
+          keyword,
+          order: sort,
+          type,
+          page: pagination.currentPage,
+          perPage: pagination.perPage,
+          limit: limit
         })
-      })
-  }, [keyword, sort, type, pagination.currentPage, pagination.perPage])
+        .then((res) => {
+          const products = res.data?.data || []
+          setProducts(products)
+          setPagination({
+            currentPage: res.data?.currentPage || 1,
+            perPage: res.data?.perPage || 10,
+            total: res.data?.total || 0
+          })
+        })
+    }, 500)
+    return () => clearTimeout(delayDebounceFn)
+  }, [keyword, sort, type, pagination.currentPage, pagination.perPage, limit])
 
   const columns = [
     { name: 'Hình ảnh', uid: 'image' },
@@ -84,9 +88,9 @@ export const ViewAdminManageProductPage = () => {
           isStriped
           topContent={
             <div className='flex justify-between'>
-              <div className='w-64 flex gap-2'>
+              <div className='w-[480px] max-w-[480px] flex gap-2'>
                 <Select
-                  placeholder='Sắp xếp'
+                  label='Sắp xếp'
                   selectedKeys={[sort]}
                   onChange={(e) => {
                     setSort(e.target.value as 'asc' | 'desc')
@@ -100,7 +104,7 @@ export const ViewAdminManageProductPage = () => {
                   </SelectItem>
                 </Select>
                 <Select
-                  placeholder='Theo'
+                  label='Theo'
                   selectedKeys={[type]}
                   onChange={(e) => {
                     setType(e.target.value as 'quantity' | 'sold')
@@ -111,6 +115,29 @@ export const ViewAdminManageProductPage = () => {
                   </SelectItem>
                   <SelectItem value='sold' key='sold'>
                     Đã bán
+                  </SelectItem>
+                </Select>
+                <Select
+                  label='Số lượng'
+                  selectedKeys={[limit.toString()]}
+                  onChange={(e) => {
+                    setLimit(parseInt(e.target.value))
+                  }}
+                >
+                  <SelectItem value='10' key='10'>
+                    10
+                  </SelectItem>
+                  <SelectItem value='20' key='20'>
+                    20
+                  </SelectItem>
+                  <SelectItem value='50' key='50'>
+                    50
+                  </SelectItem>
+                  <SelectItem value='100' key='100'>
+                    100
+                  </SelectItem>
+                  <SelectItem value='200' key='200'>
+                    200
                   </SelectItem>
                 </Select>
               </div>

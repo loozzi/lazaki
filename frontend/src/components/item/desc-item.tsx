@@ -18,7 +18,7 @@ export const DescriptionItemComp = (props: DescriptionItemProps) => {
             <span className='text-2xl '>Chi tiết sản phẩm</span>
           </div>
           <div className='p-4 flex flex-col gap-2'>
-            <div className='flex'>
+            <div className='flex gap-2'>
               <span className='w-32 text-gray-500'>Danh mục</span>
               {/* <div>{product.categories.map((cat) => cat.name).join(', ')}</div> */}
               <div className='flex gap-2'>
@@ -33,7 +33,7 @@ export const DescriptionItemComp = (props: DescriptionItemProps) => {
               </div>
             </div>
             {product.properties.map((property, index) => (
-              <div key={index} className='flex'>
+              <div key={index} className='flex gap-2'>
                 <span className='w-32 text-gray-500'>{property.name}</span>
                 <span
                   dangerouslySetInnerHTML={{
@@ -42,7 +42,7 @@ export const DescriptionItemComp = (props: DescriptionItemProps) => {
                 ></span>
               </div>
             ))}
-            <div className='flex'>
+            <div className='flex gap-2'>
               <span className='w-32 text-gray-500'>Kho hàng</span>
               <div>{product.variations.reduce((pre, cur) => cur.quantity + pre, 0)}</div>
             </div>

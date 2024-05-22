@@ -39,9 +39,14 @@ class ReviewService:
         return new_rating
 
     # Lấy danh sách đánh giá mặt hàng theo slug
-    def getReviews(slug: str):
-        all_ratings = Rating.query.join(Product).filter(Product.slug == slug).all()
-        return all_ratings
+    def getReviews(slug: str, page: int, limit: int):
+        all_ratings = (
+            Rating.query.join(Product)
+            .filter(Product.slug == slug)
+            .paginate(page=page, per_page=limit)
+        )
+        totalRatings = Rating.query.join(Product).filter(Product.slug == slug).count()
+        return all_ratings, totalRatings
 
     # Lấy danh sách tất cả đánh giá
     def getAllReviews():

@@ -35,6 +35,7 @@ class OrderDetail(Base):
             "orderId": self.orderId,
             "productId": self.productId,
             "variationId": self.variationId,
+            "slug": product.slug,
             "name": product.name,
             "image": variation.image,
             "variation": variation.getInfo(),

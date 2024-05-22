@@ -32,22 +32,17 @@ class RatingController:
 
     # Lấy danh sách đánh giá mặt hàng theo slug
     def getReviews(slug: str, page: int, limit: int):
-        all_ratings = ReviewService.getReviews(slug)
+        all_ratings, totalRatings = ReviewService.getReviews(slug, page, limit)
 
-        total = len(all_ratings)
-        if total == 0:
-            return Response(404, "No review found")
-        start = (page - 1) * limit
-        end = min(start + limit, total)
-        paginated_ratings = all_ratings[start:end]
-
-        # Chuẩn bị dữ liệu trả về
         rating_data = []
-        for rating in paginated_ratings:
-            rating_data.append(rating.serialize())
+        # Chuẩn bị dữ liệu trả về
+        for rating in all_ratings:
+            rating_serialize = rating.serialize()
+            rating_serialize["images"] = [image.link for image in rating.images]
+            rating_data.append(rating_serialize)
 
         pagination = Pagination(
-            currentPage=page, perPage=limit, total=total, data=rating_data
+            currentPage=page, perPage=limit, total=totalRatings, data=rating_data
         )
 
         return Response(200, "Success", pagination.serialize())
@@ -59,6 +54,8 @@ class RatingController:
         # Chuẩn bị dữ liệu trả về
         rating_data = []
         for rating in order_ratings:
-            rating_data.append(rating.serialize())
+            rating_serialize = rating.serialize()
+            rating_serialize["images"] = [image.link for image in rating.images]
+            rating_data.append(rating_serialize)
 
         return Response(200, "Success", rating_data)

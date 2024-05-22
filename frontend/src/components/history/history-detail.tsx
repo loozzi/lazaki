@@ -9,6 +9,8 @@ import { OrderStatusColor, OrderStatusName, PaymentMethodName, PaymentStatusName
 import { PriceComp } from '../price'
 import { RatingComp } from '../review/rating'
 import { StarComp } from '../star-field'
+import { Link } from 'react-router-dom'
+import routes from '~/configs/routes'
 interface HistoryDetailCompProps {
   className?: string
   historyId: number
@@ -107,7 +109,10 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
           <div className='flex flex-col gap-4'>
             <span className='font-semibold text-2xl text-gray-500'>Thông tin đơn hàng</span>
             {history.orderDetails.map((item: CartItem) => (
-              <div className='grid grid-cols-1 lg:grid-cols-2 border-1 p-4 rounded-md gap-2'>
+              <Link
+                to={routes.client.detail.replace(':permalink', item.slug)}
+                className='grid grid-cols-1 lg:grid-cols-2 border-1 p-4 rounded-md gap-2'
+              >
                 <div className='flex gap-2 items-center'>
                   <Image src={item.image} alt={'Hình ảnh sản phẩm'} className='w-24 h-24 object-cover' />
                   <div className='flex flex-col gap-2'>
@@ -142,6 +147,10 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
                             <Image src={img} alt='Hình ảnh đánh giá' className='w-16 h-16 object-cover rounded-md' />
                           ))}
                       </div>
+                      <span className='text-xs text-gray-400'>
+                        {reviews.filter((r) => r.variationId === item.variationId)[0].images?.length || 0} hình ảnh đánh
+                        giá
+                      </span>
                     </div>
                   ) : selectedReview !== item.id ? (
                     <div className='w-full flex justify-end items-end'>
@@ -174,7 +183,7 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
                     </div>
                   )}
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
           <div className='flex justify-end gap-4 mt-4'>

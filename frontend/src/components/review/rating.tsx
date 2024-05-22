@@ -1,5 +1,6 @@
 import {
   Button,
+  Image,
   Modal,
   ModalBody,
   ModalContent,
@@ -67,6 +68,7 @@ export const RatingComp = (props: RatingCompProps) => {
   return (
     <div className='flex flex-col gap-2'>
       <Textarea
+        label='Đánh giá của bạn'
         placeholder='Nhập đánh giá của bạn'
         value={payload.values.content}
         onChange={(e) => payload.setFieldValue('content', e.target.value)}
@@ -74,6 +76,11 @@ export const RatingComp = (props: RatingCompProps) => {
       <Button size='sm' color='primary' variant='light' onClick={onOpen}>
         Tải ảnh lên
       </Button>
+      <div className='flex felx-wrap gap-2'>
+        {payload.values.images.map((image, index) => (
+          <Image key={index} src={image} alt='review' className='w-24 h-24 object-cover' />
+        ))}
+      </div>
       <div className='flex justify-between items-center'>
         <div className='flex cursor-pointer items-center'>
           {starValues.map((value) => (
@@ -97,11 +104,11 @@ export const RatingComp = (props: RatingCompProps) => {
         </div>
       </div>
 
-      <Modal isOpen={isOpen} onClose={handleClose}>
+      <Modal isOpen={isOpen} onClose={handleClose} size='2xl'>
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader>Modal Title</ModalHeader>
+              <ModalHeader>Lựa chọn hình ảnh</ModalHeader>
               <ModalBody>
                 <ImageUploaderComp
                   images={payload.values.images!}

@@ -123,6 +123,8 @@ class Order(Base):
             "paymentMethod": self.paymentMethod.value,
             "paymentStatus": self.paymentStatus.value,
             "status": self.status.value,
+            "shippingName": self.shippingName,
+            "shippingCode": self.shippingCode,
             "note": self.note,
             "orderDetails": [
                 orderDetail.serialize() for orderDetail in self.orderDetails

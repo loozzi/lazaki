@@ -4,6 +4,7 @@ import { FaFilter } from 'react-icons/fa'
 import { useLocation } from 'react-router'
 import { history } from '~/configs/history'
 import { Category } from '~/models/category'
+import categoryService from '~/services/category.service'
 
 interface SearchFilterProps {
   className?: string
@@ -18,6 +19,8 @@ export const SearchFilterComp = (props: SearchFilterProps) => {
   const [categories, setCategories] = useState<Category[]>([])
 
   const [budget, setBudget] = useState<number[]>([10000, 100000000])
+  const [sort, setSort] = useState<string>('default')
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
 
   const updateBudget = (value: number | number[]) => {
     if (Array.isArray(value)) {
@@ -27,17 +30,32 @@ export const SearchFilterComp = (props: SearchFilterProps) => {
     }
   }
 
+  const handleSelectCat = (value: string) => {
+    if (selectedCategories.includes(value)) {
+      setSelectedCategories((prev) => prev.filter((cat) => cat !== value))
+    } else {
+      setSelectedCategories((prev) => [...prev, value])
+    }
+  }
+
   const applyFilter = () => {
     const searchParams = new URLSearchParams(location.search)
     searchParams.delete('minPrice')
     searchParams.delete('maxPrice')
+    searchParams.delete('sort')
+    searchParams.delete('categories')
     searchParams.append('minPrice', budget[0].toString())
     searchParams.append('maxPrice', budget[1].toString())
+    searchParams.append('sort', sort)
+    searchParams.append('categories', selectedCategories.join(',') || '')
     history.push(`${location.pathname}?${searchParams.toString()}`)
   }
 
   useEffect(() => {
     // call api get categories
+    categoryService.getAll().then((response) => {
+      setCategories(response.data || [])
+    })
   }, [])
 
   return (
@@ -52,9 +70,9 @@ export const SearchFilterComp = (props: SearchFilterProps) => {
         </div>
         <div className={'flex-col gap-4 md:flex' + (!showFilter ? ' hidden' : ' flex')}>
           <div className='flex flex-col space-y-1'>
-            <CheckboxGroup label='Danh mục' defaultValue={['buenos-aires', 'london']}>
+            <CheckboxGroup label='Danh mục' className='max-h-[360px] overflow-auto'>
               {categories.map((category) => (
-                <Checkbox key={category.id} value={category.slug}>
+                <Checkbox key={category.id} value={category.slug} onChange={(e) => handleSelectCat(e.target.value)}>
                   {category.name}
                 </Checkbox>
               ))}
@@ -77,10 +95,14 @@ export const SearchFilterComp = (props: SearchFilterProps) => {
             </p>
           </div>
           <div className='flex flex-col space-y-1'>
-            <Select label='Sắp xếp' selectedKeys={['default']}>
+            <Select label='Sắp xếp' selectedKeys={[sort]} onChange={(e) => setSort(e.target.value)}>
               <SelectItem key='default'>Mặc định</SelectItem>
-              <SelectItem key='low'>Giá: Thấp đến cao</SelectItem>
-              <SelectItem key='high'>Giá: Cao đến thấp</SelectItem>
+              <SelectItem key='asc' value='asc'>
+                Giá: Thấp đến cao
+              </SelectItem>
+              <SelectItem key='desc' value='desc'>
+                Giá: Cao đến thấp
+              </SelectItem>
             </Select>
           </div>
           <div className='flex flex-col space-y-1'>

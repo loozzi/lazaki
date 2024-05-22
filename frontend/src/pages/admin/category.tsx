@@ -16,6 +16,7 @@ import {
   useDisclosure
 } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
+import { CiSearch } from 'react-icons/ci'
 import { FaEdit, FaEye, FaTrash } from 'react-icons/fa'
 import { Category, CategoryCreatePayload, CategoryUpdatePayload } from '~/models/category'
 import adminService from '~/services/admin.service'
@@ -24,6 +25,8 @@ import { stringToSlug } from '~/utils'
 
 export const ViewAdminManageCategoryPage = () => {
   const [categories, setCategories] = useState<Category[]>([])
+  const [keyword, setKeyword] = useState<string>('')
+  const [filterCategories, setFilterCategories] = useState<Category[]>([])
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
@@ -111,6 +114,20 @@ export const ViewAdminManageCategoryPage = () => {
   }, [])
 
   useEffect(() => {
+    if (keyword) {
+      setFilterCategories(
+        categories.filter(
+          (item) =>
+            item.name.toLowerCase().includes(keyword.toLowerCase()) ||
+            item.slug.toLowerCase().includes(keyword.toLowerCase())
+        )
+      )
+    } else {
+      setFilterCategories(categories)
+    }
+  }, [categories, keyword])
+
+  useEffect(() => {
     if (selectedCategory) {
       setName(selectedCategory.name)
       setDescription(selectedCategory.description)
@@ -139,7 +156,18 @@ export const ViewAdminManageCategoryPage = () => {
             Thêm danh mục
           </Button>
         </div>
-        <Table isStriped>
+        <Table
+          isStriped
+          topContent={
+            <Input
+              label='Tìm kiếm'
+              placeholder='Tìm kiếm danh mục'
+              startContent={<CiSearch />}
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+            />
+          }
+        >
           <TableHeader columns={columns}>
             {(column) => (
               <TableColumn key={column.uid} align='center'>
@@ -147,7 +175,7 @@ export const ViewAdminManageCategoryPage = () => {
               </TableColumn>
             )}
           </TableHeader>
-          <TableBody items={categories}>
+          <TableBody items={filterCategories}>
             {(item) => (
               <TableRow key={item.id}>
                 <TableCell width={28}>{item.id}</TableCell>
@@ -156,7 +184,7 @@ export const ViewAdminManageCategoryPage = () => {
                 <TableCell>{item.description}</TableCell>
                 <TableCell width={120}>
                   <div className='flex gap-2'>
-                    <Button isIconOnly variant='ghost' color='secondary'>
+                    <Button isIconOnly variant='ghost' color='secondary' size='sm'>
                       <FaEye />
                     </Button>
                     <Button
@@ -167,10 +195,17 @@ export const ViewAdminManageCategoryPage = () => {
                         handleOpenModal()
                       }}
                       color='warning'
+                      size='sm'
                     >
                       <FaEdit />
                     </Button>
-                    <Button isIconOnly variant='ghost' onClick={() => handleRemoveCategory(item.id)} color='danger'>
+                    <Button
+                      isIconOnly
+                      variant='ghost'
+                      onClick={() => handleRemoveCategory(item.id)}
+                      color='danger'
+                      size='sm'
+                    >
                       <FaTrash />
                     </Button>
                   </div>

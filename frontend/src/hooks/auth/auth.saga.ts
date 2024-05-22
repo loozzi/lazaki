@@ -10,15 +10,22 @@ import orderService from '~/services/order.service'
 import { orderActions } from '../order/order.slice'
 import { User } from '~/models/user'
 import userService from '~/services/user.service'
+import { history } from '~/configs/history'
+import routes from '~/configs/routes'
 
 function* handleSignIn(tokenPayload: TokenAuthPayload) {
   const resp: IResponse<TokenResponse> = yield call(authService.signIn, tokenPayload)
   if (resp.status === 200) {
     tokenService.signIn(resp.data!.accessToken, resp.data!.refreshToken)
+    yield call(history.push, routes.client.home)
   }
 }
 
-function* handleSignOut() {}
+function* handleSignOut() {
+  tokenService.signOut()
+  yield put(authActions.signOut())
+  yield call(history.push, routes.client.home)
+}
 
 function* watchAuthFlow() {
   while (true) {

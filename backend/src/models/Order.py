@@ -123,10 +123,14 @@ class Order(Base):
             "paymentMethod": self.paymentMethod.value,
             "paymentStatus": self.paymentStatus.value,
             "status": self.status.value,
+            "shippingName": self.shippingName,
+            "shippingCode": self.shippingCode,
             "note": self.note,
             "orderDetails": [
                 orderDetail.serialize() for orderDetail in self.orderDetails
             ],
             "totalAmount": self.totalAmount,
-            "orderDate": self.orderDate.strftime("%Y-%m-%d %H:%M:%S"),
+            "orderDate": (
+                self.orderDate.strftime("%Y-%m-%d %H:%M:%S") if self.orderDate else None
+            ),
         }

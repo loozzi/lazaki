@@ -1,4 +1,5 @@
 from typing import List
+
 from src.controllers.Pagination import Pagination
 from src.controllers.RevenueController import RevenueController
 from src.models import Address, Customer, Variation
@@ -8,10 +9,8 @@ from src.services.CustomerService import CustomerService
 from src.services.OrderService import OrderService
 from src.services.ProductService import ProductService
 from src.services.ReviewService import ReviewService
-from src.services.CategoryService import CategoryService
-from src.utils.enums import CustomerStatusEnum
+from src.utils.enums import OrderStatusEnum, PaymentStatusEnum
 from src.utils.response import Response
-from src.utils.enums import OrderStatusEnum, PaymentMethodEnum, PaymentStatusEnum
 
 
 class AdminController:
@@ -22,26 +21,24 @@ class AdminController:
     # Lấy danh sách sản phẩm
     def getProducts(page: int, limit: int, keyword: str, order: str, type: str):
         # Lấy danh sách sản phẩm (kết quả trả về là một tuple)
-        products = ProductService.searchProductsAdmin(keyword, order, type)
+        products, totalProducts = ProductService.searchProductsAdmin(
+            keyword, order, type, page, limit
+        )
 
-        total = len(products)
-        if total == 0:
+        if totalProducts == 0:
             return Response(404, "No product found")
-        start = (page - 1) * limit
-        end = min(start + limit, total)
-        paginated_products = products[start:end]
 
         # Chuẩn bị dữ liệu trả về
         product_data = []
-        for product, total_sold, total_quantity in paginated_products:
+        for product, total_sold, total_quantity in products:
             product_detail = product.getInfo()
             product_detail["sold"] = total_sold
             product_detail["quantity"] = total_quantity
-            product_detail["rating"] = ReviewService.getRateMean(product.id)
+            product_detail["rating"] = 0
             product_data.append(product_detail)
 
         pagination = Pagination(
-            currentPage=page, perPage=limit, total=total, data=product_data
+            currentPage=page, perPage=limit, total=totalProducts, data=product_data
         )
 
         return Response(200, "Success", pagination.serialize())
@@ -108,13 +105,10 @@ class AdminController:
 
     # Lấy danh sách đơn hàng
     def getOrders(page: int, limit: int, sort: str):
-        orders = OrderService.getOrders(sort)
-        total = orders.__len__()
-        start = (page - 1) * limit
-        end = min(start + limit, total)
-        paginated_orders = orders[start:end]
-        return_order = Pagination(page, limit, total, paginated_orders)
-        return Response(200, "Truy xuất thành công", return_order.serialize())
+        orders, totalOrders = AdminService.getOrders(page, limit, sort)
+
+        response = Pagination(page, limit, totalOrders, orders)
+        return Response(200, "Truy xuất thành công", response.serialize())
 
     # Chỉnh sửa trạng thái đơn hàng
     def updateOrderStatus(orderId: int, status: str):

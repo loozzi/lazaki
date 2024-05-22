@@ -1,6 +1,7 @@
 import apiConfig from '~/configs/api.config'
-import { AdminOverviewParams, AdminOverviewResponse } from '~/models/admin'
+import { AdminOrderUpdatePayload, AdminOverviewParams, AdminOverviewResponse } from '~/models/admin'
 import { Category, CategoryCreatePayload, CategoryUpdatePayload } from '~/models/category'
+import { OrderHistoryResponse } from '~/models/order'
 import {
   ProductAdminResponse,
   ProductAdminSearchParams,
@@ -66,9 +67,25 @@ const category = {
   }
 }
 
+const order = {
+  get: async (params: PaginationParams): Promise<IResponse<PaginationResponse<OrderHistoryResponse>>> => {
+    return client.get(apiConfig.admin.order, { params })
+  },
+  update: async (
+    type: 'status' | 'shipping' | 'paymentStatus',
+    payload: AdminOrderUpdatePayload
+  ): Promise<IResponse<any>> => {
+    return client.put(apiConfig.admin.order, payload, { params: { type } })
+  },
+  detail: async (orderId: number): Promise<IResponse<OrderHistoryResponse>> => {
+    return client.get(`${apiConfig.admin.order}/${orderId}`)
+  }
+}
+
 export default {
   product,
   user,
   overview,
-  category
+  category,
+  order
 }

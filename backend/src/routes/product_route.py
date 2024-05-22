@@ -17,6 +17,7 @@ def get_products():
     data = product_controller.getProducts(page, limit, sort)
     return Response(status=200, message="Success", data=data)
 
+
 @product.route("/search", methods=["GET"])
 @request_pagination
 def search_products():
@@ -25,11 +26,7 @@ def search_products():
     maxPrice = request.args.get("maxPrice", default="").strip()
     categories = request.args.get("categories", default="").strip()
     if categories != "":
-        try:
-            categories = eval(categories)
-        except Exception as e:
-            print(e)
-            categories = []
+        categories = categories.split(",")
     else:
         categories = []
     page = request.args.get("page", default=1, type=int)
@@ -57,6 +54,5 @@ def suggest_products():
     page = request.pagination["page"]
     current_customer = request.customer
     product_controller = ProductController()
-    data = product_controller.recommendProducts(limit, page,
-                                                current_customer)
+    data = product_controller.recommendProducts(limit, page, current_customer)
     return Response(status=200, message="Success", data=data)

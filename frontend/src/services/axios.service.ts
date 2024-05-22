@@ -58,7 +58,7 @@ client.interceptors.request.use(
 
 client.interceptors.response.use(
   (response: AxiosResponse<any>) => {
-    if (response.data.message === 'Unauthorized') history.push(routes.client.auth)
+    // if (response.data.message === 'Unauthorized') history.push(routes.client.auth)
     if (response.data.message === 'Forbidden') {
       localStorage.removeItem('adminAccessToken')
       history.push(routes.admin.login)

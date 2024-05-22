@@ -105,13 +105,10 @@ class AdminController:
 
     # Lấy danh sách đơn hàng
     def getOrders(page: int, limit: int, sort: str):
-        orders = OrderService.getOrders(sort)
-        total = orders.__len__()
-        start = (page - 1) * limit
-        end = min(start + limit, total)
-        paginated_orders = orders[start:end]
-        return_order = Pagination(page, limit, total, paginated_orders)
-        return Response(200, "Truy xuất thành công", return_order.serialize())
+        orders, totalOrders = AdminService.getOrders(page, limit, sort)
+
+        response = Pagination(page, limit, totalOrders, orders)
+        return Response(200, "Truy xuất thành công", response.serialize())
 
     # Chỉnh sửa trạng thái đơn hàng
     def updateOrderStatus(orderId: int, status: str):

@@ -128,5 +128,7 @@ class Order(Base):
                 orderDetail.serialize() for orderDetail in self.orderDetails
             ],
             "totalAmount": self.totalAmount,
-            "orderDate": self.orderDate.strftime("%Y-%m-%d %H:%M:%S"),
+            "orderDate": (
+                self.orderDate.strftime("%Y-%m-%d %H:%M:%S") if self.orderDate else None
+            ),
         }

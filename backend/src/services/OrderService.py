@@ -88,14 +88,22 @@ class OrderService:
         db.session.commit()
 
     # Lấy lịch sử order của khách hàng
-    def getOrderHistory(customerId: int):
-        return (
+    def getOrderHistory(customerId: int, page: int, limit: int):
+        totalOrders = (
             Order.query.filter(
                 Order.customerId == customerId, Order.status != OrderStatusEnum.ORDER
             )
             .order_by(desc(Order.orderDate))
-            .all()
+            .count()
         )
+        orders = (
+            Order.query.filter(
+                Order.customerId == customerId, Order.status != OrderStatusEnum.ORDER
+            )
+            .order_by(desc(Order.orderDate))
+            .paginate(page=page, per_page=limit)
+        )
+        return orders, totalOrders
 
     def getOrders(sort: str) -> list[dict]:
         order_list = Order.query.all()

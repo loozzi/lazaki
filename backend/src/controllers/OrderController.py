@@ -54,24 +54,16 @@ class OrderController:
 
     # Xem lịch sử đơn hàng
     def viewOrderHistory(customerId: int, page: int, limit: int):
-        orders = OrderService.getOrderHistory(customerId)
-        if orders is None:
-            return Response(404, "Order not found")
-
-        # Phân trang
-        total_orders = len(orders)
-        start = (page - 1) * limit
-        end = min(start + limit, total_orders)
-        paginated_orders = orders[start:end]
+        orders, totalOrders = OrderService.getOrderHistory(customerId, page, limit)
 
         # Chuẩn bị dữ liệu trả về
         orders_data = []
-        for order in paginated_orders:
+        for order in orders:
             order_data = order.getHistory()
             orders_data.append(order_data)
 
         pagination = Pagination(
-            currentPage=page, perPage=limit, total=total_orders, data=orders_data
+            currentPage=page, perPage=limit, total=totalOrders, data=orders_data
         )
 
         return Response(200, "Success", pagination.serialize())

@@ -32,20 +32,27 @@ export const ViewDetailPage = () => {
 
     // call api get suggest products
     // set suggest products
-    const item: ProductResponse = {
-      image: 'https://down-vn.img.susercontent.com/file/sg-11134201-22100-g0vtmbg1llive9',
-      name: 'Sản phẩm có tên là giống với tên của sản phẩm ở chỗ bán sản phẩm',
-      price: 100000,
-      sold: 592,
-      slug: 'san-pham-co-ten-la-giong-voi-ten-cua-san-pham-o-cho-ban-san-pham',
-      rating: 4.5
-    }
-    setSuggestProducts([item, item, item, item, item])
+    // const item: ProductResponse = {
+    //   image: 'https://down-vn.img.susercontent.com/file/sg-11134201-22100-g0vtmbg1llive9',
+    //   name: 'Sản phẩm có tên là giống với tên của sản phẩm ở chỗ bán sản phẩm',
+    //   price: 100000,
+    //   sold: 592,
+    //   slug: 'san-pham-co-ten-la-giong-voi-ten-cua-san-pham-o-cho-ban-san-pham',
+    //   rating: 4.5
+    // }
+    // setSuggestProducts([item, item, item, item, item])
   }, [params])
+
+  useEffect(() => {
+    if (!product) return
+    productService.search({ page: 1, limit: 5, categories: product?.categories[0].slug }).then((res) => {
+      setSuggestProducts(res.data?.data || [])
+    })
+  }, [product])
 
   return (
     <div>
-      {product ? <DetailItemComp product={product} /> : <Skeleton className='w-full h-[300px]' />}
+      {product ? <DetailItemComp product={product} /> : <Skeleton className='w-full h-[300px] rounded-lg mt-4' />}
       <div className='mt-2 grid grid-cols-10 gap-2 lg:gap-4'>
         <div className='flex flex-col lg:col-span-8 md:col-span-6 col-span-10'>
           {product && <DescriptionItemComp product={product} />}

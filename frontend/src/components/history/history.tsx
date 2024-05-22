@@ -18,7 +18,9 @@ export const HistoryComp = (props: HistoryCompProps) => {
     <div className={className}>
       <div className='p-4 bg-white rounded-md border-1 border-gray-200'>
         <div className='flex justify-between gap-4 items-center border-b-1 border-gray-200 pb-2'>
-          <div className='text-gray-400'>{history.createdAt}</div>
+          <div>
+            Ngày đặt hàng: <span className='text-gray-400'>{history.orderDate}</span>
+          </div>
           <div className='text-lg font-semibold capitalize flex gap-2'>
             <Chip color={OrderStatusColor(history.status)} size='sm'>
               {OrderStatusName(history.status)}
@@ -30,7 +32,11 @@ export const HistoryComp = (props: HistoryCompProps) => {
         </div>
         <div className='flex flex-col gap-4 mt-4'>
           {history.orderDetails.map((item: CartItem) => (
-            <div key={item.id} className='flex justify-between gap-4 border-b-1 border-gray-200 pb-2'>
+            <Link
+              key={item.id}
+              className='flex justify-between gap-4 border-b-1 border-gray-200 pb-2'
+              to={routes.client.detail.replace(':permalink', item.slug)}
+            >
               <div className='flex gap-4 items-center'>
                 <Image src={item.image} alt={item.name} className='w-20 h-20 object-cover' />
                 <div className='flex flex-col gap-2'>
@@ -53,7 +59,7 @@ export const HistoryComp = (props: HistoryCompProps) => {
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
           <div className='flex justify-between items-end gap-4'>
             <div>

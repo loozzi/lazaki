@@ -70,15 +70,17 @@ export const DetailCartComp = (props: DetailCartCompProps) => {
     switch (columnKey) {
       case 'name':
         return (
-          <div className='flex gap-2 items-center'>
-            <Image src={item.image} className='' width={50} height={50} alt={item.name} />
+          <Link className='flex gap-2 items-center' to={routes.client.detail.replace(':permalink', item.slug)}>
+            <div className='w-[50px] h-[50px] min-w-[50px]'>
+              <Image src={item.image} className='w-[50px] h-[50px] object-cover aspect-square' alt={item.name} />
+            </div>
             <div className='flex flex-col'>
               <span className='font-semibold'>{item.name}</span>
               <span className='text-default-400 text-sm'>
                 {item.variation.type} - {item.variation.name}
               </span>
             </div>
-          </div>
+          </Link>
         )
       case 'price':
         return (

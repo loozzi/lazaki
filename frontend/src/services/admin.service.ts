@@ -76,6 +76,9 @@ const order = {
     payload: AdminOrderUpdatePayload
   ): Promise<IResponse<any>> => {
     return client.put(apiConfig.admin.order, payload, { params: { type } })
+  },
+  detail: async (orderId: number): Promise<IResponse<OrderHistoryResponse>> => {
+    return client.get(`${apiConfig.admin.order}/${orderId}`)
   }
 }
 

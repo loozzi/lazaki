@@ -13,6 +13,8 @@ import {
 } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 import { FaEye } from 'react-icons/fa'
+import { Link } from 'react-router-dom'
+import routes from '~/configs/routes'
 import { OrderHistoryResponse } from '~/models/order'
 import { PaginationState } from '~/models/response'
 import adminService from '~/services/admin.service'
@@ -122,7 +124,12 @@ export const ViewAdminOrderPage = () => {
                   <span>{parseTimeToHM(item.orderDate)}</span>
                 </TableCell>
                 <TableCell>
-                  <Button variant='ghost' startContent={<FaEye />}>
+                  <Button
+                    variant='ghost'
+                    startContent={<FaEye />}
+                    as={Link}
+                    to={routes.admin.orderDetail.replace(':orderId', item.id.toString())}
+                  >
                     Xem chi tiết
                   </Button>
                 </TableCell>

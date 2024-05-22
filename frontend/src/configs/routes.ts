@@ -15,6 +15,7 @@ export default {
     home: '/admin',
     login: '/admin/login',
     order: '/admin/orders',
+    orderDetail: '/admin/orders/:orderId',
     overview: '/admin/overview',
     users: '/admin/users',
     product: '/admin/products',

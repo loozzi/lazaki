@@ -21,7 +21,7 @@ export interface AdminOrderUpdatePayload {
 
   status?: OrderStatusType
 
-  shippingMethod?: string
+  shippingName?: string
   shippingCode?: string
 
   paymentStatus?: PaymentStatusType

@@ -17,6 +17,7 @@ import { ViewSearchPage } from '~/pages/client/search'
 import routes from './routes'
 import { ViewAdminLogoutPage } from '~/pages/admin/logout'
 import { ViewLogoutPage } from '~/pages/client/logout'
+import { ViewAdminDetailOrderPage } from '~/pages/admin/detail-order'
 
 const client = [
   { path: routes.client.home, component: HomePage },
@@ -33,6 +34,7 @@ const client = [
 const admin = [
   { path: routes.admin.overview, component: ViewOverviewPage },
   { path: routes.admin.order, component: ViewAdminOrderPage },
+  { path: routes.admin.orderDetail, component: ViewAdminDetailOrderPage },
   { path: routes.admin.users, component: ViewAdminManageUserPage },
   { path: routes.admin.product, component: ViewAdminManageProductPage },
   { path: routes.admin.productCreate, component: ViewAdminCreateProductPage },

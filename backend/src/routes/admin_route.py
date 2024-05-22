@@ -1,9 +1,9 @@
 from flask import Blueprint, json, request
 from src.controllers.AdminController import AdminController
+from src.controllers.OrderController import OrderController
 from src.middlewares.AuthMiddleware import admin_middleware
 from src.middlewares.PaginationMiddleware import request_pagination
 from src.utils.response import Response
-
 
 admin = Blueprint("admin", __name__)
 
@@ -172,7 +172,7 @@ def deleteCategory(slug):
 
 
 @admin.route("/order", methods=["GET"])
-# @admin_middleware
+@admin_middleware
 @request_pagination
 def getOrders():
     sort = request.args.get("sort", "")
@@ -181,8 +181,14 @@ def getOrders():
     return AdminController.getOrders(page, limit, sort)
 
 
+@admin.route("/order/<int:orderId>", methods=["GET"])
+@admin_middleware
+def getOrderDetail(orderId):
+    return OrderController.getDetailOrder(orderId)
+
+
 @admin.route("/order", methods=["PUT"])
-# @admin_middleware
+@admin_middleware
 def editOrder():
     try:
         orderId = int(request.form.get("orderId", ""))

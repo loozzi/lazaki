@@ -40,12 +40,12 @@ export const ViewAdminOrderPage = () => {
   ]
 
   useEffect(() => {
-    adminService.order.get({ page: pagination.currentPage, limit: limit }).then((res) => {
+    adminService.order.get({ page: pagination.currentPage, limit: limit, sort: sort }).then((res) => {
       if (res.data) {
         setOrders(res.data.data)
       }
     })
-  }, [pagination.currentPage, limit])
+  }, [pagination.currentPage, limit, sort])
 
   return (
     <div className='p-4'>
@@ -57,10 +57,10 @@ export const ViewAdminOrderPage = () => {
             <div>
               <Select selectedKeys={[sort]} onChange={(e) => setSort(e.target.value as 'asc' | 'desc')}>
                 <SelectItem key='asc' value='asc'>
-                  Mới nhất
+                  Cũ nhất
                 </SelectItem>
                 <SelectItem key='desc' value='desc'>
-                  Cũ nhất
+                  Mới nhất
                 </SelectItem>
               </Select>
             </div>

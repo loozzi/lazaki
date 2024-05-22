@@ -2,7 +2,6 @@ from flask import Blueprint, request
 from src.controllers.OrderController import OrderController
 from src.middlewares.AuthMiddleware import customer_middleware
 from src.middlewares.PaginationMiddleware import request_pagination
-from src.models.Order import Order
 from src.models.OrderDetail import OrderDetail
 from src.utils.response import Response
 

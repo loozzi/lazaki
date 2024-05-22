@@ -1,13 +1,11 @@
-from datetime import datetime
-from src.models.Address import Address
-from src.models.Variation import Variation
+from src import db
 from src.controllers.Pagination import Pagination
-from src.utils.enums import OrderStatusEnum, PaymentMethodEnum
 from src.models.Order import Order
 from src.models.OrderDetail import OrderDetail
-from src.utils.response import Response
+from src.models.Variation import Variation
 from src.services.OrderService import OrderService
-from src import db
+from src.utils.enums import OrderStatusEnum
+from src.utils.response import Response
 
 
 class OrderController:
@@ -86,19 +84,22 @@ class OrderController:
         return Response(200, "Success", order.getCart())
 
     # Thêm vào giỏ hàng
-    def addToShopCart(customerId: int, orderId: int,variationId: int, productId: int, quantity: int):
+    def addToShopCart(
+        customerId: int, orderId: int, variationId: int, productId: int, quantity: int
+    ):
         if orderId is None:
             orderId = OrderService.getCart(customerId).id
-        data = OrderService.addToShopCart(orderId, variationId,
-                                          productId, quantity)
+        data = OrderService.addToShopCart(orderId, variationId, productId, quantity)
         return Response(200, "Success", data)
 
     # Xóa khỏi giỏ hàng
     def removeFromCurrentOrder(customerId, variationId: int):
         current_order = OrderService.getCart(customerId)
-        oderDetail = OrderDetail.query.filter(
-                        OrderDetail.orderId == current_order.id).filter(
-                            OrderDetail.variationId == variationId).first()
+        oderDetail = (
+            OrderDetail.query.filter(OrderDetail.orderId == current_order.id)
+            .filter(OrderDetail.variationId == variationId)
+            .first()
+        )
         db.session.delete(oderDetail)
         db.session.commit()
         return Response(200, "Success")

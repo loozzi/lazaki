@@ -1,12 +1,12 @@
 import datetime
 
+from sqlalchemy import desc
 from src import db
 from src.models.Address import Address
 from src.models.Order import Order
 from src.models.OrderDetail import OrderDetail
-from src.models import Customer
 from src.models.Variation import Variation
-from src.utils.enums import OrderStatusEnum, PaymentStatusEnum
+from src.utils.enums import OrderStatusEnum, PaymentMethodEnum, PaymentStatusEnum
 
 
 class OrderService:
@@ -89,9 +89,13 @@ class OrderService:
 
     # Lấy lịch sử order của khách hàng
     def getOrderHistory(customerId: int):
-        return Order.query.filter(
-            Order.customerId == customerId, Order.status != OrderStatusEnum.ORDER
-        ).all()
+        return (
+            Order.query.filter(
+                Order.customerId == customerId, Order.status != OrderStatusEnum.ORDER
+            )
+            .order_by(desc(Order.orderDate))
+            .all()
+        )
 
     def getOrders(sort: str) -> list[dict]:
         order_list = Order.query.all()
@@ -141,17 +145,19 @@ class OrderService:
     def addToShopCart(orderId: int, variationId: int, productId: int, quantity: int):
         variation = Variation.query.filter_by(id=variationId).first()
         current_order = Order.query.filter_by(id=orderId).first()
-        order_detail_exist = OrderDetail.query.filter(
-                                OrderDetail.orderId == orderId).filter(
-                                    OrderDetail.variationId == variationId).first()
+        order_detail_exist = (
+            OrderDetail.query.filter(OrderDetail.orderId == orderId)
+            .filter(OrderDetail.variationId == variationId)
+            .first()
+        )
         if order_detail_exist is None:
             order_detail_exist = OrderDetail(
-            orderId=orderId,
-            productId=productId,
-            variationId=variationId,
-            quantity=quantity,
-            price=variation.price,
-            oldPrice=variation.oldPrice,
+                orderId=orderId,
+                productId=productId,
+                variationId=variationId,
+                quantity=quantity,
+                price=variation.price,
+                oldPrice=variation.oldPrice,
             )
             db.session.add(order_detail_exist)
             db.session.flush()

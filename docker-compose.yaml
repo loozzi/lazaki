@@ -1,0 +1,23 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/app
+    environment:
+      VITE_REACT_APP_API_ENDPOINT: http://localhost:8080/api
+      VITE_REACT_APP_FIREBASE_API_KEY: firebase_key
+    image: tahodev/lazaki:frontend-latest
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - 8080:8080
+    volumes:
+      - ./backend:/app
+    environment:
+      SQLALCHEMY_DATABASE_URI: mysql+pymysql://{mysql_user}:{mysql_password}@{mysql_host}/{mysql_database}?charset=utf8mb4
+      SECRET_KEY: secret_key
+    image: tahodev/lazaki:backend-latest

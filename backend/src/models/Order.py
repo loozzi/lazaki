@@ -1,5 +1,4 @@
 import datetime
-from typing import TYPE_CHECKING
 
 from sqlalchemy import TIMESTAMP, Enum, ForeignKey, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -8,11 +7,7 @@ from src.utils.enums import OrderStatusEnum, PaymentMethodEnum, PaymentStatusEnu
 from .Address import Address
 from .Base import Base
 from .Customer import Customer
-
-if TYPE_CHECKING:
-    from .Address import Address
-    from .Customer import Customer
-    from .OrderDetail import OrderDetail
+from .OrderDetail import OrderDetail
 
 
 class Order(Base):

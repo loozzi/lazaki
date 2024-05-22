@@ -161,30 +161,30 @@ export const ViewAdminDetailOrderPage = () => {
             <h2 className='text-xl'>Đơn hàng chi tiết</h2>
             <div>
               {order.orderDetails.map((item, index) => (
-                <div key={index} className='flex'>
+                <div key={index} className='flex border-b-1 border-gray-200 p-4'>
                   <div className='w-20'>
                     <Image src={item.image} alt={item.name} className='w-16 h-16' />
                   </div>
                   <div className='flex-1 flex justify-between'>
                     <div className='flex flex-col'>
-                      <div className='font-semibold'>{item.name}</div>
+                      <div className='font-semibold text-xl'>{item.name}</div>
                       <div className='flex gap-2 text-sm'>
                         <div className='font-semibold'>{item.variation.type}</div>
                         <div>{item.variation.name}</div>
                       </div>
                     </div>
-                    <div>
+                    <div className='min-w-64 float-start'>
                       <div className='grid grid-cols-2 gap-2'>
                         <span>Số lượng: </span>
                         <span>{item.quantity}</span>
                       </div>
                       <div className='grid grid-cols-2 gap-2'>
                         <span>Đơn giá: </span>
-                        <span>{item.price.toLocaleString()}</span>
+                        <span>{item.price.toLocaleString()} vnđ</span>
                       </div>
                       <div className='grid grid-cols-2 gap-2 text-orange-600'>
                         <span>Tổng giá: </span>
-                        <span>{(item.price * item.quantity).toLocaleString()}</span>
+                        <span>{(item.price * item.quantity).toLocaleString()} vnđ</span>
                       </div>
                     </div>
                   </div>
@@ -193,7 +193,8 @@ export const ViewAdminDetailOrderPage = () => {
             </div>
           </div>
           <div className='flex justify-end text-2xl'>
-            Tổng giá trị: <span className='text-orange-600'>{order.totalAmount?.toLocaleString()} VNĐ</span>
+            Tổng giá trị:{' '}
+            <span className='text-orange-600 font-bold ml-2 text-3xl'>{order.totalAmount?.toLocaleString()} VNĐ</span>
           </div>
         </div>
       )}

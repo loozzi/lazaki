@@ -1,4 +1,3 @@
-import { Skeleton } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 import { ListCardItemComp } from '~/components/list-card-item'
 import { ProductResponse } from '~/models/product'

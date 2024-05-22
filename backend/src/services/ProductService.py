@@ -433,27 +433,34 @@ class ProductService:
 
     def generateProducts(
         self,
-        list_slug_accessed: List[str],
-        order_list_customer: List[OrderDetail],
+        list_products_id: List[int],
         limit: int,
         page: int,
     ):
-        list_products = []
-        for order in order_list_customer:
-            product = Product.query.filter_by(id=order.productId).first()
-            if product is not None:
-                list_products.append(product)
-        for slug in list_slug_accessed:
-            product = Product.query.filter_by(slug=slug).first()
-            if product is not None:
-                list_products.append(product)
+        
         recommend_service = RecommendService()
-        data = recommend_service.generateProducts(list_products)
-        data = self.data_response(data, "asc")
-        result = data[(page - 1) * limit : limit + (page - 1) * limit]
-        product_pagination = Pagination(page, len(result), len(data), result)
-        return product_pagination.serialize()
+        product_recommend_ids= recommend_service.generateProducts(list_products_id)
+        products_recommend = Product.query.filter(Product.id.in_(product_recommend_ids)
+                                                  ).limit(limit).offset((page - 1) * limit)
+        total_recommend = Product.query.filter(Product.id.in_(product_recommend_ids)).count()
+        dataResponse = []
+        
+        for product in products_recommend:
+            info_product = product.serialize()
+            data_one_product = {}
+            data_one_product["name"] = info_product["name"]
+            data_one_product["slug"] = product.slug
+            data_one_product["image"] = product.getPrimaryImage()
+            data_one_product["price"] = info_product["variations"][0]["price"]
+            sold = 0
+            for variation in info_product["variations"]:
+                sold += variation["sold"]
+            data_one_product["sold"] = sold
+            data_one_product["rating"] = ReviewService.getRateMean(product.id)
+            dataResponse.append(data_one_product)
 
+        response = Pagination(page, limit, total_recommend, dataResponse)
+        return response.serialize()
     # Lấy sản phẩm theo keyword, order, type
     def searchProductsAdmin(keyword: str, order: str, type: str, page: int, limit: int):
         # Truy vấn tất cả sản phẩm và tổng số lượng bán được và tổng số lượng tồn kho

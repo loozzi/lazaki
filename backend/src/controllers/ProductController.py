@@ -53,9 +53,8 @@ class ProductController:
         current_order = Order.query.filter_by(customerId = current_customer.id).first()
         order_list_customer = OrderDetail.query.filter_by(
                                 orderId = current_order.id).all()
+        list_products_id = [orderDetail.productId for orderDetail in order_list_customer]
         product_service = ProductService()
-        data = product_service.generateProducts(list_slug_accessed,
-                                                order_list_customer,
+        return product_service.generateProducts(list_products_id,
                                                 limit,
                                                 page)
-        return data

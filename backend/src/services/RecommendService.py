@@ -93,33 +93,19 @@ class RecommendService:
 
     def save_and_load_model(self, data_frame_all_product, model_path):
         prepare_pipe = self.prepare_pipe(data_frame_all_product)
-        model_recommend = KMeans(n_clusters=40)
+        model_recommend = KMeans(n_clusters=200)
         model_pipe = make_pipeline(prepare_pipe, model_recommend)
         model_pipe.fit(data_frame_all_product)
         joblib.dump(model_pipe, model_path)
         return model_pipe
 
 
-    def generateProducts(self, list_product: List[Product]):
-        products_recommend = []
-        if len(list_product) == 0:
-            return products_recommend
-        all_product = Product.query.filter(Product.isDeleted == False).all()
-        data_frame_all_product = self.create_dataframe(all_product)
+    def generateProducts(self, list_product_id: List[int]):
+        product_ids = set(list_product_id)
         current_directory = os.path.dirname(os.path.abspath(__file__))
-        model_path = os.path.join(current_directory, "model.joblib")
-        model_pipe = []
-        if os.path.exists(model_path):
-                model_pipe = joblib.load(model_path)
-        else:
-            model_pipe = self.save_and_load_model(data_frame_all_product,model_path)
-        model_pipe = joblib.load(model_path)
-        data_frame_list_product = self.create_dataframe(list_product)
-        cluster_all_product = model_pipe.predict(data_frame_all_product)
-        cluster_set_product = set(model_pipe.predict(data_frame_list_product))
-        for i in range(len(cluster_all_product)):
-            if cluster_all_product[i] in cluster_set_product:
-                products_recommend.append(all_product[i])
-            if len(products_recommend) == 30:
-                break
-        return products_recommend
+        model_path = os.path.join(current_directory, "data_cluster.csv")
+        data_frame_all_product = pd.read_csv(model_path)
+        clusters = set(data_frame_all_product.loc[data_frame_all_product["id"].isin(product_ids)]["cluster"])
+        list_product_id_recommend = set(data_frame_all_product.loc[
+                                        data_frame_all_product["cluster"].isin(clusters)].head(30)["id"])
+        return list_product_id_recommend

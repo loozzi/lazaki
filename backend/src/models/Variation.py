@@ -1,7 +1,6 @@
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 from src.models.Base import Base
-from src.models.Product import Product
 
 
 class Variation(Base):
@@ -78,6 +77,3 @@ class Variation(Base):
             "name": self.name,
             "option": self.option,
         }
-
-    def getProduct(self):
-        return Product.query.get(self.productId)

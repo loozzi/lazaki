@@ -2,6 +2,7 @@ from sqlalchemy import ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .Base import Base
+from .Product import Product
 from .Variation import Variation
 
 
@@ -28,7 +29,7 @@ class OrderDetail(Base):
 
     def serialize(self):
         variation = Variation.query.filter_by(id=self.variationId).first()
-        product = variation.getProduct()
+        product = Product.query.get(variation.productId)
         return {
             "id": self.id,
             "orderId": self.orderId,

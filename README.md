@@ -54,6 +54,8 @@
 
 ## Installation
 
+Docker repositoy: [Lazaki](https://hub.docker.com/r/tahodev/lazaki/tags)
+
 Clone repository
 
 ```

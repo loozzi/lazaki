@@ -233,6 +233,13 @@ class ProductService:
             return None
         return product
 
+    # Lấy sản phẩm theo slug
+    def getProductbySlug(productSlug: str):
+        product = Product.query.filter_by(slug=productSlug).first()
+        if not product:
+            return None
+        return product
+
     # Lấy chi tiết của sản phẩm
     def getDetailProduct(self, productSlug: str):
         product = (

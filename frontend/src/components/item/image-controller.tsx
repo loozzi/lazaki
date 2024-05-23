@@ -1,4 +1,4 @@
-import { Image } from '@nextui-org/react'
+import { Button, Image } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { ImageResponse } from '~/models/product'
@@ -40,7 +40,7 @@ export const ItemImageControllerComp = (props: ItemImageControllerProps) => {
   }, [images])
 
   return (
-    <div className={'md:max-w-[450px] w-full mx-2 md:mx-0'}>
+    <div className={'lg:max-w-[450px] w-full mx-2 md:mx-0'}>
       <div className='flex justify-center'>
         <Image
           src={currentImage.link}
@@ -48,11 +48,19 @@ export const ItemImageControllerComp = (props: ItemImageControllerProps) => {
           className=' w-[450px] h-[450px] max-w-[450px] aspect-square max-h-[450px] object-contain'
         />
       </div>
-      <div className='flex mt-2 justify-between'>
-        <button onClick={handlePrev} className=''>
-          <FaChevronLeft color={start > 0 ? '#000' : '#ccc'} />
-        </button>
-        <div className='grid grid-cols-5 flex-1'>
+      <div className='flex mt-2 justify-start relative'>
+        <Button
+          isIconOnly
+          color='success'
+          variant={start <= 0 ? 'flat' : 'shadow'}
+          onClick={handlePrev}
+          className='absolute top-6 left-0 z-50'
+          size='sm'
+          disabled={start <= 0}
+        >
+          <FaChevronLeft color='#fff' />
+        </Button>
+        <div className='flex flex-wrap gap-4'>
           {getSlicedImages.map((image, index) => {
             return (
               <div key={index} onClick={() => setCurrentImage(image)}>
@@ -65,9 +73,17 @@ export const ItemImageControllerComp = (props: ItemImageControllerProps) => {
             )
           })}
         </div>
-        <button onClick={handleNext} className=''>
-          <FaChevronRight color={end < images.length ? '#000' : '#ccc'} />
-        </button>
+        <Button
+          isIconOnly
+          variant={end >= images.length ? 'flat' : 'shadow'}
+          color='success'
+          onClick={handleNext}
+          className='absolute top-6 right-0 z-50'
+          size='sm'
+          disabled={end >= images.length}
+        >
+          <FaChevronRight color='#fff' />
+        </Button>
       </div>
     </div>
   )

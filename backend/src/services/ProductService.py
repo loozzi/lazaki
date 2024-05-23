@@ -37,9 +37,6 @@ class ProductService:
         return new_data_frame
 
 
-    def define_cluster(self, data_frame_product: pd.DataFrame):
-        pass
-
     def data_response(self, list_product: List[Product], sort: str):
         data = []
         for product in list_product:

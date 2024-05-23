@@ -21,6 +21,7 @@ import adminService from '~/services/admin.service'
 import { OrderStatusColor, OrderStatusName, parseTimeToHM } from '~/utils'
 
 export const ViewAdminOrderPage = () => {
+  document.title = 'Quản lý đơn hàng'
   const [orders, setOrders] = useState<OrderHistoryResponse[]>([])
   const [pagination, setPagination] = useState<PaginationState>({
     currentPage: 1,

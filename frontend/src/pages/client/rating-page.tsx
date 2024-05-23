@@ -3,6 +3,7 @@ import { useParams } from 'react-router'
 import { HistoryDetailComp } from '~/components/history/history-detail'
 
 export const ViewRatingPage = () => {
+  document.title = 'Lịch sử mua hàng'
   const params = useParams()
   const { orderId } = params
 

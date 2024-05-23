@@ -13,6 +13,7 @@ import orderService from '~/services/order.service'
 import productService from '~/services/product.service'
 
 export const ViewCartPage = () => {
+  document.title = 'Giỏ hàng'
   const [suggestProducts, setSuggestProducts] = useState<ProductResponse[]>([])
   const dispatch = useAppDispatch()
   const cart = useAppSelector(selectCart)

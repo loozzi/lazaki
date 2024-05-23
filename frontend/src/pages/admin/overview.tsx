@@ -6,6 +6,7 @@ import { AdminOverviewResponse } from '~/models/admin'
 import adminService from '~/services/admin.service'
 
 export const ViewOverviewPage = () => {
+  document.title = 'Tổng quan'
   const [overviewWeek, setOverviewWeek] = useState<AdminOverviewResponse | null>(null)
   const [overviewMonth, setOverviewMonth] = useState<AdminOverviewResponse | null>(null)
 

@@ -14,6 +14,7 @@ import orderService from '~/services/order.service'
 import paymentService from '~/services/payment.service'
 
 export const ViewPurchasePage = () => {
+  document.title = 'Thanh toán'
   const cart = useAppSelector(selectCart)
 
   const { isOpen, onOpen, onClose } = useDisclosure()

@@ -1,6 +1,7 @@
 import { ProductResponse } from '~/models/product'
 import { CardItem } from './item/card-item'
 import { PaneComp } from './pane'
+import { ReactNode } from 'react'
 
 interface ListCardItemProps {
   heading: string
@@ -9,10 +10,11 @@ interface ListCardItemProps {
   isColumn?: boolean
   loading?: boolean
   numberLoading?: number
+  bottomContent?: ReactNode
 }
 
 export const ListCardItemComp = (props: ListCardItemProps) => {
-  const { heading, items, className, isColumn, numberLoading, loading } = props
+  const { heading, items, className, isColumn, numberLoading, loading, bottomContent } = props
 
   return (
     <PaneComp header={heading} className={className}>
@@ -31,6 +33,7 @@ export const ListCardItemComp = (props: ListCardItemProps) => {
             <CardItem key={e} item={{} as ProductResponse} loading={true} size='lg' />
           ))}
       </div>
+      {bottomContent}
     </PaneComp>
   )
 }

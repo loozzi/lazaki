@@ -12,6 +12,7 @@ import { history } from '~/configs/history'
 import routes from '~/configs/routes'
 
 export const ViewAuthPage = () => {
+  document.title = 'Đăng nhập tài khoản'
   const [provider, setProvider] = useState<GoogleAuthProvider | FacebookAuthProvider | GithubAuthProvider | undefined>(
     undefined
   )

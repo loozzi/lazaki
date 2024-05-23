@@ -67,15 +67,16 @@ class ProductService:
 
         dataResponse = []
         for product in allProducts:
-            info_product = product.serialize()
+            # info_product = product.serialize()
             data_one_product = {}
-            data_one_product["name"] = info_product["name"]
+            data_one_product["name"] = product.name
             data_one_product["slug"] = product.slug
             data_one_product["image"] = product.getPrimaryImage()
-            data_one_product["price"] = info_product["variations"][0]["price"]
+            variations = Variation.query.filter_by(productId=product.id).all()
+            data_one_product["price"] = variations[0].price
             sold = 0
-            for variation in info_product["variations"]:
-                sold += variation["sold"]
+            for variation in variations:
+                sold += variation.sold
             data_one_product["sold"] = sold
             data_one_product["rating"] = ReviewService.getRateMean(product.id)
             dataResponse.append(data_one_product)
@@ -455,18 +456,35 @@ class ProductService:
         return product_pagination.serialize()
 
     # Lấy sản phẩm theo keyword, order, type
-    def searchProductsAdmin(keyword: str, order: str, type: str, page: int, limit: int):
+    def searchProductsAdmin(
+        keyword: str, order: str, type: str, page: int, limit: int, category: str = None
+    ):
+        category_obj = Category.query.filter_by(slug=category).first()
         # Truy vấn tất cả sản phẩm và tổng số lượng bán được và tổng số lượng tồn kho
-        searched_products = (
-            db.session.query(
-                Product,
-                func.sum(Variation.sold).label("total_sold"),
-                func.sum(Variation.quantity).label("total_quantity"),
+        if category_obj:
+            searched_products = (
+                db.session.query(
+                    Product,
+                    func.sum(Variation.sold).label("total_sold"),
+                    func.sum(Variation.quantity).label("total_quantity"),
+                )
+                .outerjoin(Variation)
+                .join(CategoryProduct)
+                .filter(CategoryProduct.categoryId == category_obj.id)
+                .filter(Product.isDeleted == False)
+                .group_by(Product.id)
             )
-            .outerjoin(Variation)
-            .filter(Product.isDeleted == False)
-            .group_by(Product.id)
-        )
+        else:
+            searched_products = (
+                db.session.query(
+                    Product,
+                    func.sum(Variation.sold).label("total_sold"),
+                    func.sum(Variation.quantity).label("total_quantity"),
+                )
+                .outerjoin(Variation)
+                .filter(Product.isDeleted == False)
+                .group_by(Product.id)
+            )
 
         # Tìm kiếm sản phẩm theo keyword
         if keyword:

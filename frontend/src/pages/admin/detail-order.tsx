@@ -7,6 +7,7 @@ import adminService from '~/services/admin.service'
 
 export const ViewAdminDetailOrderPage = () => {
   const params = useParams<{ orderId: string }>()
+  document.title = 'Xem chi tiết đơn hàng'
   const [order, setOrder] = useState<OrderHistoryResponse | undefined>(undefined)
 
   const [shippingName, setShippingName] = useState<string>('')
@@ -75,7 +76,7 @@ export const ViewAdminDetailOrderPage = () => {
         </Button>
       </div>
       {order && (
-        <div className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-4 p-2'>
           <div>
             <h2 className='text-xl'>Thông tin đơn hàng</h2>
             <div className='flex flex-col gap-2'>

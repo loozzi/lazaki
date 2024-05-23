@@ -18,12 +18,15 @@ import {
 import { useEffect, useState } from 'react'
 import { CiSearch } from 'react-icons/ci'
 import { FaEdit, FaEye, FaTrash } from 'react-icons/fa'
+import { Link } from 'react-router-dom'
+import routes from '~/configs/routes'
 import { Category, CategoryCreatePayload, CategoryUpdatePayload } from '~/models/category'
 import adminService from '~/services/admin.service'
 import categoryService from '~/services/category.service'
 import { stringToSlug } from '~/utils'
 
 export const ViewAdminManageCategoryPage = () => {
+  document.title = 'Quản lý danh mục'
   const [categories, setCategories] = useState<Category[]>([])
   const [keyword, setKeyword] = useState<string>('')
   const [filterCategories, setFilterCategories] = useState<Category[]>([])
@@ -184,7 +187,14 @@ export const ViewAdminManageCategoryPage = () => {
                 <TableCell>{item.description}</TableCell>
                 <TableCell width={120}>
                   <div className='flex gap-2'>
-                    <Button isIconOnly variant='ghost' color='secondary' size='sm'>
+                    <Button
+                      isIconOnly
+                      variant='ghost'
+                      color='secondary'
+                      size='sm'
+                      as={Link}
+                      to={routes.admin.product + '?category=' + item.slug}
+                    >
                       <FaEye />
                     </Button>
                     <Button

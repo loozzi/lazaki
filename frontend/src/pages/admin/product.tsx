@@ -16,13 +16,14 @@ import {
 import { useEffect, useState } from 'react'
 import { CiSearch } from 'react-icons/ci'
 import { FaEdit, FaEye } from 'react-icons/fa'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import routes from '~/configs/routes'
 import { ProductAdminResponse } from '~/models/product'
 import { PaginationState } from '~/models/response'
 import adminService from '~/services/admin.service'
 
 export const ViewAdminManageProductPage = () => {
+  document.title = 'Quản lý sản phẩm'
   const [products, setProducts] = useState<ProductAdminResponse[]>([])
   const [pagination, setPagination] = useState<PaginationState>({
     currentPage: 1,
@@ -36,10 +37,14 @@ export const ViewAdminManageProductPage = () => {
 
   const [loading, setLoading] = useState<boolean>(false)
 
+  const location = useLocation()
+
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       setLoading(true)
       setProducts([])
+      const searchParams = new URLSearchParams(location.search)
+      const category = searchParams.get('category') || undefined
       adminService.product
         .get({
           keyword,
@@ -47,7 +52,8 @@ export const ViewAdminManageProductPage = () => {
           type,
           page: pagination.currentPage,
           perPage: pagination.perPage,
-          limit: limit
+          limit: limit,
+          category
         })
         .then((res) => {
           const products = res.data?.data || []
@@ -61,7 +67,7 @@ export const ViewAdminManageProductPage = () => {
         })
     }, 500)
     return () => clearTimeout(delayDebounceFn)
-  }, [keyword, sort, type, pagination.currentPage, pagination.perPage, limit])
+  }, [keyword, sort, type, pagination.currentPage, pagination.perPage, limit, location.search])
 
   const columns = [
     { name: 'Hình ảnh', uid: 'image' },

@@ -63,7 +63,7 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
     <div className={className}>
       {history ? (
         <>
-          <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6'>
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6 p-2'>
             <div className='flex flex-col gap-2'>
               <span className='font-semibold text-2xl text-gray-500'>Thông tin nhận hàng</span>
               <div className='flex flex-col gap-2'>

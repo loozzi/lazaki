@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.models.Base import Base
@@ -27,7 +29,7 @@ class Rating(Base):
     )
     value: Mapped[int] = mapped_column(Integer, nullable=False)
     content: Mapped[str] = mapped_column(String(1024), nullable=True)
-    images: Mapped[list["RatingImage"]] = relationship(
+    images: Mapped[List["RatingImage"]] = relationship(
         "RatingImage", backref="ratings", uselist=True
     )
 

@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy import Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.models.Base import Base
@@ -15,16 +17,16 @@ class Product(Base):
     name: Mapped[str] = mapped_column(String(1024), nullable=False)
     slug: Mapped[str] = mapped_column(String(1024), nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=True)
-    properties: Mapped[list[ProductProperty]] = relationship(
+    properties: Mapped[List[ProductProperty]] = relationship(
         "ProductProperty", backref="products", uselist=True
     )
-    images: Mapped[list[ProductImage]] = relationship(
+    images: Mapped[List[ProductImage]] = relationship(
         "ProductImage", backref="products", uselist=True
     )
-    categories: Mapped[list[Category]] = relationship(
+    categories: Mapped[List[Category]] = relationship(
         "Category", secondary="category_product", backref="products", uselist=True
     )
-    variations: Mapped[list[Variation]] = relationship(
+    variations: Mapped[List[Variation]] = relationship(
         "Variation", backref="products", uselist=True
     )
 
@@ -48,10 +50,10 @@ class Product(Base):
         self,
         name: str,
         description: str,
-        properties: list["ProductProperty"],
-        variations: list["Variation"],
-        images: list["ProductImage"],
-        categories: list["Category"],
+        properties: List["ProductProperty"],
+        variations: List["Variation"],
+        images: List["ProductImage"],
+        categories: List["Category"],
     ):
         pass
 

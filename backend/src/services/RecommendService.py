@@ -100,4 +100,6 @@ class RecommendService:
         clusters = set(data_frame_all_product.loc[data_frame_all_product["id"].isin(product_ids)]["cluster"])
         list_product_id_recommend = set(data_frame_all_product.loc[
                                         data_frame_all_product["cluster"].isin(clusters)].head(30)["id"])
+        for i in product_ids:
+            list_product_id_recommend.discard(i)
         return list_product_id_recommend

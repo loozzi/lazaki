@@ -14,9 +14,31 @@ from src.models.Variation import Variation
 from src.services.RecommendService import RecommendService
 from src.services.ReviewService import ReviewService
 from src.utils.response import Response
-
+import pandas as pd
+import numpy as np
+import os
+import joblib
+from sklearn.cluster import KMeans
+from sklearn.pipeline import make_pipeline
 
 class ProductService:
+
+    def create_dataframe( id: int, name: str, price: int, rating_average: float, category: str, solds: int):
+        new_data_frame = pd.DataFrame(
+            {
+                "id": [id],
+                "name": [name],
+                "price": [price],
+                "rating_average": [rating_average],
+                "category": [category],
+                "solds": [solds],
+            }
+        )
+        return new_data_frame
+
+
+    def define_cluster(self, data_frame_product: pd.DataFrame):
+        pass
 
     def data_response(self, list_product: List[Product], sort: str):
         data = []
@@ -283,6 +305,28 @@ class ProductService:
             db.session.add(image_obj)
 
         db.session.commit()
+        # Tạo dataframe
+        data_frame = ProductService.create_dataframe(product.id, productName, variations[0]["price"],1, Category.query.get(categories[0]).name, 0)
+        # đường dẫn hiện tại
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        model_path = os.path.join(current_directory, "model.joblib")
+        recommendService = RecommendService()
+        file_path_csv = os.path.join(current_directory, "data_cluster.csv")
+        # Đọc dữ liệu từ file csv
+        data_csv = pd.read_csv(file_path_csv)
+        data_csv_train = data_csv.drop(columns=["cluster"], inplace=False)
+        data_csv_train = pd.concat([data_csv_train, data_frame], ignore_index=True)
+        prepare_pipe = recommendService.prepare_pipe(data_csv_train.drop(columns=["id"], inplace=False))
+        #train model và lưu file cluster
+        model_recommend = KMeans(n_clusters=150, random_state=0)
+        model_pipe = make_pipeline(prepare_pipe, model_recommend)
+        model_pipe.fit(data_csv_train.drop(columns=["id"]))
+        os.remove(model_path)
+        joblib.dump(model_pipe, model_path)
+        clusters = model_pipe.predict(data_csv_train.drop(columns=["id"]))
+        data_csv_train["cluster"] = clusters
+        os.remove(file_path_csv)
+        data_csv_train.to_csv(file_path_csv, index=False)
         return product
 
     # Cập nhật thông tin sản phẩm
@@ -427,6 +471,13 @@ class ProductService:
         ProductProperty.query.filter_by(productId=product.id).delete()
         # Xóa các categories liên quan
         product.categories.clear()
+        # Xóa thông tin trong data_cluster
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        file_path_csv = os.path.join(current_directory, "data_cluster.csv")
+        data_frame_cluster = pd.read_csv(file_path_csv)
+        data_frame_cluster = data_frame_cluster[data_frame_cluster["id"] != product.id]
+        os.remove(file_path_csv)
+        data_frame_cluster.to_csv(file_path_csv, index=False)
         # Xóa sản phẩm
         db.session.delete(product)
         db.session.commit()

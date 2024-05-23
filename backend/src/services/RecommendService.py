@@ -7,6 +7,8 @@ from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from src.models.Product import Product
+from src.models.Variation import Variation
+from src.models.Category import Category
 from src.services.ReviewService import ReviewService
 import os
 import joblib
@@ -16,24 +18,30 @@ class RecommendService:
     # Giới thiệu sản phẩm người dùng có thể thích
 
     def create_dataframe(self, list_product: List[Product]):
+        list_id = []
         list_name = []
         list_price = []
         list_rating_average = []
         list_category = []
         list_solds = []
         for product in list_product:
-            info = product.serialize()
-            list_name.append(info["name"])
-            list_price.append(info["variations"][0]["price"])
-            list_rating_average.append(ReviewService.getRateMean(info["id"]))
-            if len(info["categories"]) == 0:
-                list_category.append(product.name)
+            list_id.append(product.id)
+            list_name.append(product.name)
+            variations = Variation.query.filter_by(productId=product.id).all()
+            list_price.append(variations[0].price)
+            list_rating_average.append(ReviewService.getRateMean(product.id))
+            if len(product.categories) != 0:
+                category = Category.query.filter_by(id=product.categories[0].id).first()
+                list_category.append(category.name)
             else:
-                list_category.append(info["categories"][0]["name"])
-            
-            list_solds.append(info["variations"][0]["sold"])
+                list_category.append(product.name)
+            solds = 0
+            for variation in variations:
+                solds += variation.sold
+            list_solds.append(solds)
         new_data_frame = pd.DataFrame(
             {
+                "id": list_id,
                 "name": list_name,
                 "price": list_price,
                 "rating_average": list_rating_average,
@@ -43,7 +51,7 @@ class RecommendService:
         )
         return new_data_frame
 
-    def prepare_pipe(self, data_frame_product: pd.DataFrame):
+    def prepare_pipe(self,data_frame_product: pd.DataFrame):
         numeric_cols = data_frame_product[["price", "rating_average", "solds"]]
         object_cols = data_frame_product[["category", "name"]]
         column_trans_numeric = ColumnTransformer(

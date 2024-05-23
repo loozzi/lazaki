@@ -11,16 +11,23 @@ import { history } from '~/configs/history'
 import routes from '~/configs/routes'
 import orderService from '~/services/order.service'
 import productService from '~/services/product.service'
+import { Button } from '@nextui-org/react'
 
 export const ViewCartPage = () => {
   document.title = 'Giỏ hàng'
   const [suggestProducts, setSuggestProducts] = useState<ProductResponse[]>([])
+  const [currentSuggestProductPage, setSuggestProductPage] = useState<number>(1)
+  const [loading, setLoading] = useState<boolean>(false)
   const dispatch = useAppDispatch()
   const cart = useAppSelector(selectCart)
 
   useEffect(() => {
-    productService.suggest({ page: 1, limit: 5 }).then((res) => setSuggestProducts(res.data?.data || []))
-  }, [cart])
+    setLoading(true)
+    productService.suggest({ page: currentSuggestProductPage, limit: 5 }).then((res) => {
+      setSuggestProducts([...suggestProducts, ...res.data?.data!])
+      setLoading(false)
+    })
+  }, [cart, currentSuggestProductPage])
 
   useEffect(() => {
     orderService.current().then((res) => {
@@ -42,11 +49,27 @@ export const ViewCartPage = () => {
         )}
       </PaneComp>
       <ListCardItemComp
-        className='mx-2 mt-4'
+        className='mx-2 mt-4 bg-white rounded-lg'
         heading='Sản phẩm gợi ý'
         items={suggestProducts}
-        loading={suggestProducts.length === 0}
+        loading={loading}
         numberLoading={5}
+        bottomContent={
+          <div className='flex justify-center py-2'>
+            {suggestProducts.length > 0 && !loading ? (
+              <Button
+                color='primary'
+                variant='flat'
+                size='md'
+                onClick={() => setSuggestProductPage(currentSuggestProductPage + 1)}
+              >
+                Xem thêm
+              </Button>
+            ) : (
+              <span className='pb-4'>Không có sản phẩm gợi ý</span>
+            )}
+          </div>
+        }
       />
     </div>
   )

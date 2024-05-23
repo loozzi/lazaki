@@ -23,11 +23,13 @@
 	</p>
 	
 <h4>
-	<a href="#" target="_blank">View Demo</a>
+	<a href="https://lazaki.vercel.app" target="_blank">Xem Demo</a>
 <span> · </span>
-	<a href="https://github.com/loozzi/lazaki/issues/">Report Bug</a>
+	<a href="http://lazaki.hieutn.xyz/api" target="_blank">API</a>
 <span> · </span>
-	<a href="https://github.com/loozzi/lazaki/issues/">Request Feature</a>
+	<a href="https://github.com/loozzi/lazaki/issues/">Báo cáo lỗi</a>
+<span> · </span>
+	<a href="https://github.com/loozzi/lazaki/issues/">Yêu cầu tính năng</a>
 </h4>
 </div>
 
@@ -38,7 +40,7 @@
 
 </p>
 
-## Technology
+## Công nghệ sử dụng
 
 - **Frontend:**
   - ReactJs, TypeScript
@@ -46,23 +48,38 @@
   - Redux Toolkit + Saga
 - **Backend:**
   - Python
-  - Updating...
-- **Security and Authentication**
-  - JSON Web Tokens, OAuth
+  - Flask
+  - Sqlalchemy
+  - Mysql
+- **Bảo mật và xác thực người dùng**
+  - JSON Web Tokens, Firebase
 
-## Feature
+## Tính năng
+- Xem danh sách sản phẩm
+- Tìm kiếm sản phẩm: theo tên, theo danh mục, theo khoảng giá
+- Xem chi tiết sản phẩm: thông tin, hình ảnh, đánh giá...
+- Thêm sản phẩm vào giỏ hàng, sửa, xóa sản phẩm ở giỏ hàng
+- Đặt hàng
+- Xem lịch sử mua hàng
+- Cài đặt thông tin người dùng
+- Quản lý số lượng sản phẩm, danh mục, người dùng, đơn hàng
+- Thêm, sửa, xóa sản phẩm
+- Thêm, sửa, danh mục sản phẩm
+- Vô hiệu hóa/mở khóa tài khoản người dùng
+- Quản lý, cập nhật trạng thái của các đơn hàng
+- ...
 
-## Installation
+## Cài đặt
 
 Docker repositoy: [Lazaki](https://hub.docker.com/r/tahodev/lazaki/tags)
 
-Clone repository
+Tải xuống repository
 
 ```
 git clone https://github.com/loozzi/lazaki.git
 ```
 
-Go to folder
+Đi tới thư mục code
 
 ```
 cd lazaki
@@ -74,32 +91,33 @@ cd lazaki
 cd backend
 ```
 
-Install python and module
+Cài đặt Python [tại đây](https://www.python.org/) và các thư viện liên quan
 
 ```
 pip install -r requirements.txt
 ```
 
-Config environment and run
+Cấu hình biến môi trường
 
 <details>
 <summary>Environment config (.env)</summary>
 
 ```
-Updating...
+SQLALCHEMY_DATABASE_URI=mysql+pymysql://<DB_USERNAME>:<DB_PASSWORD>@<DB_HOST>/<DB_DATABASE>?charset=utf8mb4
+SECRET_KEY=<string>
 ```
 
 </details>
-Create database
+Khởi tạo database
 
 ```
-Updating...
+flask db upgrade
 ```
 
-Run server
+Khởi chạy máy chủ api
 
 ```
-Updating...
+python app.ppy
 ```
 
 ### Frontend
@@ -108,45 +126,34 @@ Updating...
 cd frontend
 ```
 
-Install nodejs and module
-
-```
-yarn
-```
-
-or
+Cài đặt NodeJs [tại đây](https://nodejs.org/en) và cài đặt các thư viện liên quan
 
 ```
 npm install
 ```
-
+Cấu hình biến môi trường
 <details>
 <summary>Environment config (.env)</summary>
 
 ```
-REACT_APP_API_ENDPOINT=<api>
+VITE_REACT_APP_API_ENDPOINT=<API URL>
+VITE_REACT_APP_FIREBASE_API_KEY=<FIREBASE API KEY>
 ```
 
 </details>
 
-Run server
-
-```
-yarn dev
-```
-
-or
+Khởi chạy server frontend
 
 ```
 npm run dev
 ```
 
-## Contributors
+## Đóng góp
 
 <center>
 	<table>
 		<th>
-			<td>Full Name</td>
+			<td>Họ tên</td>
 			<td>Email</td>
 		</th>
 		<tr>

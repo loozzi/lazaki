@@ -8,26 +8,54 @@ export const HomePage = () => {
   document.title = 'Trang chủ - Lazaki'
   const [products, setProducts] = useState<ProductResponse[]>([])
   const [currentProductPage, setCurrentProductPage] = useState(1)
-  const [suggestProducts, setSuggestProducts] = useState<ProductResponse[]>([])
-  const [currentSuggestPage, setCurrentSuggestPage] = useState(1)
+  const [samsungProducts, setSamsungProducts] = useState<ProductResponse[]>([])
+  const [currentSamsungProductPage, setCurrentSamsungProductPage] = useState(1)
+  const [laptopProducts, setLaptopProducts] = useState<ProductResponse[]>([])
+  const [currentLaptopProductPage, setCurrentLaptopProductPage] = useState(1)
+  const [tvProducts, setTvProducts] = useState<ProductResponse[]>([])
+  const [currentTvProductPage, setCurrentTvProductPage] = useState(1)
+  const [cameraProducts, setCameraProducts] = useState<ProductResponse[]>([])
+  const [currentCameraProductPage, setCurrentCameraProductPage] = useState(1)
 
   useEffect(() => {
-    productService.all({ page: currentProductPage, limit: 10, sort: 'desc' }).then((res) => {
+    productService.search({ page: currentProductPage, limit: 10, keyword: 'iphone' }).then((res) => {
       setProducts([...products, ...res.data!.data])
     })
   }, [currentProductPage])
 
   useEffect(() => {
-    productService.suggest({ page: currentSuggestPage, limit: 10 }).then((res) => {
-      setSuggestProducts([...suggestProducts, ...res.data!.data])
+    productService.search({ page: currentSamsungProductPage, limit: 10, keyword: 'điện thoại samsung' }).then((res) => {
+      setSamsungProducts([...samsungProducts, ...res.data!.data])
     })
-  }, [currentSuggestPage])
+  }, [currentSamsungProductPage])
+
+  useEffect(() => {
+    productService
+      .search({ page: currentLaptopProductPage, limit: 10, keyword: 'laptop', minPrice: 2000000 })
+      .then((res) => {
+        setLaptopProducts([...laptopProducts, ...res.data!.data])
+      })
+  }, [currentLaptopProductPage])
+
+  useEffect(() => {
+    productService.search({ page: currentTvProductPage, limit: 10, keyword: 'tv', minPrice: 3000000 }).then((res) => {
+      setTvProducts([...tvProducts, ...res.data!.data])
+    })
+  }, [currentTvProductPage])
+
+  useEffect(() => {
+    productService
+      .search({ page: currentCameraProductPage, limit: 10, keyword: 'camera', minPrice: 200000 })
+      .then((res) => {
+        setCameraProducts([...cameraProducts, ...res.data!.data])
+      })
+  }, [currentCameraProductPage])
 
   return (
     <div>
       <ListCardItemComp
         className='mt-4 bg-white rounded-lg'
-        heading='Gợi ý sản phẩm'
+        heading='Điện thoại Iphone'
         items={products}
         loading={products.length === 0}
         numberLoading={10}
@@ -46,9 +74,9 @@ export const HomePage = () => {
       />
       <ListCardItemComp
         className='mt-4 bg-white rounded-lg'
-        heading='Gợi ý cho bạn'
-        items={suggestProducts}
-        loading={suggestProducts.length === 0}
+        heading='Điện thoại Samsung'
+        items={samsungProducts}
+        loading={samsungProducts.length === 0}
         numberLoading={10}
         bottomContent={
           <div className='flex justify-center py-2'>
@@ -56,7 +84,66 @@ export const HomePage = () => {
               color='primary'
               variant='flat'
               size='md'
-              onClick={() => setCurrentSuggestPage(currentSuggestPage + 1)}
+              onClick={() => setCurrentSamsungProductPage(currentSamsungProductPage + 1)}
+            >
+              Xem thêm
+            </Button>
+          </div>
+        }
+      />
+      <ListCardItemComp
+        className='mt-4 bg-white rounded-lg'
+        heading='Laptop'
+        items={laptopProducts}
+        loading={laptopProducts.length === 0}
+        numberLoading={10}
+        bottomContent={
+          <div className='flex justify-center py-2'>
+            <Button
+              color='primary'
+              variant='flat'
+              size='md'
+              onClick={() => setCurrentLaptopProductPage(currentLaptopProductPage + 1)}
+            >
+              Xem thêm
+            </Button>
+          </div>
+        }
+      />
+
+      <ListCardItemComp
+        className='mt-4 bg-white rounded-lg'
+        heading='TV'
+        items={tvProducts}
+        loading={tvProducts.length === 0}
+        numberLoading={10}
+        bottomContent={
+          <div className='flex justify-center py-2'>
+            <Button
+              color='primary'
+              variant='flat'
+              size='md'
+              onClick={() => setCurrentTvProductPage(currentTvProductPage + 1)}
+            >
+              Xem thêm
+            </Button>
+          </div>
+        }
+      />
+
+      <ListCardItemComp
+        className='mt-4 bg-white rounded-lg'
+        heading='Camera'
+        items={cameraProducts}
+        loading={cameraProducts.length === 0}
+        numberLoading={10}
+        bottomContent={
+          <div className='flex justify-center py-2'>
+            <Button
+              color='primary'
+              variant='flat'
+              size='md'
+              onClick={() => setCurrentCameraProductPage(currentCameraProductPage + 1)}
             >
               Xem thêm
             </Button>

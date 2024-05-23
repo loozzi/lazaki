@@ -1,4 +1,5 @@
 import datetime
+from typing import List
 
 from sqlalchemy import TIMESTAMP, Enum, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -33,7 +34,7 @@ class Order(Base):
     )
     shippingName: Mapped[str] = mapped_column(String(256), nullable=False, default="")
     shippingCode: Mapped[str] = mapped_column(String(256), nullable=False, default="")
-    orderDetails: Mapped[list["OrderDetail"]] = relationship(
+    orderDetails: Mapped[List["OrderDetail"]] = relationship(
         "OrderDetail", backref="orders", uselist=True
     )
     totalAmount: Mapped[int] = mapped_column(Integer, nullable=False, default=0)

@@ -1,4 +1,5 @@
 import datetime
+from typing import List
 
 from sqlalchemy import desc
 from src import db
@@ -105,7 +106,7 @@ class OrderService:
         )
         return orders, totalOrders
 
-    def getOrders(sort: str) -> list[dict]:
+    def getOrders(sort: str) -> List[dict]:
         order_list = Order.query.all()
         data = []
         for order in order_list:

@@ -1,5 +1,9 @@
+import os
 from typing import List
 
+import pandas as pd
+from sklearn.cluster import KMeans
+from sklearn.pipeline import make_pipeline
 from sqlalchemy import asc, desc, func
 from sqlalchemy.orm import aliased
 from src import db
@@ -13,14 +17,13 @@ from src.models.Variation import Variation
 from src.services.RecommendService import RecommendService
 from src.services.ReviewService import ReviewService
 from src.utils.response import Response
-import pandas as pd
-import os
-from sklearn.cluster import KMeans
-from sklearn.pipeline import make_pipeline
+
 
 class ProductService:
 
-    def create_dataframe( id: int, name: str, price: int, rating_average: float, category: str, solds: int):
+    def create_dataframe(
+        id: int, name: str, price: int, rating_average: float, category: str, solds: int
+    ):
         new_data_frame = pd.DataFrame(
             {
                 "id": [id],
@@ -32,7 +35,6 @@ class ProductService:
             }
         )
         return new_data_frame
-
 
     def data_response(self, list_product: List[Product], sort: str):
         data = []
@@ -301,15 +303,24 @@ class ProductService:
 
         db.session.commit()
         # Tạo dataframe
-        data_frame = ProductService.create_dataframe(product.id, productName, variations[0]["price"],1, Category.query.get(categories[0]).name, 0)
+        data_frame = ProductService.create_dataframe(
+            product.id,
+            productName,
+            variations[0]["price"],
+            1,
+            Category.query.get(categories[0]).name,
+            0,
+        )
         recommendService = RecommendService()
         file_path_csv = "./src/assets/data_cluster.csv"
         # Đọc dữ liệu từ file csv
         data_csv = pd.read_csv(file_path_csv)
         data_csv_train = data_csv.drop(columns=["cluster"], inplace=False)
         data_csv_train = pd.concat([data_csv_train, data_frame], ignore_index=True)
-        prepare_pipe = recommendService.prepare_pipe(data_csv_train.drop(columns=["id"], inplace=False))
-        #train model và lưu file cluster
+        prepare_pipe = recommendService.prepare_pipe(
+            data_csv_train.drop(columns=["id"], inplace=False)
+        )
+        # train model và lưu file cluster
         model_recommend = KMeans(n_clusters=150, random_state=0)
         model_pipe = make_pipeline(prepare_pipe, model_recommend)
         model_pipe.fit(data_csv_train.drop(columns=["id"]))
@@ -477,14 +488,19 @@ class ProductService:
         limit: int,
         page: int,
     ):
-        
+
         recommend_service = RecommendService()
-        product_recommend_ids= recommend_service.generateProducts(list_products_id)
-        products_recommend = Product.query.filter(Product.id.in_(product_recommend_ids)
-                                                  ).limit(limit).offset((page - 1) * limit)
-        total_recommend = Product.query.filter(Product.id.in_(product_recommend_ids)).count()
+        product_recommend_ids = recommend_service.generateProducts(list_products_id)
+        products_recommend = (
+            Product.query.filter(Product.id.in_(product_recommend_ids))
+            .limit(limit)
+            .offset((page - 1) * limit)
+        )
+        total_recommend = Product.query.filter(
+            Product.id.in_(product_recommend_ids)
+        ).count()
         dataResponse = []
-        
+
         for product in products_recommend:
             info_product = product.serialize()
             data_one_product = {}
@@ -501,6 +517,7 @@ class ProductService:
 
         response = Pagination(page, limit, total_recommend, dataResponse)
         return response.serialize()
+
     # Lấy sản phẩm theo keyword, order, type
     def searchProductsAdmin(
         keyword: str, order: str, type: str, page: int, limit: int, category: str = None

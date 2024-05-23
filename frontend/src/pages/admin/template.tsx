@@ -5,6 +5,10 @@ import { history } from '~/configs/history'
 import routes from '~/configs/routes'
 
 export const AdminTemplate = () => {
+  if (window.location.pathname === '/admin') {
+    history.push(routes.admin.overview)
+  }
+
   useEffect(() => {
     const adminAccessToken = localStorage.getItem('adminAccessToken')
     if (!adminAccessToken) {

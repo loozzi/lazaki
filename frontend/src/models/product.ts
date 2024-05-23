@@ -107,6 +107,7 @@ export interface ProductAdminSearchParams extends PaginationParams {
   keyword?: string
   order?: 'asc' | 'desc'
   type?: 'sold' | 'quantity'
+  category?: string
 }
 
 export interface ProductSearchParams extends PaginationParams {

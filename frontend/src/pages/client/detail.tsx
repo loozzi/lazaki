@@ -22,6 +22,7 @@ export const ViewDetailPage = () => {
     productService.detail(permalink || '').then((res) => {
       setProduct(res.data)
       document.title = res.data.name
+      window.scrollTo(0, 0)
     })
 
     // call api get reviews

@@ -9,11 +9,15 @@ import {
   Navbar,
   NavbarBrand,
   NavbarContent,
-  NavbarItem
+  NavbarItem,
+  NavbarMenu,
+  NavbarMenuItem,
+  NavbarMenuToggle
 } from '@nextui-org/react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { CiUser } from 'react-icons/ci'
-import { FaExternalLinkAlt } from 'react-icons/fa'
+import { FaExternalLinkAlt, FaHome, FaSearch, FaSignOutAlt, FaUser } from 'react-icons/fa'
+import { FaCartShopping } from 'react-icons/fa6'
 import { PiShoppingCartSimple } from 'react-icons/pi'
 import { Link } from 'react-router-dom'
 import { useAppSelector } from '~/app/hook'
@@ -25,11 +29,13 @@ import { SearchInputHeaderComp } from './search-input'
 
 export const HeaderComp = () => {
   const suggestions = [
-    { label: 'Điện thoại', slug: '#' },
-    { label: 'Máy tính bảng', slug: '#' },
-    { label: 'Laptop', slug: '#' },
-    { label: 'Điều hòa', slug: '#' }
+    { label: 'Điện thoại', slug: routes.client.search + '?q=điện thoại' },
+    { label: 'Máy tính bảng', slug: routes.client.search + '?q=máy tính bảng' },
+    { label: 'Laptop', slug: routes.client.search + '?q=laptop' },
+    { label: 'Điều hòa', slug: routes.client.search + '?q=điều hòa' }
   ]
+
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
   const cart = useAppSelector(selectCart)
   const isAuthenticated = useAppSelector(selectIsAuthenticated)
@@ -39,25 +45,30 @@ export const HeaderComp = () => {
   }, [cart])
 
   return (
-    <Navbar isBordered className='h-24 w-full justify-center' maxWidth='xl'>
-      <NavbarBrand as={Link} to={routes.client.home} className='cursor-pointer'>
-        <Image src={assets.lazaki} className='min-w-36 max-w-36' />
-      </NavbarBrand>
-      <NavbarContent className='hidden sm:flex gap-6' justify='center'>
+    <Navbar isBordered className='h-24 w-full justify-center' maxWidth='xl' onMenuOpenChange={setIsMenuOpen}>
+      <NavbarContent>
+        <NavbarMenuToggle aria-label={isMenuOpen ? 'Close menu' : 'Open menu'} className='md:hidden' />
+        <NavbarBrand as={Link} to={routes.client.home} className='cursor-pointer'>
+          <Image src={assets.lazaki} className='min-w-36 max-w-36' />
+        </NavbarBrand>
+      </NavbarContent>
+
+      <NavbarContent className='hidden lg:flex gap-6' justify='center'>
         <NavbarItem className='w-full'>
           <SearchInputHeaderComp />
           <NavbarItem className='hidden md:flex mt-2'>
             {suggestions.map((sg) => (
               <Link key={sg.label} className='mr-4 flex items-center text-blue-500' to={sg.slug}>
                 {sg.label}
-                <FaExternalLinkAlt className='ml-1 text-sm' />
+                <FaExternalLinkAlt className='ml-1 text-sm' size={8} />
               </Link>
             ))}
           </NavbarItem>
         </NavbarItem>
       </NavbarContent>
-      <NavbarContent className='flex-col justify-end'>
-        <NavbarItem className='lg:flex gap-2'>
+
+      <NavbarContent justify='end'>
+        <NavbarItem className='hidden md:flex gap-2 lg:items-start'>
           <Button
             as={Link}
             color='primary'
@@ -104,8 +115,40 @@ export const HeaderComp = () => {
             </Button>
           )}
         </NavbarItem>
-        <NavbarItem className='md:mt-3'></NavbarItem>
       </NavbarContent>
+
+      <NavbarMenu className='mt-8'>
+        <NavbarMenuItem onClick={() => setIsMenuOpen(false)}>
+          <Link to={routes.client.search} className='p-4 border-b-1 border-gray-400 flex items-center gap-2'>
+            <FaHome />
+            Trang chủ
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem onClick={() => setIsMenuOpen(false)}>
+          <Link to={routes.client.search} className='p-4 border-b-1 border-gray-400 flex items-center gap-2'>
+            <FaSearch />
+            Tìm kiếm sản phẩm
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem onClick={() => setIsMenuOpen(false)}>
+          <Link to={routes.client.cart} className='p-4 border-b-1 border-gray-400  flex items-center gap-2'>
+            <FaCartShopping />
+            Giỏ hàng
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem onClick={() => setIsMenuOpen(false)}>
+          <Link to={routes.client.account} className='p-4 border-b-1 border-gray-400  flex items-center gap-2'>
+            <FaUser />
+            Tài khoản
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem onClick={() => setIsMenuOpen(false)}>
+          <Link to={routes.client.signOut} className='p-4 border-b-1 border-gray-400  flex items-center gap-2'>
+            <FaSignOutAlt />
+            Đăng xuất
+          </Link>
+        </NavbarMenuItem>
+      </NavbarMenu>
     </Navbar>
   )
 }

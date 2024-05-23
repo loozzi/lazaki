@@ -56,3 +56,13 @@ def suggest_products():
     product_controller = ProductController()
     data = product_controller.recommendProducts(limit, page, current_customer)
     return Response(status=200, message="Success", data=data)
+
+
+@product.route("/similar/<string:slug>", methods=["GET"])
+@request_pagination
+def similar_products(slug):
+    limit = request.pagination["limit"]
+    page = request.pagination["page"]
+    product_controller = ProductController()
+    data = product_controller.getSimilarProducts(slug, limit, page)
+    return Response(status=200, message="Success", data=data)

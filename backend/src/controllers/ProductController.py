@@ -57,4 +57,13 @@ class ProductController:
             orderDetail.productId for orderDetail in order_list_customer
         ]
         product_service = ProductService()
-        return product_service.generateProducts(list_products_id, limit, page)
+        return product_service.generateProducts(list_products_id,
+                                                limit,
+                                                page)
+
+    def getSimilarProducts(self, slug: str, limit: int, page: int):
+        product = Product.query.filter_by(slug=slug).first()
+        id = product.id
+        product_service = ProductService()
+        return product_service.generateProducts([id], limit, page)
+

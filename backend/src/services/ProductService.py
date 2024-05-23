@@ -6,7 +6,6 @@ from src import db
 from src.controllers.Pagination import Pagination
 from src.models.Category import Category
 from src.models.CategoryProduct import CategoryProduct
-from src.models.OrderDetail import OrderDetail
 from src.models.Product import Product
 from src.models.ProductImage import ProductImage
 from src.models.ProductProperty import ProductProperty
@@ -15,9 +14,7 @@ from src.services.RecommendService import RecommendService
 from src.services.ReviewService import ReviewService
 from src.utils.response import Response
 import pandas as pd
-import numpy as np
 import os
-import joblib
 from sklearn.cluster import KMeans
 from sklearn.pipeline import make_pipeline
 
@@ -304,11 +301,8 @@ class ProductService:
         db.session.commit()
         # Tạo dataframe
         data_frame = ProductService.create_dataframe(product.id, productName, variations[0]["price"],1, Category.query.get(categories[0]).name, 0)
-        # đường dẫn hiện tại
-        current_directory = os.path.dirname(os.path.abspath(__file__))
-        model_path = os.path.join(current_directory, "model.joblib")
         recommendService = RecommendService()
-        file_path_csv = os.path.join(current_directory, "data_cluster.csv")
+        file_path_csv = "./src/assets/data_cluster.csv"
         # Đọc dữ liệu từ file csv
         data_csv = pd.read_csv(file_path_csv)
         data_csv_train = data_csv.drop(columns=["cluster"], inplace=False)
@@ -318,8 +312,6 @@ class ProductService:
         model_recommend = KMeans(n_clusters=150, random_state=0)
         model_pipe = make_pipeline(prepare_pipe, model_recommend)
         model_pipe.fit(data_csv_train.drop(columns=["id"]))
-        os.remove(model_path)
-        joblib.dump(model_pipe, model_path)
         clusters = model_pipe.predict(data_csv_train.drop(columns=["id"]))
         data_csv_train["cluster"] = clusters
         os.remove(file_path_csv)
@@ -469,8 +461,7 @@ class ProductService:
         # Xóa các categories liên quan
         product.categories.clear()
         # Xóa thông tin trong data_cluster
-        current_directory = os.path.dirname(os.path.abspath(__file__))
-        file_path_csv = os.path.join(current_directory, "data_cluster.csv")
+        file_path_csv = "./src/assets/data_cluster.csv"
         data_frame_cluster = pd.read_csv(file_path_csv)
         data_frame_cluster = data_frame_cluster[data_frame_cluster["id"] != product.id]
         os.remove(file_path_csv)

@@ -1,8 +1,6 @@
 from typing import List
 
-import numpy as np
 import pandas as pd
-from sklearn.cluster import KMeans
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
@@ -10,9 +8,6 @@ from src.models.Product import Product
 from src.models.Variation import Variation
 from src.models.Category import Category
 from src.services.ReviewService import ReviewService
-import os
-import joblib
-
 
 class RecommendService:
     # Giới thiệu sản phẩm người dùng có thể thích
@@ -98,20 +93,9 @@ class RecommendService:
         PreparePipe = make_pipeline(preprocessor)
         return PreparePipe
 
-
-    def save_and_load_model(self, data_frame_all_product, model_path):
-        prepare_pipe = self.prepare_pipe(data_frame_all_product)
-        model_recommend = KMeans(n_clusters=200)
-        model_pipe = make_pipeline(prepare_pipe, model_recommend)
-        model_pipe.fit(data_frame_all_product)
-        joblib.dump(model_pipe, model_path)
-        return model_pipe
-
-
     def generateProducts(self, list_product_id: List[int]):
         product_ids = set(list_product_id)
-        current_directory = os.path.dirname(os.path.abspath(__file__))
-        model_path = os.path.join(current_directory, "data_cluster.csv")
+        model_path = "./src/assets/data_cluster.csv"
         data_frame_all_product = pd.read_csv(model_path)
         clusters = set(data_frame_all_product.loc[data_frame_all_product["id"].isin(product_ids)]["cluster"])
         list_product_id_recommend = set(data_frame_all_product.loc[

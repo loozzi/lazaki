@@ -19,10 +19,12 @@ class AdminController:
         pass
 
     # Lấy danh sách sản phẩm
-    def getProducts(page: int, limit: int, keyword: str, order: str, type: str):
+    def getProducts(
+        page: int, limit: int, keyword: str, order: str, type: str, category: str
+    ):
         # Lấy danh sách sản phẩm (kết quả trả về là một tuple)
         products, totalProducts = ProductService.searchProductsAdmin(
-            keyword, order, type, page, limit
+            keyword, order, type, page, limit, category
         )
 
         if totalProducts == 0:

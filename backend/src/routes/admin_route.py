@@ -139,7 +139,8 @@ def getProducts():
     keyword = request.args.get("keyword", None)
     order = request.args.get("order", None)
     type = request.args.get("type", None)
-    return AdminController.getProducts(page, limit, keyword, order, type)
+    category = request.args.get("category", None)
+    return AdminController.getProducts(page, limit, keyword, order, type, category)
 
 
 @admin.route("/category", methods=["POST"])

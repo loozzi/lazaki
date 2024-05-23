@@ -6,7 +6,6 @@ from src import db
 from src.controllers.Pagination import Pagination
 from src.models.Category import Category
 from src.models.CategoryProduct import CategoryProduct
-from src.models.OrderDetail import OrderDetail
 from src.models.Product import Product
 from src.models.ProductImage import ProductImage
 from src.models.ProductProperty import ProductProperty
@@ -14,9 +13,26 @@ from src.models.Variation import Variation
 from src.services.RecommendService import RecommendService
 from src.services.ReviewService import ReviewService
 from src.utils.response import Response
-
+import pandas as pd
+import os
+from sklearn.cluster import KMeans
+from sklearn.pipeline import make_pipeline
 
 class ProductService:
+
+    def create_dataframe( id: int, name: str, price: int, rating_average: float, category: str, solds: int):
+        new_data_frame = pd.DataFrame(
+            {
+                "id": [id],
+                "name": [name],
+                "price": [price],
+                "rating_average": [rating_average],
+                "category": [category],
+                "solds": [solds],
+            }
+        )
+        return new_data_frame
+
 
     def data_response(self, list_product: List[Product], sort: str):
         data = []
@@ -284,6 +300,23 @@ class ProductService:
             db.session.add(image_obj)
 
         db.session.commit()
+        # Tạo dataframe
+        data_frame = ProductService.create_dataframe(product.id, productName, variations[0]["price"],1, Category.query.get(categories[0]).name, 0)
+        recommendService = RecommendService()
+        file_path_csv = "./src/assets/data_cluster.csv"
+        # Đọc dữ liệu từ file csv
+        data_csv = pd.read_csv(file_path_csv)
+        data_csv_train = data_csv.drop(columns=["cluster"], inplace=False)
+        data_csv_train = pd.concat([data_csv_train, data_frame], ignore_index=True)
+        prepare_pipe = recommendService.prepare_pipe(data_csv_train.drop(columns=["id"], inplace=False))
+        #train model và lưu file cluster
+        model_recommend = KMeans(n_clusters=150, random_state=0)
+        model_pipe = make_pipeline(prepare_pipe, model_recommend)
+        model_pipe.fit(data_csv_train.drop(columns=["id"]))
+        clusters = model_pipe.predict(data_csv_train.drop(columns=["id"]))
+        data_csv_train["cluster"] = clusters
+        os.remove(file_path_csv)
+        data_csv_train.to_csv(file_path_csv, index=False)
         return product
 
     # Cập nhật thông tin sản phẩm
@@ -428,33 +461,46 @@ class ProductService:
         ProductProperty.query.filter_by(productId=product.id).delete()
         # Xóa các categories liên quan
         product.categories.clear()
+        # Xóa thông tin trong data_cluster
+        file_path_csv = "./src/assets/data_cluster.csv"
+        data_frame_cluster = pd.read_csv(file_path_csv)
+        data_frame_cluster = data_frame_cluster[data_frame_cluster["id"] != product.id]
+        os.remove(file_path_csv)
+        data_frame_cluster.to_csv(file_path_csv, index=False)
         # Xóa sản phẩm
         db.session.delete(product)
         db.session.commit()
 
     def generateProducts(
         self,
-        list_slug_accessed: List[str],
-        order_list_customer: List[OrderDetail],
+        list_products_id: List[int],
         limit: int,
         page: int,
     ):
-        list_products = []
-        for order in order_list_customer:
-            product = Product.query.filter_by(id=order.productId).first()
-            if product is not None:
-                list_products.append(product)
-        for slug in list_slug_accessed:
-            product = Product.query.filter_by(slug=slug).first()
-            if product is not None:
-                list_products.append(product)
+        
         recommend_service = RecommendService()
-        data = recommend_service.generateProducts(list_products)
-        data = self.data_response(data, "asc")
-        result = data[(page - 1) * limit : limit + (page - 1) * limit]
-        product_pagination = Pagination(page, len(result), len(data), result)
-        return product_pagination.serialize()
+        product_recommend_ids= recommend_service.generateProducts(list_products_id)
+        products_recommend = Product.query.filter(Product.id.in_(product_recommend_ids)
+                                                  ).limit(limit).offset((page - 1) * limit)
+        total_recommend = Product.query.filter(Product.id.in_(product_recommend_ids)).count()
+        dataResponse = []
+        
+        for product in products_recommend:
+            info_product = product.serialize()
+            data_one_product = {}
+            data_one_product["name"] = info_product["name"]
+            data_one_product["slug"] = product.slug
+            data_one_product["image"] = product.getPrimaryImage()
+            data_one_product["price"] = info_product["variations"][0]["price"]
+            sold = 0
+            for variation in info_product["variations"]:
+                sold += variation["sold"]
+            data_one_product["sold"] = sold
+            data_one_product["rating"] = ReviewService.getRateMean(product.id)
+            dataResponse.append(data_one_product)
 
+        response = Pagination(page, limit, total_recommend, dataResponse)
+        return response.serialize()
     # Lấy sản phẩm theo keyword, order, type
     def searchProductsAdmin(
         keyword: str, order: str, type: str, page: int, limit: int, category: str = None

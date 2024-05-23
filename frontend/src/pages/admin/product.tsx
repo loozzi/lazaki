@@ -23,6 +23,7 @@ import { PaginationState } from '~/models/response'
 import adminService from '~/services/admin.service'
 
 export const ViewAdminManageProductPage = () => {
+  document.title = 'Quản lý sản phẩm'
   const [products, setProducts] = useState<ProductAdminResponse[]>([])
   const [pagination, setPagination] = useState<PaginationState>({
     currentPage: 1,

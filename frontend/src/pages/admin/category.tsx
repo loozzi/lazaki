@@ -24,6 +24,7 @@ import categoryService from '~/services/category.service'
 import { stringToSlug } from '~/utils'
 
 export const ViewAdminManageCategoryPage = () => {
+  document.title = 'Quản lý danh mục'
   const [categories, setCategories] = useState<Category[]>([])
   const [keyword, setKeyword] = useState<string>('')
   const [filterCategories, setFilterCategories] = useState<Category[]>([])

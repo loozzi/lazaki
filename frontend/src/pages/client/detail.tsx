@@ -21,6 +21,7 @@ export const ViewDetailPage = () => {
     const { permalink } = params
     productService.detail(permalink || '').then((res) => {
       setProduct(res.data)
+      document.title = res.data.name
     })
 
     // call api get reviews
@@ -45,7 +46,8 @@ export const ViewDetailPage = () => {
 
   useEffect(() => {
     if (!product) return
-    productService.search({ page: 1, limit: 5, categories: product?.categories[0].slug }).then((res) => {
+    const categories = product?.categories.map((e) => e.slug).join(',')
+    productService.search({ page: 1, limit: 5, categories: categories }).then((res) => {
       setSuggestProducts(res.data?.data || [])
     })
   }, [product])

@@ -30,6 +30,7 @@ const columns = [
 ]
 
 export const ViewAdminManageUserPage = () => {
+  document.title = 'Quản lý người dùng'
   const [users, setUsers] = useState<User[]>([])
   const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined)
   const [pagination, setPagination] = useState<PaginationState>({

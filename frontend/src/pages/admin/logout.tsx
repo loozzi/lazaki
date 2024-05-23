@@ -3,6 +3,7 @@ import { history } from '~/configs/history'
 import routes from '~/configs/routes'
 
 export const ViewAdminLogoutPage = () => {
+  document.title = 'Đăng xuất'
   useEffect(() => {
     setTimeout(() => {
       localStorage.removeItem('adminAccessToken')

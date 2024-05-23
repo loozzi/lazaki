@@ -70,7 +70,7 @@ export const ViewAdminManageDetailProductPage = () => {
   }, [params])
 
   useEffect(() => {
-    if (product)
+    if (product) {
       payload.setValues({
         productId: product.id,
         productName: product.name,
@@ -83,6 +83,8 @@ export const ViewAdminManageDetailProductPage = () => {
         images: product.images,
         categories: product.categories.map((e) => e.id)
       })
+      document.title = product.name
+    }
   }, [product])
 
   return (

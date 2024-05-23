@@ -67,15 +67,16 @@ class ProductService:
 
         dataResponse = []
         for product in allProducts:
-            info_product = product.serialize()
+            # info_product = product.serialize()
             data_one_product = {}
-            data_one_product["name"] = info_product["name"]
+            data_one_product["name"] = product.name
             data_one_product["slug"] = product.slug
             data_one_product["image"] = product.getPrimaryImage()
-            data_one_product["price"] = info_product["variations"][0]["price"]
+            variations = Variation.query.filter_by(productId=product.id).all()
+            data_one_product["price"] = variations[0].price
             sold = 0
-            for variation in info_product["variations"]:
-                sold += variation["sold"]
+            for variation in variations:
+                sold += variation.sold
             data_one_product["sold"] = sold
             data_one_product["rating"] = ReviewService.getRateMean(product.id)
             dataResponse.append(data_one_product)

@@ -4,6 +4,7 @@ import { ProductResponse } from '~/models/product'
 import productService from '~/services/product.service'
 
 export const HomePage = () => {
+  document.title = 'Trang chủ - Lazaki'
   const [products, setProducts] = useState<ProductResponse[]>([])
   const [suggestProducts, setSuggestProducts] = useState<ProductResponse[]>([])
 

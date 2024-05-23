@@ -11,6 +11,7 @@ import { ProductCreatePayload } from '~/models/product'
 import adminService from '~/services/admin.service'
 
 export const ViewAdminCreateProductPage = () => {
+  document.title = 'Thêm sản phẩm'
   const initialValues: ProductCreatePayload = useMemo(
     () => ({
       productName: '',

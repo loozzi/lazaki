@@ -8,6 +8,7 @@ import { PaginationState } from '~/models/response'
 import productService from '~/services/product.service'
 
 export const ViewSearchPage = () => {
+  document.title = 'Tìm kiếm sản phẩm'
   const [products, setProducts] = useState<ProductResponse[]>([])
   const [pagination, setPagination] = useState<PaginationState>({
     currentPage: 1,

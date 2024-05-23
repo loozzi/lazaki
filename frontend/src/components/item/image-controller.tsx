@@ -35,6 +35,10 @@ export const ItemImageControllerComp = (props: ItemImageControllerProps) => {
     if (variationImage) setCurrentImage(images.filter((image) => image.link === variationImage)[0] || images[0])
   }, [variationImage])
 
+  useEffect(() => {
+    setCurrentImage(images.filter((image) => image.isPrimary)[0])
+  }, [images])
+
   return (
     <div className={'md:max-w-[450px] w-full mx-2 md:mx-0'}>
       <div className='flex justify-center'>

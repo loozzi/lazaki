@@ -6,6 +6,7 @@ import routes from '~/configs/routes'
 import authService from '~/services/auth.service'
 
 export const ViewAdminLoginPage = () => {
+  document.title = 'Đăng nhập Quản trị viên'
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
 

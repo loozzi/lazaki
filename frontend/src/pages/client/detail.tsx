@@ -1,4 +1,4 @@
-import { Skeleton } from '@nextui-org/react'
+import { Button, Skeleton } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { DescriptionItemComp } from '~/components/item/desc-item'
@@ -15,13 +15,15 @@ export const ViewDetailPage = () => {
   const [product, setProduct] = useState<ProductDetailResponse | undefined>(undefined)
   const [reviews, setReviews] = useState<ReviewResponse[]>([])
   const [suggestProducts, setSuggestProducts] = useState<ProductResponse[]>([])
+  const [loadingSuggestions, setLoadingSuggestions] = useState<boolean>(false)
+  const [currentSuggestProductPage, setSuggestProductPage] = useState<number>(1)
 
   useEffect(() => {
     // call api get product detail
     const { permalink } = params
     productService.detail(permalink || '').then((res) => {
       setProduct(res.data)
-      document.title = res.data.name
+      document.title = res.data!.name
       window.scrollTo(0, 0)
     })
 
@@ -32,26 +34,18 @@ export const ViewDetailPage = () => {
       }
     })
 
-    // call api get suggest products
-    // set suggest products
-    // const item: ProductResponse = {
-    //   image: 'https://down-vn.img.susercontent.com/file/sg-11134201-22100-g0vtmbg1llive9',
-    //   name: 'Sản phẩm có tên là giống với tên của sản phẩm ở chỗ bán sản phẩm',
-    //   price: 100000,
-    //   sold: 592,
-    //   slug: 'san-pham-co-ten-la-giong-voi-ten-cua-san-pham-o-cho-ban-san-pham',
-    //   rating: 4.5
-    // }
-    // setSuggestProducts([item, item, item, item, item])
+    setSuggestProducts([])
   }, [params])
 
   useEffect(() => {
     if (!product) return
-    const categories = product?.categories.map((e) => e.slug).join(',')
-    productService.search({ page: 1, limit: 5, categories: categories }).then((res) => {
-      setSuggestProducts(res.data?.data || [])
+    const { permalink } = params
+    setLoadingSuggestions(true)
+    productService.similar(permalink || '', { page: currentSuggestProductPage, limit: 5 }).then((res) => {
+      setSuggestProducts([...suggestProducts, ...res.data?.data!])
+      setLoadingSuggestions(false)
     })
-  }, [product])
+  }, [product, currentSuggestProductPage])
 
   return (
     <div>
@@ -64,7 +58,30 @@ export const ViewDetailPage = () => {
           </div>
         </div>
         <div className='lg:col-span-2 md:col-span-4 col-span-10'>
-          <ListCardItemComp heading='Sản phẩm tương tự' items={suggestProducts} isColumn />
+          <ListCardItemComp
+            heading='Tương tự'
+            items={suggestProducts}
+            isColumn
+            loading={loadingSuggestions}
+            numberLoading={5}
+            className='bg-white rounded-lg'
+            bottomContent={
+              <div className='flex justify-center py-2'>
+                {suggestProducts.length > 0 && !loadingSuggestions ? (
+                  <Button
+                    color='primary'
+                    variant='flat'
+                    size='md'
+                    onClick={() => setSuggestProductPage(currentSuggestProductPage + 1)}
+                  >
+                    Xem thêm
+                  </Button>
+                ) : (
+                  <span>Không có sản phẩm tương tự</span>
+                )}
+              </div>
+            }
+          />
         </div>
       </div>
     </div>

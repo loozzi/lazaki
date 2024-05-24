@@ -118,6 +118,15 @@ class OrderService:
             data.sort(key=lambda order: order["id"])
         return data
 
+    def getAllProductId(customerId: int):
+        list_products_id = []
+        list_orders = Order.query.filter_by(customerId=customerId).all()
+        for order in list_orders:
+            list_order_detail = OrderDetail.query.filter_by(orderId=order.id).all()
+            for order_detail in list_order_detail:
+                list_products_id.append(order_detail.productId)
+        return list_products_id
+
     # Lấy thông tin 1 order
     def getOrder(orderId: int):
         if Order.query.get(orderId) is None:

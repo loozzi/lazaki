@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_migrate import Migrate
@@ -20,7 +20,13 @@ app.env = config.ENV
 
 bcrypt = Bcrypt(app)
 
+from src.middlewares.LoggerMiddleware import logger_middeware
 from src.models import *
 from src.routes import api
 
 app.register_blueprint(api, url_prefix="/api")
+
+
+@app.before_request
+def before_request():
+    logger_middeware()

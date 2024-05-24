@@ -18,7 +18,8 @@ const product = {
   suggest: '/product/suggest',
   all: '/product/all',
   search: '/product/search',
-  detail: '/product/detail'
+  detail: '/product/detail',
+  similar: '/product/similar/:slug'
 }
 
 const category = {

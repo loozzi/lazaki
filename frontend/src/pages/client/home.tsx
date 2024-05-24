@@ -6,8 +6,12 @@ import productService from '~/services/product.service'
 
 export const HomePage = () => {
   document.title = 'Trang chủ - Lazaki'
-  const [products, setProducts] = useState<ProductResponse[]>([])
-  const [currentProductPage, setCurrentProductPage] = useState(1)
+
+  const [suggestProducts, setSuggestProducts] = useState<ProductResponse[]>([])
+  const [currentSuggestProductPage, setCurrentSuggestProductPage] = useState(1)
+  const [loadingSuggestions, setLoadingSuggestions] = useState<boolean>(false)
+  const [iphoneProducts, setIphoneProducts] = useState<ProductResponse[]>([])
+  const [currentIphoneProductPage, setCurrentIphoneProductPage] = useState(1)
   const [samsungProducts, setSamsungProducts] = useState<ProductResponse[]>([])
   const [currentSamsungProductPage, setCurrentSamsungProductPage] = useState(1)
   const [laptopProducts, setLaptopProducts] = useState<ProductResponse[]>([])
@@ -18,10 +22,18 @@ export const HomePage = () => {
   const [currentCameraProductPage, setCurrentCameraProductPage] = useState(1)
 
   useEffect(() => {
-    productService.search({ page: currentProductPage, limit: 10, keyword: 'iphone' }).then((res) => {
-      setProducts([...products, ...res.data!.data])
+    setLoadingSuggestions(true)
+    productService.suggest({ page: currentSuggestProductPage, limit: 10 }).then((res) => {
+      setSuggestProducts([...suggestProducts, ...res.data!.data])
+      setLoadingSuggestions(false)
     })
-  }, [currentProductPage])
+  }, [currentSuggestProductPage])
+
+  useEffect(() => {
+    productService.search({ page: currentIphoneProductPage, limit: 10, keyword: 'iphone' }).then((res) => {
+      setIphoneProducts([...iphoneProducts, ...res.data!.data])
+    })
+  }, [currentIphoneProductPage])
 
   useEffect(() => {
     productService.search({ page: currentSamsungProductPage, limit: 10, keyword: 'điện thoại samsung' }).then((res) => {
@@ -54,10 +66,33 @@ export const HomePage = () => {
   return (
     <div>
       <ListCardItemComp
+        heading='Sản phẩm gợi ý'
+        items={suggestProducts}
+        loading={loadingSuggestions}
+        numberLoading={10}
+        className='mt-4 bg-white rounded-lg'
+        bottomContent={
+          <div className='flex justify-center py-2'>
+            {suggestProducts.length > 0 && !loadingSuggestions ? (
+              <Button
+                color='primary'
+                variant='flat'
+                size='md'
+                onClick={() => setCurrentSuggestProductPage(currentSuggestProductPage + 1)}
+              >
+                Xem thêm
+              </Button>
+            ) : (
+              <span className='pb-4'>Không có sản phẩm gợi ý</span>
+            )}
+          </div>
+        }
+      />
+      <ListCardItemComp
         className='mt-4 bg-white rounded-lg'
         heading='Điện thoại Iphone'
-        items={products}
-        loading={products.length === 0}
+        items={iphoneProducts}
+        loading={iphoneProducts.length === 0}
         numberLoading={10}
         bottomContent={
           <div className='flex justify-center py-2'>
@@ -65,7 +100,7 @@ export const HomePage = () => {
               color='primary'
               variant='flat'
               size='md'
-              onClick={() => setCurrentProductPage(currentProductPage + 1)}
+              onClick={() => setCurrentIphoneProductPage(currentIphoneProductPage + 1)}
             >
               Xem thêm
             </Button>

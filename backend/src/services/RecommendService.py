@@ -8,6 +8,7 @@ from src.models.Product import Product
 from src.models.Variation import Variation
 from src.models.Category import Category
 from src.services.ReviewService import ReviewService
+import random
 
 class RecommendService:
     # Giới thiệu sản phẩm người dùng có thể thích
@@ -98,8 +99,29 @@ class RecommendService:
         model_path = "./src/assets/data_cluster.csv"
         data_frame_all_product = pd.read_csv(model_path)
         clusters = set(data_frame_all_product.loc[data_frame_all_product["id"].isin(product_ids)]["cluster"])
-        list_product_id_recommend = set(data_frame_all_product.loc[
-                                        data_frame_all_product["cluster"].isin(clusters)].head(30)["id"])
-        for i in product_ids:
-            list_product_id_recommend.discard(i)
-        return list_product_id_recommend
+        if len(clusters) == 0:
+            return []
+        len_cluster = len(clusters)
+        list_products_id = []
+        for i in clusters:
+            if len_cluster == 1:
+                products_id_cluster = list(data_frame_all_product.loc[(data_frame_all_product["cluster"] == i) &
+                                                                (~ data_frame_all_product["id"].isin(product_ids))].head(5)["id"])
+                for j in products_id_cluster:
+                    list_products_id.append(j)
+            elif len_cluster == 2:
+                products_id_cluster = list(data_frame_all_product.loc[(data_frame_all_product["cluster"] == i) &
+                                                                (~ data_frame_all_product["id"].isin(product_ids))].head(3)["id"])
+                for j in products_id_cluster:
+                    list_products_id.append(j)
+            elif len_cluster == 3 or len_cluster == 4:
+                products_id_cluster = list(data_frame_all_product.loc[(data_frame_all_product["cluster"] == i) &
+                                                                (~ data_frame_all_product["id"].isin(product_ids))].head(2)["id"])
+                for j in products_id_cluster:
+                    list_products_id.append(j)
+            else:
+                products_id_cluster = list(data_frame_all_product.loc[(data_frame_all_product["cluster"] == i) &
+                                                                (~ data_frame_all_product["id"].isin(product_ids))].head(1)["id"])
+                for j in products_id_cluster:
+                    list_products_id.append(j)
+        return list_products_id

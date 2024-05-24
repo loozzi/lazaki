@@ -4,6 +4,7 @@ from src.models.Customer import Customer
 from src.models.Order import Order
 from src.models.OrderDetail import OrderDetail
 from src.services.ProductService import ProductService
+from src.models.Product import Product
 
 
 class ProductController:

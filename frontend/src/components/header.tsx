@@ -16,7 +16,7 @@ import {
 } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 import { CiUser } from 'react-icons/ci'
-import { FaExternalLinkAlt, FaHome, FaSearch, FaSignOutAlt, FaUser } from 'react-icons/fa'
+import { FaExternalLinkAlt, FaHome, FaSearch, FaSignInAlt, FaSignOutAlt, FaUser } from 'react-icons/fa'
 import { FaCartShopping } from 'react-icons/fa6'
 import { PiShoppingCartSimple } from 'react-icons/pi'
 import { Link } from 'react-router-dom'
@@ -45,7 +45,13 @@ export const HeaderComp = () => {
   }, [cart])
 
   return (
-    <Navbar isBordered className='h-24 w-full justify-center' maxWidth='xl' onMenuOpenChange={setIsMenuOpen}>
+    <Navbar
+      isBordered
+      className='h-24 w-full justify-center'
+      maxWidth='xl'
+      onMenuOpenChange={setIsMenuOpen}
+      isMenuOpen={isMenuOpen}
+    >
       <NavbarContent>
         <NavbarMenuToggle aria-label={isMenuOpen ? 'Close menu' : 'Open menu'} className='md:hidden' />
         <NavbarBrand as={Link} to={routes.client.home} className='cursor-pointer'>
@@ -68,7 +74,7 @@ export const HeaderComp = () => {
       </NavbarContent>
 
       <NavbarContent justify='end'>
-        <NavbarItem className='hidden md:flex gap-2 lg:items-start'>
+        <NavbarItem className='md:flex gap-2 lg:items-start'>
           <Button
             as={Link}
             color='primary'
@@ -89,7 +95,7 @@ export const HeaderComp = () => {
           {isAuthenticated ? (
             <Dropdown>
               <DropdownTrigger>
-                <Button color='primary' variant='flat' startContent={<CiUser size={24} />}>
+                <Button className='hidden md:flex' color='primary' variant='flat' startContent={<CiUser size={24} />}>
                   Tài khoản
                 </Button>
               </DropdownTrigger>
@@ -109,7 +115,7 @@ export const HeaderComp = () => {
               color='primary'
               variant='flat'
               startContent={<CiUser size={24} />}
-              className='mr-2'
+              className='mr-2 hidden md:flex'
             >
               Tài khoản
             </Button>
@@ -119,7 +125,7 @@ export const HeaderComp = () => {
 
       <NavbarMenu className='mt-8'>
         <NavbarMenuItem onClick={() => setIsMenuOpen(false)}>
-          <Link to={routes.client.search} className='p-4 border-b-1 border-gray-400 flex items-center gap-2'>
+          <Link to={routes.client.home} className='p-4 border-b-1 border-gray-400 flex items-center gap-2'>
             <FaHome />
             Trang chủ
           </Link>
@@ -130,24 +136,35 @@ export const HeaderComp = () => {
             Tìm kiếm sản phẩm
           </Link>
         </NavbarMenuItem>
-        <NavbarMenuItem onClick={() => setIsMenuOpen(false)}>
-          <Link to={routes.client.cart} className='p-4 border-b-1 border-gray-400  flex items-center gap-2'>
-            <FaCartShopping />
-            Giỏ hàng
-          </Link>
-        </NavbarMenuItem>
-        <NavbarMenuItem onClick={() => setIsMenuOpen(false)}>
-          <Link to={routes.client.account} className='p-4 border-b-1 border-gray-400  flex items-center gap-2'>
-            <FaUser />
-            Tài khoản
-          </Link>
-        </NavbarMenuItem>
-        <NavbarMenuItem onClick={() => setIsMenuOpen(false)}>
-          <Link to={routes.client.signOut} className='p-4 border-b-1 border-gray-400  flex items-center gap-2'>
-            <FaSignOutAlt />
-            Đăng xuất
-          </Link>
-        </NavbarMenuItem>
+        {isAuthenticated ? (
+          <>
+            <NavbarMenuItem onClick={() => setIsMenuOpen(false)}>
+              <Link to={routes.client.cart} className='p-4 border-b-1 border-gray-400  flex items-center gap-2'>
+                <FaCartShopping />
+                Giỏ hàng
+              </Link>
+            </NavbarMenuItem>
+            <NavbarMenuItem onClick={() => setIsMenuOpen(false)}>
+              <Link to={routes.client.account} className='p-4 border-b-1 border-gray-400  flex items-center gap-2'>
+                <FaUser />
+                Tài khoản
+              </Link>
+            </NavbarMenuItem>
+            <NavbarMenuItem onClick={() => setIsMenuOpen(false)}>
+              <Link to={routes.client.signOut} className='p-4 border-b-1 border-gray-400  flex items-center gap-2'>
+                <FaSignOutAlt />
+                Đăng xuất
+              </Link>
+            </NavbarMenuItem>
+          </>
+        ) : (
+          <NavbarMenuItem onClick={() => setIsMenuOpen(false)}>
+            <Link to={routes.client.auth} className='p-4 border-b-1 border-gray-400  flex items-center gap-2'>
+              <FaSignInAlt />
+              Đăng nhập
+            </Link>
+          </NavbarMenuItem>
+        )}
       </NavbarMenu>
     </Navbar>
   )

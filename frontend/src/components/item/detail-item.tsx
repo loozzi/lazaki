@@ -11,6 +11,7 @@ import { ProductDetailResponse, VariationResponse } from '~/models/product'
 import { PriceComp } from '../price'
 import { StarComp } from '../star-field'
 import { ItemImageControllerComp } from './image-controller'
+import { toast } from 'react-toastify'
 
 interface DetailItemCompProps {
   product: ProductDetailResponse
@@ -53,6 +54,7 @@ export const DetailItemComp = (props: DetailItemCompProps) => {
       oldPrice: selectedVariation.oldPrice
     }
     dispatch({ type: orderActions.addToCart.type, payload: cartItem })
+    toast('Đã thêm sản phẩm vào giỏ hàng', { type: 'success', position: 'bottom-right' })
   }
 
   const handleBuyNow = () => {

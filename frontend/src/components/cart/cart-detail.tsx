@@ -19,6 +19,7 @@ import routes from '~/configs/routes'
 import { orderActions } from '~/hooks/order/order.slice'
 import { CartItem, OrderUpdatePayload } from '~/models/order'
 import { PriceComp } from '../price'
+import { toast } from 'react-toastify'
 
 interface DetailCartCompProps {
   products: CartItem[]
@@ -62,6 +63,7 @@ export const DetailCartComp = (props: DetailCartCompProps) => {
       type: orderActions.removeFromCart.type,
       payload: product.id!
     })
+    toast('Đã xóa sản phẩm khỏi giỏ hàng', { type: 'success', position: 'bottom-right' })
   }
 
   const renderCell = (item: CartItem, columnKey: any) => {

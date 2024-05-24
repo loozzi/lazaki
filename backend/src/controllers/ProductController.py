@@ -1,10 +1,8 @@
 from typing import List
 
 from src.models.Customer import Customer
-from src.models.Order import Order
-from src.models.OrderDetail import OrderDetail
+from src.services.OrderService import OrderService
 from src.services.ProductService import ProductService
-from src.models.Product import Product
 
 
 class ProductController:
@@ -47,16 +45,9 @@ class ProductController:
 
     # Lấy thông tin sản phẩm gợi ý
     def recommendProducts(self, limit: int, page: int, current_customer: Customer):
-        list_slug_accessed = (
-            []
-        )  # khi nào làm xong logger mới đọc được, hiện tại để rỗng
-        current_order = Order.query.filter_by(customerId=current_customer.id).first()
-        order_list_customer = OrderDetail.query.filter_by(
-            orderId=current_order.id
-        ).all()
-        list_products_id = [
-            orderDetail.productId for orderDetail in order_list_customer
-        ]
+        # khi nào làm xong logger mới đọc được, hiện tại để rỗng
+        list_products_id = OrderService.getAllProductId(current_customer.id)
+
         product_service = ProductService()
         return product_service.generateProducts(list_products_id, limit, page)
 

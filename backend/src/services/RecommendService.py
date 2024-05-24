@@ -4,11 +4,11 @@ import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from src.models.Category import Category
 from src.models.Product import Product
 from src.models.Variation import Variation
-from src.models.Category import Category
 from src.services.ReviewService import ReviewService
-import random
+
 
 class RecommendService:
     # Giới thiệu sản phẩm người dùng có thể thích
@@ -47,7 +47,7 @@ class RecommendService:
         )
         return new_data_frame
 
-    def prepare_pipe(self,data_frame_product: pd.DataFrame):
+    def prepare_pipe(self, data_frame_product: pd.DataFrame):
         numeric_cols = data_frame_product[["price", "rating_average", "solds"]]
         object_cols = data_frame_product[["category", "name"]]
         column_trans_numeric = ColumnTransformer(
@@ -98,30 +98,18 @@ class RecommendService:
         product_ids = set(list_product_id)
         model_path = "./src/assets/data_cluster.csv"
         data_frame_all_product = pd.read_csv(model_path)
-        clusters = set(data_frame_all_product.loc[data_frame_all_product["id"].isin(product_ids)]["cluster"])
+        clusters = set(
+            data_frame_all_product.loc[data_frame_all_product["id"].isin(product_ids)][
+                "cluster"
+            ]
+        )
         if len(clusters) == 0:
             return []
-        len_cluster = len(clusters)
-        list_products_id = []
-        for i in clusters:
-            if len_cluster == 1:
-                products_id_cluster = list(data_frame_all_product.loc[(data_frame_all_product["cluster"] == i) &
-                                                                (~ data_frame_all_product["id"].isin(product_ids))].head(5)["id"])
-                for j in products_id_cluster:
-                    list_products_id.append(j)
-            elif len_cluster == 2:
-                products_id_cluster = list(data_frame_all_product.loc[(data_frame_all_product["cluster"] == i) &
-                                                                (~ data_frame_all_product["id"].isin(product_ids))].head(3)["id"])
-                for j in products_id_cluster:
-                    list_products_id.append(j)
-            elif len_cluster == 3 or len_cluster == 4:
-                products_id_cluster = list(data_frame_all_product.loc[(data_frame_all_product["cluster"] == i) &
-                                                                (~ data_frame_all_product["id"].isin(product_ids))].head(2)["id"])
-                for j in products_id_cluster:
-                    list_products_id.append(j)
-            else:
-                products_id_cluster = list(data_frame_all_product.loc[(data_frame_all_product["cluster"] == i) &
-                                                                (~ data_frame_all_product["id"].isin(product_ids))].head(1)["id"])
-                for j in products_id_cluster:
-                    list_products_id.append(j)
-        return list_products_id
+        product_recommend = list(
+            data_frame_all_product.loc[
+                (data_frame_all_product["cluster"].isin(clusters))
+                & (~data_frame_all_product["id"].isin(product_ids))
+            ].head(30)["id"]
+        )
+
+        return product_recommend

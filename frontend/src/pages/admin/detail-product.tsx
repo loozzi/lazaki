@@ -15,7 +15,7 @@ import productService from '~/services/product.service'
 
 export const ViewAdminManageDetailProductPage = () => {
   const params = useParams()
-  const [product, setProduct] = useState<ProductDetailResponse | null>(null)
+  const [product, setProduct] = useState<ProductDetailResponse | undefined>(undefined)
 
   const inititalPayload: ProductUpdatePayload = useMemo(
     () => ({

@@ -24,7 +24,8 @@ export const HomePage = () => {
   useEffect(() => {
     setLoadingSuggestions(true)
     productService.suggest({ page: currentSuggestProductPage, limit: 10 }).then((res) => {
-      setSuggestProducts([...suggestProducts, ...res.data!.data])
+      if (res.status === 200) setSuggestProducts([...suggestProducts, ...res.data!.data])
+      else setSuggestProducts([])
       setLoadingSuggestions(false)
     })
   }, [currentSuggestProductPage])

@@ -109,11 +109,8 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
           <div className='flex flex-col gap-4'>
             <span className='font-semibold text-2xl text-gray-500'>Thông tin đơn hàng</span>
             {history.orderDetails.map((item: CartItem) => (
-              <Link
-                to={routes.client.detail.replace(':permalink', item.slug)}
-                className='grid grid-cols-1 lg:grid-cols-2 border-1 p-4 rounded-md gap-2'
-              >
-                <div className='flex gap-2 items-center'>
+              <div className='grid grid-cols-1 lg:grid-cols-2 border-1 p-4 rounded-md gap-2'>
+                <Link to={routes.client.detail.replace(':permalink', item.slug)} className='flex gap-2 items-center'>
                   <Image src={item.image} alt={'Hình ảnh sản phẩm'} className='w-24 h-24 object-cover' />
                   <div className='flex flex-col gap-2'>
                     <span className='font-semibold'>{item.name}</span>
@@ -129,7 +126,7 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </Link>
                 <div className='flex lg:justify-start'>
                   {!!reviews.map((r) => r.variationId).includes(item.variationId || 0) ? (
                     <div>
@@ -183,7 +180,7 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
                     </div>
                   )}
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
           <div className='flex justify-end gap-4 mt-4'>

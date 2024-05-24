@@ -70,7 +70,7 @@ export const PurchaseInformationComp = (props: PurchaseInformationCompProps) => 
         <div>
           <Input
             label='Địa chỉ'
-            value={payload.values.address}
+            value={payload.values.street}
             onChange={(e) => {
               payload.setFieldValue('street', e.target.value)
             }}

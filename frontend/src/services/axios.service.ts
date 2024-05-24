@@ -17,6 +17,7 @@ const client = axios.create({
 client.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const whiteList = [apiConfig.auth.signIn, apiConfig.auth.loginAdmin, apiConfig.auth.refreshToken]
+    const blackList = [apiConfig.order.add, apiConfig.order.current, apiConfig.user, apiConfig.payment.root]
 
     const pass: boolean = whiteList.some((url) => config.url?.includes(url))
 
@@ -48,6 +49,7 @@ client.interceptors.request.use(
 
       const _accessToken = tokenService.getAccessToken()
       if (_accessToken) config.headers.Authorization = `Bearer ${_accessToken}`
+      else if (blackList.some((url) => config.url?.includes(url))) history.push(routes.client.auth)
       return config
     }
   },

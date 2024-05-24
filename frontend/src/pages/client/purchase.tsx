@@ -8,6 +8,7 @@ import { PurchaseInformationComp } from '~/components/purchase/purchase-info'
 import { ModalPurchaseOnline } from '~/components/purchase/purchase-online'
 import { history } from '~/configs/history'
 import routes from '~/configs/routes'
+import { selectIsAuthenticated } from '~/hooks/auth/auth.slice'
 import { selectCart } from '~/hooks/order/order.slice'
 import { OrderConfirmPayload } from '~/models/order'
 import orderService from '~/services/order.service'
@@ -16,6 +17,7 @@ import paymentService from '~/services/payment.service'
 export const ViewPurchasePage = () => {
   document.title = 'Thanh toán'
   const cart = useAppSelector(selectCart)
+  const isAuthenticated = useAppSelector(selectIsAuthenticated)
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [isConfirmBanking, setConfirmBanking] = useState(false)
@@ -101,6 +103,12 @@ export const ViewPurchasePage = () => {
       setConfirmBanking(false)
     }
   }, [isConfirmBanking])
+
+  useEffect(() => {
+    if (isAuthenticated === false) {
+      history.push(routes.client.auth)
+    }
+  }, [isAuthenticated])
 
   return (
     <div>

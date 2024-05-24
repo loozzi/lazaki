@@ -1,5 +1,6 @@
 import {
   Button,
+  Image,
   Input,
   Modal,
   ModalBody,
@@ -226,9 +227,14 @@ export const AdminProductVariationComp = (props: AdminProductVariationProps) => 
                       onChange={(e) => handleUpdateImageVariation(index, e.target.value)}
                       selectedKeys={[variation.image]}
                       className='max-w-[200px] w-full'
+                      startContent={<Image src={variation.image} alt='Hình ảnh' width={40} height={40} />}
                     >
                       {payload.values.images.map((image) => (
-                        <SelectItem key={image.link} value={image.link}>
+                        <SelectItem
+                          key={image.link}
+                          value={image.link}
+                          startContent={<Image src={image.link} alt='Hình ảnh' width={40} height={40} />}
+                        >
                           {image.link}
                         </SelectItem>
                       ))}

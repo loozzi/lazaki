@@ -83,7 +83,10 @@ export const SelectAddressComp = (props: SelectAddressCompProps) => {
         }}
         selectedKeys={
           currentAddress?.district && districts.length > 0
-            ? [(districts.find((district) => district.Name === currentAddress.district) as District).Id]
+            ? [
+                (districts.find((district) => district.Name === currentAddress.district) as District)?.Id ||
+                  (districts[0] as District).Id
+              ]
             : []
         }
       >
@@ -102,7 +105,7 @@ export const SelectAddressComp = (props: SelectAddressCompProps) => {
         }}
         selectedKeys={
           currentAddress?.ward && wards.length > 0
-            ? [(wards.find((ward) => ward.Name === currentAddress.ward) as Ward).Id]
+            ? [(wards.find((ward) => ward.Name === currentAddress.ward) as Ward)?.Id || (wards[0] as Ward).Id]
             : []
         }
       >

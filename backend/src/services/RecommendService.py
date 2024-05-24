@@ -8,6 +8,7 @@ from src.models.Category import Category
 from src.models.Product import Product
 from src.models.Variation import Variation
 from src.services.ReviewService import ReviewService
+import random
 
 
 class RecommendService:

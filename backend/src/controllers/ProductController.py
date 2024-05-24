@@ -3,6 +3,7 @@ from typing import List
 from src.models.Customer import Customer
 from src.services.OrderService import OrderService
 from src.services.ProductService import ProductService
+from src.models.Product import Product
 
 
 class ProductController:

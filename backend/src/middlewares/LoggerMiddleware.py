@@ -20,8 +20,11 @@ def logger_middeware():
         if not data:
             user = "guest"
         else:
-            user = data["uid"]
-
+            try:
+                user = data["uid"]
+            except Exception as e:
+                e
+                user = "guest"
     logger.info(
         msg=f"LOGGER|{request.method}|{request.url.replace(request.url_root, '')}|{user}"
     )

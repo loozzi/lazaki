@@ -36,20 +36,20 @@ export const ViewCartPage = () => {
   }, [])
 
   return (
-    <div className='mt-4'>
-      <PaneComp header='Giỏ hàng' className='mx-2'>
+    <div className='mt-2 lg:mt-4'>
+      <PaneComp header='Giỏ hàng' className='mx-2 bg-white rounded-lg pb-2'>
         {cart?.orderDetails.length === 0 ? (
           <EmptyCartComp />
         ) : (
           <DetailCartComp
             products={cart?.orderDetails || []}
-            className='bg-white pb-4'
+            className=''
             onClick={() => history.push(routes.client.purchase)}
           />
         )}
       </PaneComp>
       <ListCardItemComp
-        className='mx-2 mt-4 bg-white rounded-lg'
+        className='mx-2 mt-2 lg:mt-4 bg-white rounded-lg'
         heading='Sản phẩm gợi ý'
         items={suggestProducts}
         loading={loading}

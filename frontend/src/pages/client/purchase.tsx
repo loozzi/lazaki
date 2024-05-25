@@ -112,8 +112,8 @@ export const ViewPurchasePage = () => {
 
   return (
     <div>
-      <PaneComp header='Thanh toán' className='mx-2 mt-4'>
-        <div className='bg-white pb-4'>
+      <PaneComp header='Thanh toán' className='mx-2 mt-2 lg:mt-4 bg-white rounded-lg pb-2 lg:pb-4'>
+        <div>
           <div>
             <div className='text-2xl font-semibold p-4'>Thông tin thanh toán</div>
             <PurchaseInformationComp payload={payload} className='mx-2 grid md:grid-cols-2 gap-4 mb-8' />

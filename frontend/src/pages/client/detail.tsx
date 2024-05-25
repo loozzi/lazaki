@@ -49,7 +49,11 @@ export const ViewDetailPage = () => {
 
   return (
     <div>
-      {product ? <DetailItemComp product={product} /> : <Skeleton className='w-full h-[300px] rounded-lg mt-4' />}
+      {product ? (
+        <DetailItemComp product={product} />
+      ) : (
+        <Skeleton className='w-full h-[300px] rounded-lg mt-2 lg:mt-4' />
+      )}
       <div className='mt-2 grid grid-cols-10 gap-2 lg:gap-4'>
         <div className='flex flex-col lg:col-span-8 md:col-span-6 col-span-10'>
           {product && <DescriptionItemComp product={product} />}

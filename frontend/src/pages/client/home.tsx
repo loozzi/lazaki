@@ -71,7 +71,7 @@ export const HomePage = () => {
         items={suggestProducts}
         loading={loadingSuggestions}
         numberLoading={10}
-        className='mt-4 bg-white rounded-lg'
+        className='mt-2 mx-2 lg:mx-0 lg:mt-4 bg-white rounded-lg'
         bottomContent={
           <div className='flex justify-center py-2'>
             {suggestProducts.length > 0 && !loadingSuggestions ? (
@@ -90,7 +90,7 @@ export const HomePage = () => {
         }
       />
       <ListCardItemComp
-        className='mt-4 bg-white rounded-lg'
+        className='mt-2 mx-2 lg:mx-0 lg:mt-4 bg-white rounded-lg'
         heading='Điện thoại Iphone'
         items={iphoneProducts}
         loading={iphoneProducts.length === 0}
@@ -109,7 +109,7 @@ export const HomePage = () => {
         }
       />
       <ListCardItemComp
-        className='mt-4 bg-white rounded-lg'
+        className='mt-2 mx-2 lg:mx-0 lg:mt-4 bg-white rounded-lg'
         heading='Điện thoại Samsung'
         items={samsungProducts}
         loading={samsungProducts.length === 0}
@@ -128,7 +128,7 @@ export const HomePage = () => {
         }
       />
       <ListCardItemComp
-        className='mt-4 bg-white rounded-lg'
+        className='mt-2 mx-2 lg:mx-0 lg:mt-4 bg-white rounded-lg'
         heading='Laptop'
         items={laptopProducts}
         loading={laptopProducts.length === 0}
@@ -148,7 +148,7 @@ export const HomePage = () => {
       />
 
       <ListCardItemComp
-        className='mt-4 bg-white rounded-lg'
+        className='mt-2 mx-2 lg:mx-0 lg:mt-4 bg-white rounded-lg'
         heading='TV'
         items={tvProducts}
         loading={tvProducts.length === 0}
@@ -168,7 +168,7 @@ export const HomePage = () => {
       />
 
       <ListCardItemComp
-        className='mt-4 bg-white rounded-lg'
+        className='mt-2 mx-2 lg:mx-0 lg:mt-4 bg-white rounded-lg'
         heading='Camera'
         items={cameraProducts}
         loading={cameraProducts.length === 0}

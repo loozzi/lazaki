@@ -40,12 +40,12 @@ export const ItemImageControllerComp = (props: ItemImageControllerProps) => {
   }, [images])
 
   return (
-    <div className={'lg:max-w-[450px] w-full mx-2 md:mx-0'}>
+    <div className={'lg:max-w-[450px] w-full'}>
       <div className='flex justify-center'>
         <Image
           src={currentImage.link}
           alt={'Hình ảnh sản phẩm'}
-          className=' w-[450px] h-[450px] max-w-[450px] aspect-square max-h-[450px] object-contain'
+          className='w-[380px] h-[380px] md:w-[450px] md:h-[450px] max-w-[450px] aspect-square max-h-[450px] object-contain p-2'
         />
       </div>
       <div className='flex mt-2 justify-start relative'>

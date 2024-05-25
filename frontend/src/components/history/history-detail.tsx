@@ -106,7 +106,7 @@ export const HistoryDetailComp = (props: HistoryDetailCompProps) => {
               </div>
             </div>
           </div>
-          <div className='flex flex-col gap-4'>
+          <div className='flex flex-col gap-4 px-2'>
             <span className='font-semibold text-2xl text-gray-500'>Thông tin đơn hàng</span>
             {history.orderDetails.map((item: CartItem) => (
               <div className='grid grid-cols-1 lg:grid-cols-2 border-1 p-4 rounded-md gap-2'>

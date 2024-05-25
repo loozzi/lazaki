@@ -63,7 +63,7 @@ export const DetailItemComp = (props: DetailItemCompProps) => {
   }
 
   return (
-    <div className='flex flex-col py-4 đămx-2 lg:mx-0'>
+    <div className='flex flex-col py-2 lg:py-4 mx-2 lg:mx-0'>
       <div className='flex lg:flex-row items-start flex-col bg-white rounded-md p-4'>
         <div className='text-3xl normal-case font-medium lg:hidden mx-2 mb-4'>{product.name}</div>
         <ItemImageControllerComp images={product.images} variationImage={selectedVariation.image} />

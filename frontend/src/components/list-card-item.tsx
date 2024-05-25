@@ -21,8 +21,8 @@ export const ListCardItemComp = (props: ListCardItemProps) => {
       <div
         className={
           isColumn
-            ? 'grid gap-4 grid-cols-2 md:grid-cols-1 mt-4 mx-2 lg:mx-0 md:p-4'
-            : 'grid gap-4 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 mt-2 p-2'
+            ? 'grid gap-4 grid-cols-2 md:grid-cols-1 mt-2 mx-2 lg:mx-0 md:p-4'
+            : 'grid gap-4 grid-cols-2 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 mt-2 p-2'
         }
       >
         {items.map((item, index) => (
